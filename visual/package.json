@@ -1,0 +1,27 @@
+{
+  "name": "ELEN7046G2Web",
+  "version": "1.0.0",
+  "keywords": [
+    "util",
+    "functional",
+    "server",
+    "client",
+    "browser"
+  ],
+  "author": "dcloete",
+  "contributors": [
+    {
+      "name": "Dave Cloete",
+      "email": "davecloe@gmail.com"
+    }
+  ],
+  "dependencies": {
+    "cookie-parser": "^1.4.1",
+    "express": "^4.13.4",
+    "multer": "^1.1.0",
+    "nodeQuery": "0.0.9-1"
+  },
+  "scripts": {
+    "start": "node main.js"
+  }
+}

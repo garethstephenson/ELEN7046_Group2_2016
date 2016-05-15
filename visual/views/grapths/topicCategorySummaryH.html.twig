@@ -1,0 +1,75 @@
+<style>
+
+    .h_chart div {
+        font: 10px sans-serif;
+        background-color: steelblue;
+        text-align: right;
+        padding: 3px;
+        margin: 1px;
+        color: white;
+    }
+
+</style>
+<h4 id="h_topicHeader"></h4>
+<div id="h_dataPlaceholder" class="h_chart"> Data loading, please wait ... </div>
+<script type="text/javascript">
+    $(document).ready(function () {
+      var dataUrl = "{{dataUrl}}";
+      $.ajax({
+        url: dataUrl,
+        type: "GET",
+        success: function (data) {
+          $('#h_topicHeader').html(data.Header.Topic);
+          $('#h_dataPlaceholder').html("");
+          $('#h_dataPlaceholder').height(250);
+          basicHBarChart.initialise(data.Data, '#h_dataPlaceholder');
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+          $('#h_dataPlaceholder').html("error: " + thrownError);
+        },
+        complete: function () {
+
+        }
+      });
+    });
+
+    var basicHBarChart = {
+      initialise: function (data, chartDivSelector) {
+        var parent = this;
+        parent.draw(data, chartDivSelector);
+        $(window).resize(function () {
+
+          d3.select(chartDivSelector)
+            .selectAll("div")
+            .remove();
+          $(chartDivSelector).empty();
+          parent.draw(data, chartDivSelector);
+        });
+      },
+      draw: function (data, chartDivSelector) {
+        // Code developed following this tutorial: https://bost.ocks.org/mike/bar/3/
+        var width = $(chartDivSelector).width() - 10;
+        var height = $(chartDivSelector).height() - 15; // TODO : do this better
+
+        var scaleFactor = d3.scale.linear()
+          .domain([0, d3.max(data, function (item) {
+              return item.Total
+            })])
+          .range([0, width]);
+
+        d3.select(chartDivSelector)
+          .selectAll("div")
+          .data(data)
+          .enter().append("div")
+          .style("width", function (item) {
+            return scaleFactor(item.Total) + "px";
+          })
+          .style("height", function (item) {
+            return height / data.length + "px";
+          })
+          .text(function (item) {
+            return item.Category + ' (' + item.Total + ')';
+          });
+      }
+    };
+</script>
