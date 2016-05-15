@@ -1,68 +1,105 @@
+--- Data Feed 1:
+---------------
+Cateorgy Per Day
+Data:
+	[
+		Date: 2015-06-01 - Per Day
+		DailyData: 
+		[
+			{ 
+				Category: EFF,
+				Count: - Total tweets for Category
+			},
+			{ 
+				Category: ANC,
+				Count: - Total tweets for Category
+			},
+			{ 
+				Category: DA,
+				Count: - Total tweets for Category
+			}
+		],
+		........  {per Day}
+	]
+
+
+
+
+-----------------------------------------------------------------
+This is daves notes, ignore
+
+TODO : Change heat map -> http://bl.ocks.org/tjdecke/5558084
+
+pie chart
+
 // Note : Simply Summary of all Categories for the Topic (Going to focus on using Totals first, then second revision will bring in the 'Pro's and Con's')
 var TopicCategorySummary = {
 	"Header": {
-		"Topic": "SA Elections"
+		"Topic": “SA Elections”,
+		
 	},
 	"Data": [
 		{
-				"Category": "ANC",
-				"Pro": 870,
-				"Con": 1200,
+				"Category": “ANC”,
+				“Pro”: 870,
+				“Con”: 1200,
 				"Total": 2070
 		},
 		{
-				"Category": "EFF",
-				"Pro": 20,
-				"Con": 15,
+				"Category": “EFF”,
+				“Pro”: 20,
+				“Con”: 15,
 				"Total": 35
 		},
 		{
-				"Category": "DA",
-				"Pro": 120,
-				"Con": 60,
+				"Category": “DA”,
+				“Pro”: 120,
+				“Con”: 60,
 				"Total": 180
 		}
 	]
 };
 
+
+
 // Note : For Calendar heat map, daily
 var TopicCategoryDailyCount = {
 	"Header": {
-		"Topic": "SA Elections",
+		"Topic": “SA Elections”,
 		"MinCount": 0,
 		"MaxCount:" 13,
-		"DateStart": "2012-04-01",
-		"DateEnd": "2015-04-01"
+		"DateStart": “2012-04-01”,
+		"DateEnd": “2015-04-01”
 	},
-	"Data": [
+	“Data: [
 		{
-				"Category": "ANC",
-				"Date": "2012-04-01",
+				"Category": “ANC”,
+				"Date": “2012-04-01”,
 				"Count": 12
 		},
 		{
-				"Category": "EFF",
-				"Date": "2012-04-01",
+				"Category": “EFF”,
+				"Date": “2012-04-01”,
 				"Count": 10
 		},
 		{
-				"Category": "DA",
-				"Date": "2012-04-01",
+				"Category": “DA”,
+				"Date": “2012-04-01”,
 				"Count": 13
 		},
 		{
-				"Category": "ANC",
-				"Date": "2012-04-02",
+				"Category": “ANC”,
+				"Date": “2012-04-02”,
 				"Count": 10
 		},
 		{
-				"Category": "EFF",
-				"Date": "2012-04-02",
+				"Category": “EFF”,
+				"Date": “2012-04-02”,
 				"Count": 15
 		},
 		{
-				"Category": "DA",
-				"Date": "2012-04-02",
+				"Category": “DA”,
+				"Date": “2012-04-02”,
 				"Count": 12
 		}
 	]
@@ -72,28 +109,28 @@ var TopicCategoryDailyCount = {
 // QUESTION: Do we need levels or is it better to build a file/dataset for each level, i.e. TimeLocationCountByCountry / timeLocationCountByCity / TimelocationCountByGeoLocation, ...)
 // NOTE : Maybe we should work on Geo-locations only OR
 //		I can get ISO to US State centred Geo-location mappings, doing this for countries will be easy, sure we can find/build for SA. We could look at a source for Cities as well. 
-var TimeLocationCount =
+var = TimeLocationCount :
 {
-	"Header": {
-		"Topic": "SA Elections",
+	“Header”: {
+		"Topic": “SA Elections”,
 		"MinCount": 0,
 		"MaxCount:" 100,
-		"DateStart": "2012-04-23",
-		"DateEnd": "2015-04-23"
+		"DateStart": “2012-04-23”,
+		"DateEnd": “2015-04-23”
 		"level": "city" // Country / City / Geo-location  **
 	},
-	"Data": [
+	“Data”: [
 		{
 			"Category": "ANC",
-			"Date": "2012-04-23",
-			"Location": { // level = country - 
+			“Date”: “2012-04-23”,
+			“Location”: { // level = country - 
 				"Lat": 33.9899, // NOTE : 3 decimal
 				"Long": -118.1799,
 				"City": "Los Angeles" ,
 				"ProvinceOrState": "California",
 				"Country": "United States of America"
 			},
-			"Count": 99
+			“Count”: 99
 		}
 		....
 	]
