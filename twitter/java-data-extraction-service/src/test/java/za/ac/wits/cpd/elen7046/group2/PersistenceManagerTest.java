@@ -2,6 +2,7 @@ package za.ac.wits.cpd.elen7046.group2;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Objects;
 import java.util.TimeZone;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,6 +27,7 @@ public class PersistenceManagerTest {
     
     @Test
     public void testPersistTweet(){
+        //Given
         Tweet tweet = createTweetWithoutLocation();
         tweet.setGeoLocation(createGeoLocation());
 
@@ -37,6 +39,18 @@ public class PersistenceManagerTest {
         
     }
 
+    @Test
+    public void testFindByTwitterId(){
+        //Given
+        Long tweetId = 731559551053496320L;
+        
+        //When
+        Tweet tweet = this.persistManager.findByTwitterId(tweetId);
+        
+        //Then
+        assertNotNull(tweet);
+        assertTrue(Objects.equals(tweet.getTwitterId(), tweetId));
+    }
 
     @Test(expected = IllegalArgumentException.class)
     public void testPersistTweetWithoutLocation(){
