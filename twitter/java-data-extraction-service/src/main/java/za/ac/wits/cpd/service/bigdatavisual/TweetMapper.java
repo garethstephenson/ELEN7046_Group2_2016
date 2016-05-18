@@ -11,7 +11,8 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- *
+ * Maps the Twitter JSONObject payload to our custom Java Tweet object.
+ * 
  * @author Matsobane Khwinana (Matsobane.Khwinana@momentum.co.za)
  */
 @Log
@@ -77,20 +78,20 @@ public class TweetMapper {
         
         return null;
     }
-    private static final String USER = "user";
     
     /*
         "place": {
         "id": "cc95b56a28712044",
         "bounding_box": {
         "type": "Polygon",
-        "coordinatesJsonArray": [
+        "coordinatesJsonArray": 
         [
-        [28.0010585, -25.9448996],
-        [28.2712217, -25.9448996],
-        [28.2712217, -25.7768617],
-        [28.0010585, -25.7768617]
-        ]
+            [
+                [28.0010585, -25.9448996],
+                [28.2712217, -25.9448996],
+                [28.2712217, -25.7768617],
+                [28.0010585, -25.7768617]
+            ]
         ]
         },
         "place_type": "city",
@@ -159,16 +160,13 @@ public class TweetMapper {
 
     private static GregorianCalendar toGregorianCalendar(String dateUtc) {
         try {
-            //"Wed Apr 27 13:29:08 +0000 2016"
+            //Input date: "Wed Apr 27 13:29:08 +0000 2016"
             TimeZone timeZone = TimeZone.getTimeZone(UTC);
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(JSON_DATETIME_FORMAT);
             simpleDateFormat.setTimeZone(timeZone);
             Date date = simpleDateFormat.parse(dateUtc);
             GregorianCalendar calendar = (GregorianCalendar) GregorianCalendar.getInstance(timeZone);
             calendar.setTime(date);
-
-            log.log(Level.OFF, "Calendar date UTC : {0}", simpleDateFormat.format(calendar.getTime()));
-            log.log(Level.OFF, "JSON provided date: {0}", dateUtc);
             return calendar;
         } catch (ParseException ex) {
             log.log(Level.SEVERE, "Failed to convert JSON provided date time to Java GregorianCalender", ex);
@@ -224,7 +222,7 @@ public class TweetMapper {
         JSONObject entitiesJson = (JSONObject)tweetResp.get(ENTITIES);
         if(entitiesJson!=null){
             JSONArray hashtagsJsonArray = (JSONArray)entitiesJson.get(HASHTAGS);
-            if(hashtagsJsonArray!=null){
+            if(hashtagsJsonArray!=null&&hashtagsJsonArray.size()>0){               
                 String hashtags[] = new String[hashtagsJsonArray.size()];
                 for (int i=0;i<hashtagsJsonArray.size();i++) 
                     hashtags[i] = toHashtagText(hashtagsJsonArray, i);;
@@ -289,6 +287,7 @@ public class TweetMapper {
     private static final String NAME = "name";
     private static final String TYPE = "type";
     private static final String TEXT = "text";
+    private static final String USER = "user";
     private static final String UTC = "UTC";
     private static final String UND = "und";
     private static final String EMPTY = "";
