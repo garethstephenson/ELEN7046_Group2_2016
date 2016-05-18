@@ -24,99 +24,61 @@ import org.json.simple.JSONValue;
 @Log
 public class TweetsDataExtractor {
 
-    public List<Tweet> extract(@NonNull String oscarHashTagUrl) {
-        return fetchTweets(oscarHashTagUrl);
+    public List<Tweet> extractHashtagTweets(@NonNull String hashtag) {
+        return fetchTweets(String.format(HASHTAG_URL_FORMAT, validateHashtag(hashtag)));
     }
 
-    public List<Tweet> extract(@NonNull String oscarHashTagUrl, int count) {
-        if(count<1)throw new IllegalArgumentException("The 'count' parameter value must greater then 0");
-        
-        String url = String.format("%s&count=%d", oscarHashTagUrl,count);
+    public List<Tweet> extractHashtagTweets(@NonNull String hashtag, int count) {
+        validateCount(count);
+
+        String queryString = String.format("%s&count=%d", validateHashtag(hashtag), count);
+        String url = String.format(HASHTAG_URL_FORMAT, queryString);
         return fetchTweets(url);
     }
 
-    public List<Tweet> extract(String oscarHashTagUrl, Map<String, String> options) {
-        if(options.size()<1)throw new IllegalArgumentException("The 'options' parameter value must not be empty");
+
+    public List<Tweet> extractHashtagTweets(String hashtag, Map<String, String> options) {
+        if (options.size() < 1) {
+            throw new IllegalArgumentException("The 'options' parameter value must not be empty");
+        }
         
-        StringBuilder urlBuilder = toQueryString(oscarHashTagUrl, options);
+        StringBuilder urlBuilder = toQueryString(validateHashtag(hashtag), options);
         return fetchTweets(urlBuilder.toString());
     }
 
-    
-    /**
-     * Fetches tweets from given Twitter URL.
-     *
-     * @param endPointUrl
-     * @return
-     */
-    public List<Tweet> fetchTweets(String endPointUrl) {
-        try {
-
-            JSONArray hashArray = retrieveTwitterDatum(endPointUrl);
-            if (hashArray != null && !hashArray.isEmpty()) {
-                List<Tweet> hashtagTweets = new ArrayList<>();
-                for (int i=0;i<hashArray.size();i++) {
-                    JSONObject tweetResp = (JSONObject) hashArray.get(i);
-                    FileHelper.write(tweetResp);
-                    Tweet tweet = TweetMapper.toTweet(tweetResp);
-                    log.log(Level.SEVERE,"**** Number of tweets before determining the location: {0}", hashArray.size());
-                    if(tweet.getGeoLocation()!=null)
-                        hashtagTweets.add(tweet);
-                }
-                if (!hashtagTweets.isEmpty()) {
-                    log.log(Level.SEVERE,"+++++ Number of tweets after determining the location: {0}", hashtagTweets.size());
-                    return hashtagTweets;
-                }
-
-            }
-
-        } catch (IOException ex) {
-            Logger.getLogger(TweetsDataExtractor.class.getName()).log(Level.SEVERE, null, ex);
+    public Tweet extractTweetById(Long twitterID) {
+        final String url = String.format(TWEET_BY_ID_URL, twitterID);
+        JSONObject payload = retrieveTweetStatus(url);
+        if (payload != null) {
+            return TweetMapper.toTweet(payload);
         }
 
-        return null;
-    }
-
-   
-
-    /**
-     * Fetches a time tweet from a given user's account endpoint URL.
-     *
-     * @param endPointUrl
-     * @return
-     */
-    public List<Tweet> fetchTimelineTweet(String endPointUrl){
-        HttpsURLConnection connection = null;
-        try {
-            JSONArray jsonArray = retrieveTwitterData(endPointUrl);
-
-            if (jsonArray != null) {
-                Iterator iterator = jsonArray.iterator();
-                List<Tweet> tweets = new ArrayList<>();
-                while (iterator.hasNext()) {
-                    JSONObject o = (JSONObject) iterator.next();
-                    log.log(Level.INFO, "JSON tweet: {0}", o.toJSONString());
-                    tweets.add(TweetMapper.toTweet(o));
-                }
-
-                if(!tweets.isEmpty())return tweets;
-            }
-
-        } catch (MalformedURLException e) {
-           log.log(Level.SEVERE, "Unable to fetch timeline tweets", e);
-        } catch (IOException ex) {
-            log.log(Level.SEVERE, "Unable to fetch timeline tweets", ex);
-        } finally {
-            if (connection != null) {
-                connection.disconnect();
-            }
-        }
-        
         return null;
     }
 
     public List<String> streamData(String OSCAR_HASHTAG, int count) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet."); 
+    }
+
+    public List<Tweet> extractTimelineTweets(String endPointUrl) {
+        return retrieveTimeline(endPointUrl);
+    }
+
+    private JSONObject retrieveTweetStatus(String twitterUrl) {
+        try {
+            String bearerToken = Authenticator.requestBearerToken(TWITTER_API_OAUTH2_URL);
+            if (isValidString(bearerToken)) {
+                HttpsURLConnection connection = createConnectionToTwitter(twitterUrl, bearerToken);
+                final JSONObject obj = (JSONObject) JSONValue.parse(HttpHelper.readResponse(connection));
+                if (obj != null) {
+                    return obj;
+                }
+            }
+        } catch (IOException ex) {
+            log.log(Level.SEVERE, "Failed to intepret the twitter response", ex);
+        }
+
+        return null;
     }
     
     private JSONArray retrieveTwitterData(String twitterUrl) throws IOException {
@@ -129,40 +91,91 @@ public class TweetsDataExtractor {
         return null;
     }
 
-    private JSONArray retrieveTwitterDatum(String twitterUrl) throws IOException {
-        /*
-            "search_metadata":{
-            "completed_in":0.081,"max_id":723817151379988500,"max_id_str":"723817151379988481",
-            "next_results":"?max_id=723784616449060863&q=%23OscarPistorius&include_entities=1",
-            "query":"%23OscarPistorius",
-            "refresh_url":"?since_id=723817151379988481&q=%23OscarPistorius&include_entities=1",
-            "count":15,"since_id":0,"since_id_str":"0"}
-         */
-
+    private JSONArray retrieveTwitterStatuses(String twitterUrl) throws IOException {
         String bearerToken = Authenticator.requestBearerToken(TWITTER_API_OAUTH2_URL);
         if (isValidString(bearerToken)) {
             JSONArray resp = new JSONArray();
-            String nextResults = "";
-            
-            //do {
-                String urlWithCursor = twitterUrl +"&cursor=0"+ nextResults;
-                System.out.println("url: "+  urlWithCursor);
-                HttpsURLConnection connection = createConnectionToTwitter(urlWithCursor, bearerToken);
-                final JSONObject obj = (JSONObject) JSONValue.parse(HttpHelper.readResponse(connection));
-                resp.addAll((JSONArray)obj.get("statuses"));
-                
-//                System.out.println("************ RESPONSE*********\n"+obj.toJSONString());
-//                JSONObject metadata = (JSONObject)obj.get("search_metadata");
-//                nextResults = metadata.get("next_results").toString();
-//            } while (nextResults != null && !nextResults.isEmpty());
-                System.out.println("First 5 statuses returned!!!\n: " + resp.toJSONString());
-            if(!resp.isEmpty()){
-                System.out.println("\n ******** return the first 5 statuses ********" );
+            String urlWithCursor = twitterUrl + "&cursor=0";
+            log.log(Level.SEVERE, "url: {0}", urlWithCursor);
+            HttpsURLConnection connection = createConnectionToTwitter(urlWithCursor, bearerToken);
+            final JSONObject obj = (JSONObject) JSONValue.parse(HttpHelper.readResponse(connection));
+            FileHelper.write(obj);
+            resp.addAll((JSONArray) obj.get(STATUSES));
+
+            if (!resp.isEmpty()) {
                 return resp;
             }
         }
 
         return null;
+    }
+    
+    private List<Tweet> fetchTweets(String endPointUrl) {
+        try {
+
+            JSONArray hashArray = retrieveTwitterStatuses(endPointUrl);
+            if (hashArray != null && !hashArray.isEmpty()) {
+                List<Tweet> hashtagTweets = new ArrayList<>();
+                for (int i = 0; i < hashArray.size(); i++) {
+                    JSONObject tweetResp = (JSONObject) hashArray.get(i);
+                    Tweet tweet = TweetMapper.toTweet(tweetResp);
+                    log.log(Level.SEVERE, "**** Number of tweets before determining the location: {0}", hashArray.size());
+                    if (tweet.getGeoLocation() != null) {
+                        hashtagTweets.add(tweet);
+                    }
+                }
+                if (!hashtagTweets.isEmpty()) {
+                    log.log(Level.SEVERE, "+++++ Number of tweets after determining the location: {0}", hashtagTweets.size());
+                    return hashtagTweets;
+                }
+
+            }
+
+        } catch (IOException ex) {
+            Logger.getLogger(TweetsDataExtractor.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return null;
+    }
+    
+    
+    private List<Tweet> retrieveTimeline(String endPointUrl) {
+        HttpsURLConnection connection = null;
+        try {
+            JSONArray jsonArray = retrieveTwitterData(endPointUrl);
+            if (jsonArray != null) {
+                Iterator iterator = jsonArray.iterator();
+                List<Tweet> tweets = new ArrayList<>();
+                while (iterator.hasNext())
+                    tweets.add(TweetMapper.toTweet((JSONObject) iterator.next()));
+                if (!tweets.isEmpty()) return tweets;
+            }
+        }catch (MalformedURLException e) {
+            log.log(Level.SEVERE, "Unable to fetch timeline tweets", e);
+        }catch (IOException ex) {
+            log.log(Level.SEVERE, "Unable to fetch timeline tweets", ex);
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
+        return null;
+    }
+
+    private String validateHashtag(String hashtag) {
+        hashtag = urlEncodeHashtag(hashtag);
+        hashtag = prependEncodedHashtagSign(hashtag);
+        return hashtag;
+    }
+
+    private String prependEncodedHashtagSign(String hashtag) {
+        hashtag = !hashtag.startsWith("%23")?"%23".concat(hashtag):hashtag;
+        return hashtag;
+    }
+
+    private String urlEncodeHashtag(String hashtag) {
+        hashtag = hashtag.startsWith("#")?hashtag.replace("#", "%23"):hashtag;
+        return hashtag;
     }
 
     private static HttpsURLConnection createConnectionToTwitter(String endPointUrl, String bearerToken) throws IOException, ProtocolException, MalformedURLException {
@@ -182,30 +195,42 @@ public class TweetsDataExtractor {
         return bearerToken != null && !bearerToken.isEmpty();
     }
 
-    private StringBuilder toQueryString(String oscarHashTagUrl, Map<String, String> options) {
+    private StringBuilder toQueryString(String hashtag, Map<String, String> options) {
         StringBuilder urlBuilder = new StringBuilder();
-        urlBuilder.append(oscarHashTagUrl);
-        for (String key : options.keySet())
-            if(key.equalsIgnoreCase(SINCE) ||key.equalsIgnoreCase(UNTIL)){
+        
+        urlBuilder.append(String.format(HASHTAG_URL_FORMAT, hashtag));
+        for (String key : options.keySet()) {
+            if (key.equalsIgnoreCase(SINCE) || key.equalsIgnoreCase(UNTIL)) {
                 urlBuilder.append(ENCODED_SPACE).append(key).append(ENCODED_COLON).append(options.get(key));
-            }else{
+            } else {
                 urlBuilder.append(AMPERSAND).append(key).append(EQUAL_SIGN).append(options.get(key));
             }
-        
+        }
+
         return urlBuilder;
     }
+    
+    private void validateCount(int count) throws IllegalArgumentException {
+        if (count < 1) {
+            throw new IllegalArgumentException("The 'count' parameter value must greater then 0");
+        }
+    }
+    
     private static final String UNTIL = "until";
     private static final String SINCE = "since";
     private static final String ENCODED_COLON = "%3A";
     private static final String ENCODED_SPACE = "%20";
-    
+
     private static final String EQUAL_SIGN = "=";
     private static final String AMPERSAND = "&";
+    private static final String HASHTAG_URL_FORMAT = "https://api.twitter.com/1.1/search/tweets.json?q=%s";
+    private static final String TWEET_BY_ID_URL = "https://api.twitter.com/1.1/statuses/show.json?id=%d";
     private static final String TWITTER_API_OAUTH2_URL = "https://api.twitter.com/oauth2/token";
     private static final String TWITTER_API_HOST = "api.twitter.com";
     private static final String AUTHORIZATION = "Authorization";
     private static final String APP_NAME = "ELEN7046_GROUP2";
     private static final String USER_AGENT = "User-Agent";
+    private static final String STATUSES = "statuses";
     private static final String BEARER = "Bearer";
     private static final String HOST = "Host";
     private static final String TEXT = "text";
