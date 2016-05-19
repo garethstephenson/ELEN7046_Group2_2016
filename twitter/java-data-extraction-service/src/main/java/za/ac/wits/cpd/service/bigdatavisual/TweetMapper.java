@@ -257,15 +257,22 @@ public class TweetMapper {
         return isSensitive!=null?isSensitive:false;
     }
 
-    private static String toTweetUrl(JSONObject tweetResp) {
-        String lang = (String) tweetResp.get("source");
-        return lang!=null?lang:"";
+    private static String toTweetUrl(JSONObject tweetResp) {        
+        Long id = toTwitterId(tweetResp);
+        String screenName = toUserScreenName(tweetResp);
+        return (id!=null && isValidString(screenName))?String.format(TWEET_URL_FORMAT, screenName, id):EMPTY;    
+    }
+
+    private static String toUserScreenName(JSONObject tweetResp) {
+        JSONObject userJson = (JSONObject)tweetResp.get(USER);
+        return userJson!=null?(String)userJson.get("screen_name"):EMPTY;
     }
 
     private static boolean isValidString(String string) {
         return string!=null&&!string.isEmpty();
     }
 
+    private static final String TWEET_URL_FORMAT = "https://twitter.com/%s/status/%d";
     private static final String JSON_DATETIME_FORMAT = "EE MMM dd HH:mm:ss zzz yyyy";
     private static final String IN_REPLY_TO_SCREEN_NAME = "in_reply_to_screen_name";
     private static final String IN_REPLY_TO_STATUS_ID = "in_reply_to_status_id";

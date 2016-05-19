@@ -61,7 +61,11 @@ public class PersistenceManager {
             iterable.forEach(new Block<Document>() {
                 @Override
                 public void apply(Document doc) {
-                    System.out.println("##### DB JSON \n" +doc.toJson());
+                    BsonDocument bsonDoc = BsonDocument.parse(doc.toJson());
+                    JsonWriterSettings strictSettings = new JsonWriterSettings(JsonMode.STRICT);
+                    JsonWriterSettings shellSettings = new JsonWriterSettings(JsonMode.SHELL);
+                    System.out.println("##### JsonMode.STRICT : " + bsonDoc.toJson(strictSettings));
+                    System.out.println("#####  JsonMode.SHELL : " + bsonDoc.toJson(shellSettings));
                     
                     Tweet tweet = new Tweet();
                     tweet.setTwitterId(doc.getLong("twitterID"));
@@ -102,6 +106,7 @@ public class PersistenceManager {
     private void persistTweet(Tweet tweet) {
         if (this.db != null) {
             DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.ENGLISH);
+            //new ISODate(format.format(tweet.getCreatedAt().getTime()));
             db.getCollection("Tweets").insertOne(new Document()
                     .append("createdBy", tweet.getCreatedBy())
                     .append("createdAt", format.format(tweet.getCreatedAt().getTime()))

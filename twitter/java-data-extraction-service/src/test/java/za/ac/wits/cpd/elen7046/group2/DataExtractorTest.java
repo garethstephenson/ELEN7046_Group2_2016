@@ -119,10 +119,11 @@ public class DataExtractorTest {
         final Long tweetId = 729674502339055617L;
         
         //When
-        Tweet tweetData = this.extractor.extractTweetById(tweetId);
+        Tweet tweet = this.extractor.extractTweetById(tweetId);
 
         //Then
-        assertTrue(Objects.equals(tweetData.getTwitterId(), tweetId));
+        assertTrue(Objects.equals(tweet.getTwitterId(), tweetId));
+        assertTrue("URL returned " + tweet.getUrl(), EXPECTED_TWEET_URL.equalsIgnoreCase(tweet.getUrl()));
     }
 
     @Test
@@ -159,9 +160,10 @@ public class DataExtractorTest {
         return options;
     }
 
+    private static final String EXPECTED_TWEET_URL = "https://twitter.com/leilanitexas/status/729674502339055617";
+    
     private static final String MATSO_ACCOUNT_TIMELINE = "https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=MatsobaneCarl&count=2";
     private static final String HASHTAG_URL_FORMAT = "https://api.twitter.com/1.1/search/tweets.json?q=%s";
-    
     private static final String NY_PRIMARY_THIRTY_DAYS_PRIOR = "2016-03-19";
     private static final String NY_PRIMARY_2016 = "2016-04-19";
     private static final String JUDGEMENT_DAY = "2014-09-11";

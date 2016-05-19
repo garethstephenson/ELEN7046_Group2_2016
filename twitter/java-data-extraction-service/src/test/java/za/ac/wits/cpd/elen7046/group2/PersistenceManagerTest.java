@@ -42,7 +42,7 @@ public class PersistenceManagerTest {
     @Test
     public void testFindByTwitterId(){
         //Given
-        Long tweetId = 731559551053496320L;
+        Long tweetId = 729674502339055617L;
         
         //When
         Tweet tweet = this.persistManager.findByTwitterId(tweetId);
