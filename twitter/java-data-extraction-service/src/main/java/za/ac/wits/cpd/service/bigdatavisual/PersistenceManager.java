@@ -5,20 +5,15 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.FindIterable;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import static java.util.Arrays.asList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
-import java.util.logging.Level;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.extern.java.Log;
 import org.bson.BsonDocument;
-import org.bson.BsonString;
 import org.bson.Document;
 import org.bson.json.JsonMode;
 import org.bson.json.JsonWriterSettings;
@@ -48,23 +43,28 @@ public class PersistenceManager {
     }
 
     public void persist(@NonNull Tweet tweet) {
-        log.log(Level.SEVERE, "##### persisting {0}", tweet.toString());
         persistTweet(tweet);
     }
 
+    public void removeByTwitterId(Long twitterId){
+        db.getCollection(TABLE_TWEETS).deleteMany(new Document(TWITTER_ID, twitterId));
+    }
+    
+    public void removeAll() {
+        db.getCollection(TABLE_TWEETS).deleteMany(new Document());
+    }
+    
     public Tweet findByTwitterId(Long tweetId) {
         final List<Tweet> tweets = new ArrayList<>();
-        FindIterable<Document> iterable = db.getCollection("Tweets").
-                find(new Document("twitterID", tweetId));
+        FindIterable<Document> iterable = db.getCollection(TABLE_TWEETS).
+                find(new Document(TWITTER_ID, tweetId));
         
         if (iterable != null) {
             iterable.forEach(new Block<Document>() {
                 @Override
                 public void apply(Document doc) {
                     BsonDocument bsonDoc = BsonDocument.parse(doc.toJson());
-                    JsonWriterSettings strictSettings = new JsonWriterSettings(JsonMode.STRICT);
                     JsonWriterSettings shellSettings = new JsonWriterSettings(JsonMode.SHELL);
-                    System.out.println("##### JsonMode.STRICT : " + bsonDoc.toJson(strictSettings));
                     System.out.println("#####  JsonMode.SHELL : " + bsonDoc.toJson(shellSettings));
                     
                     Tweet tweet = new Tweet();
@@ -83,7 +83,7 @@ public class PersistenceManager {
 
     public List<Tweet> findAll() {
         final List<Tweet> tweets = new ArrayList<>();
-        FindIterable<Document> iterable = db.getCollection("Tweets").find();
+        FindIterable<Document> iterable = db.getCollection(TABLE_TWEETS).find();
         iterable.forEach(new Block<Document>() {
             @Override
             public void apply(Document doc) {
@@ -107,16 +107,14 @@ public class PersistenceManager {
 
     private void persistTweet(Tweet tweet) {
         if (this.db != null) {
-            DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.ENGLISH);
-            //new ISODate(format.format(tweet.getCreatedAt().getTime()));
-            db.getCollection("Tweets").insertOne(new Document()
+            db.getCollection(TABLE_TWEETS).insertOne(new Document()
                     .append("createdBy", tweet.getCreatedBy())
-                    .append("createdAt", format.format(tweet.getCreatedAt().getTime()))
+                    .append("createdAt", tweet.getCreatedAt().getTime())
                     .append("coords", toCoordinatesArray(tweet))
                     .append("place", toPlace(tweet))
                     .append("favouriteCount", tweet.getFavouriteCount())
                     .append("hashtags", toHashtags(tweet))
-                    .append("twitterID", tweet.getTwitterId())
+                    .append(TWITTER_ID, tweet.getTwitterId())
                     .append("inReplyToName", tweet.getInReplyToName() != null ? tweet.getInReplyToName() : EMPTY)
                     .append("inReplyToStatusID", tweet.getInReplyToStatusId() != null ? tweet.getInReplyToStatusId() : MINUS_ONE)
                     .append("inReplyToUserID", tweet.getInReplyToUserId() != null ? tweet.getInReplyToUserId() : MINUS_ONE)
@@ -169,7 +167,8 @@ public class PersistenceManager {
         throw new IllegalArgumentException("Cannot persist a tweet without a location");
     }
 
+    private static final String TWITTER_ID = "twitterID";
+    private static final String TABLE_TWEETS = "Tweets";
     private static final String MINUS_ONE = "-1";
     private static final String EMPTY = "";
-
 }

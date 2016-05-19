@@ -2,8 +2,11 @@ package za.ac.wits.cpd.elen7046.group2;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Objects;
 import java.util.TimeZone;
+import java.util.logging.Level;
+import lombok.extern.java.Log;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -16,64 +19,107 @@ import za.ac.wits.cpd.service.bigdatavisual.Tweet;
  *
  * @author Matsobane Khwinana (Matsobane.Khwinana@momentum.co.za)
  */
+@Log
 public class PersistenceManagerTest {
 
     private PersistenceManager persistManager;
-    
+
     @Before
     public void setUp() {
         this.persistManager = new PersistenceManager();
     }
-    
+
     @Test
-    public void testPersistTweet(){
+    public void testPersistTweet() {
         //Given
         Tweet tweet = createTweetWithoutLocation();
         tweet.setGeoLocation(createGeoLocation());
 
         //When
         this.persistManager.persist(tweet);
-        
+
         //Then
         assertNotNull(this.persistManager.findAll());
-        
+
     }
 
     @Test
-    public void testFindByTwitterId(){
+    public void testFindByTwitterId() {
         //Given
-        Long tweetId = 729674502339055617L;
-        
+        Long tweetId = 729674501613621248L;//729674502339055617L;
+
         //When
         Tweet tweet = this.persistManager.findByTwitterId(tweetId);
-        
+
         //Then
         assertNotNull(tweet);
         assertTrue(Objects.equals(tweet.getTwitterId(), tweetId));
     }
 
+    @Test
+    public void testFindAll() {
+        //Given
+        
+
+        //When
+        List<Tweet> tweets = this.persistManager.findAll();
+
+        //Then
+        
+        assertNotNull(tweets);
+        assertTrue(tweets.size() > 0);
+        log.log(Level.SEVERE, "#### Number of tweets: {0}", tweets.size());
+    }
+    
+    @Test
+    public void testRemoveAll() {
+        //Given
+        
+
+        //When
+       this.persistManager.removeAll();
+       List<Tweet> tweets = this.persistManager.findAll();
+
+        //Then
+        assertTrue(tweets.isEmpty());
+    }
+    
+    @Test
+    public void testRemoveByTwitterId() {
+        //Given
+        Long tweetId = 729674502339055617L;
+
+        //When
+        this.persistManager.removeByTwitterId(tweetId);
+        Tweet tweet = this.persistManager.findByTwitterId(tweetId);
+
+        //Then
+        assertNull(tweet);
+    }
+    
+    
+
     @Test(expected = IllegalArgumentException.class)
-    public void testPersistTweetWithoutLocation(){
+    public void testPersistTweetWithoutLocation() {
         Tweet tweet = createTweetWithoutLocation();
 
         //When
         this.persistManager.persist(tweet);
-        
+
         //Then - IllegalArgumentException must be thrown by the above statement 
-        
     }
-    
+
     private GregorianCalendar createTweetCalender(long l) {
         TimeZone timeZone = TimeZone.getTimeZone("UTC");
         GregorianCalendar date = (GregorianCalendar) GregorianCalendar.getInstance(timeZone);
         date.setTime(new Date(l));
         return date;
     }
-    
+
     private Tweet createTweetWithoutLocation() {
         //Given
         Tweet tweet = new Tweet();
-        tweet.setTwitterId(731559551053496320L);
+        tweet.setTwitterId(729674501613621248L);
         tweet.setCreatedBy("Cilla Webster");
         tweet.setCreatedAt(createTweetCalender(1463252363000L));
         tweet.setHashtags(createHashTags());
@@ -85,7 +131,7 @@ public class PersistenceManagerTest {
     }
 
     private String[] createHashTags() {
-       return new String[]{"OscarPistorius"};
+        return new String[]{"OscarPistorius"};
     }
 
     private GeoLocation createGeoLocation() {
