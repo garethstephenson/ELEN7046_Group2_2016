@@ -91,11 +91,13 @@ public class PersistenceManager {
             }
 
             private Tweet toTweet(Document doc) {
-                System.out.println("#### BSON: " + doc.toJson());
-
+                BsonDocument bsonDoc = BsonDocument.parse(doc.toJson());
+                JsonWriterSettings shellSettings = new JsonWriterSettings(JsonMode.SHELL);
+                System.out.println("#####  BSON : " + bsonDoc.toJson(shellSettings));
                 Tweet tweet = new Tweet();
                 tweet.setTwitterId(doc.getLong("twitterID"));
                 tweet.setText(doc.getString("tweetText"));
+                tweet.setUrl(doc.getString("tweetURL"));
                 return tweet;
             }
         });
