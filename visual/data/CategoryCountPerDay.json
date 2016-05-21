@@ -1,0 +1,172 @@
+[
+    {
+        "Date": "2016-05-01",
+        "Data": [
+            {
+                "Category": "EFF",
+                "Count": 10
+            },
+            {
+                "Category": "ANC",
+                "Count": 15
+            },
+            {
+                "Category": "DA",
+                "Count": 5
+            }
+        ]
+    },
+    {
+        "Date": "2016-05-02",
+        "Data": [
+            {
+                "Category": "EFF",
+                "Count": 45
+            },
+            {
+                "Category": "ANC",
+                "Count": 10
+            },
+            {
+                "Category": "DA",
+                "Count": 0
+            }
+        ]
+    },
+    {
+        "Date": "2016-05-03",
+        "Data": [
+            {
+                "Category": "EFF",
+                "Count": 0
+            },
+            {
+                "Category": "ANC",
+                "Count": 88
+            },
+            {
+                "Category": "DA",
+                "Count": 45
+            }
+        ]
+    },
+    {
+        "Date": "2016-05-04",
+        "Data": [
+            {
+                "Category": "EFF",
+                "Count": 3
+            },
+            {
+                "Category": "ANC",
+                "Count": 4
+            },
+            {
+                "Category": "DA",
+                "Count": 5
+            }
+        ]
+    },
+    {
+        "Date": "2016-05-05",
+        "Data": [
+            {
+                "Category": "EFF",
+                "Count": 3
+            },
+            {
+                "Category": "ANC",
+                "Count": 4
+            },
+            {
+                "Category": "DA",
+                "Count": 5
+            }
+        ]
+    },
+    {
+        "Date": "2016-05-06",
+        "Data": [
+            {
+                "Category": "EFF",
+                "Count": 34
+            },
+            {
+                "Category": "ANC",
+                "Count": 4
+            },
+            {
+                "Category": "DA",
+                "Count": 75
+            }
+        ]
+    },
+    {
+        "Date": "2016-05-07",
+        "Data": [
+            {
+                "Category": "EFF",
+                "Count": 23
+            },
+            {
+                "Category": "ANC",
+                "Count": 23
+            },
+            {
+                "Category": "DA",
+                "Count": 23
+            }
+        ]
+    },
+    {
+        "Date": "2016-05-08",
+        "Data": [
+            {
+                "Category": "EFF",
+                "Count": 12
+            },
+            {
+                "Category": "ANC",
+                "Count": 13
+            },
+            {
+                "Category": "DA",
+                "Count": 14
+            }
+        ]
+    },
+    {
+        "Date": "2016-05-09",
+        "Data": [
+            {
+                "Category": "EFF",
+                "Count": 65
+            },
+            {
+                "Category": "ANC",
+                "Count": 34
+            },
+            {
+                "Category": "DA",
+                "Count": 187
+            }
+        ]
+    },
+    {
+        "Date": "2016-05-10",
+        "Data": [
+            {
+                "Category": "EFF",
+                "Count": 45
+            },
+            {
+                "Category": "ANC",
+                "Count": 54
+            },
+            {
+                "Category": "DA",
+                "Count": 23
+            }
+        ]
+    }
+]

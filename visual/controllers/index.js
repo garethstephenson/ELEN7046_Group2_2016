@@ -22,10 +22,17 @@ router.get('/', function (req, res) {
         specialClass: "panel-success"
       },
       {
-        name: "Calendar Heat Map",
+        name: "Category Over Time",
         size: "6",
-        type: "grapths/topicCategoryCalendarHeatMap.html.twig",
-        dataUrl: "data/topicCategoryDailyCount",
+        type: "grapths/topicCategoryHeatMap.html.twig",
+        dataUrl: "data/categoryCountPerDay",
+        specialClass: "panel-primary"
+      },
+      {
+        name: "Category Over Time (Combined)",
+        size: "6",
+        type: "grapths/topicCategoryCombinedHeatMap.html.twig",
+        dataUrl: "data/categoryCountPerDay",
         specialClass: "panel-primary"
       },
       {

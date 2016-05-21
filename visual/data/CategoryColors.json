@@ -1,0 +1,14 @@
+[
+    {
+        "Category": "EFF",
+        "Color": "#FF0000"
+    },
+    {
+        "Category": "ANC",
+        "Color": "#FFFF00"
+    },
+    {
+        "Category": "DA",
+        "Color": "#0000FF"
+    }
+]

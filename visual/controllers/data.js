@@ -1,7 +1,31 @@
 var express = require('express');
 var router = express.Router();
-var Twig = require("twig");
+var fs = require("fs");
 // /config/*
+
+router.get('/categoryCountPerDay', function (req, res) {
+
+  var data = fs.readFile(__dirname + "/../data/" + "CategoryCountPerDay.json", 'utf8', function (err, data) {
+    if (err) {
+      console.log("Error reading file: %s", err);
+      res.send(null);
+    }
+    res.setHeader('Content-Type', 'application/json');
+    res.send(JSON.parse(data));
+  });
+});
+
+router.get('/categoryColors', function (req, res) {
+
+  var data = fs.readFile(__dirname + "/../data/" + "CategoryColors.json", 'utf8', function (err, data) {
+    if (err) {
+      console.log("Error reading file: %s", err);
+      res.send(null);
+    }
+    res.setHeader('Content-Type', 'application/json');
+    res.send(JSON.parse(data));
+  });
+});
 
 router.get('/placesData', function (req, res) {
 
@@ -63,50 +87,49 @@ router.get('/topicCategorySummary', function (req, res) {
   res.setHeader('Content-Type', 'application/json');
   res.send(JSON.stringify(data));
 });
-
 router.get('/topicCategoryDailyCount', function (req, res) {
 
   var data = {
-	"Header": {
-		"Topic": "SA Elections",
-		"MinCount": 0,
-		"MaxCount": 13,
-		"DateStart": "2012-04-01",
-		"DateEnd": "2015-04-01"
-	},
-	"Data": [
-		{
-				"Category": "ANC",
-				"Date": "2012-04-01",
-				"Count": 12
-		},
-		{
-				"Category": "EFF",
-				"Date": "2012-04-01",
-				"Count": 10
-		},
-		{
-				"Category": "DA",
-				"Date": "2012-04-01",
-				"Count": 13
-		},
-		{
-				"Category": "ANC",
-				"Date": "2012-04-02",
-				"Count": 10
-		},
-		{
-				"Category": "EFF",
-				"Date": "2012-04-02",
-				"Count": 15
-		},
-		{
-				"Category": "DA",
-				"Date": "2012-04-02",
-				"Count": 12
-		}
-	]
-};
+    "Header": {
+      "Topic": "SA Elections",
+      "MinCount": 0,
+      "MaxCount": 13,
+      "DateStart": "2012-04-01",
+      "DateEnd": "2015-04-01"
+    },
+    "Data": [
+      {
+        "Category": "ANC",
+        "Date": "2012-04-01",
+        "Count": 12
+      },
+      {
+        "Category": "EFF",
+        "Date": "2012-04-01",
+        "Count": 10
+      },
+      {
+        "Category": "DA",
+        "Date": "2012-04-01",
+        "Count": 13
+      },
+      {
+        "Category": "ANC",
+        "Date": "2012-04-02",
+        "Count": 10
+      },
+      {
+        "Category": "EFF",
+        "Date": "2012-04-02",
+        "Count": 15
+      },
+      {
+        "Category": "DA",
+        "Date": "2012-04-02",
+        "Count": 12
+      }
+    ]
+  };
   res.setHeader('Content-Type', 'application/json');
   res.send(JSON.stringify(data));
 });
