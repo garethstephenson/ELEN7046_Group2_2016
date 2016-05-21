@@ -48,9 +48,9 @@ router.get('/topicCategorySummary', function (req, res) {
       },
       {
         "Category": "EFF",
-        "Pro": 20,
-        "Con": 15,
-        "Total": 35
+        "Pro": 2000,
+        "Con": 150,
+        "Total": 2150
       },
       {
         "Category": "DA",
