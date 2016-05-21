@@ -160,7 +160,7 @@ public class PersistenceManager {
 
     private static List<Double> toCoordinatesArray(Tweet tweet) {
         final GeoLocation geoLocation = tweet.getGeoLocation();
-        if (geoLocation != null) {
+        if (geoLocation != null && (geoLocation.getCoordinates()!=null&&geoLocation.getCoordinates().length>0)) {
             return asList(geoLocation.getLongitude(), geoLocation.getLatitude());
         }
 
