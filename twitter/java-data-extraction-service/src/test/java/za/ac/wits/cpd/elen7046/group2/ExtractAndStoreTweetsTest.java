@@ -45,7 +45,7 @@ public class ExtractAndStoreTweetsTest {
     public void testExtractAndStoreTrumpPriorToNYPrimary() {
         //Given
         final String hashtag = "MakeAmericaGreatAgain";
-        final Map<String, String> options = fiveTweetsBeforeNewYorkOptions();
+        final Map<String, String> options = hundredTweetsBeforeNewYorkOptions();
 
         //When
         List<Tweet> tweetData = this.dataExtractor.extractHashtagTweets(hashtag, options);
@@ -67,10 +67,20 @@ public class ExtractAndStoreTweetsTest {
         return options;
     }
     
+    private Map<String, String> hundredTweetsBeforeNewYorkOptions() {
+        //https://twitter.com/search?q=%23MakeAmericaGreatAgain%20since%3A2016-03-19%20until%3A2016-04-19
+        final Map<String, String> options = new HashMap<>();
+        options.put(COUNT, HUNDRED);
+        options.put(SINCE, NY_PRIMARY_THIRTY_DAYS_PRIOR);
+        options.put(UNTIL, NY_PRIMARY_2016);
+        return options;
+    }
+    
     private static final String NY_PRIMARY_THIRTY_DAYS_PRIOR = "2016-03-19";
     private static final String NY_PRIMARY_2016 = "2016-04-19";
     private static final String COUNT = "count";
     private static final String SINCE = "since";
     private static final String UNTIL = "until";
+    private static final String HUNDRED = "100";
     private static final String FIVE = "5";
 }
