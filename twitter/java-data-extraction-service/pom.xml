@@ -5,6 +5,8 @@
     <artifactId>java-data-extraction-service</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
+    <name>java-data-extraction-service</name>
+    <description>The Twitter Data Extraction Service implemented using the Java Standard Edition</description>
     
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -82,5 +84,4 @@
             <artifactId>mongodb-driver</artifactId>
         </dependency>
     </dependencies>
-    <name>java-data-extraction-service</name>
 </project>

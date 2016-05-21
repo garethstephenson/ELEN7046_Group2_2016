@@ -80,30 +80,31 @@ public class TweetMapper {
     }
     
     /*
-        "place": {
-        "id": "cc95b56a28712044",
-        "bounding_box": {
-        "type": "Polygon",
-        "coordinatesJsonArray": 
-        [
-            [
-                [28.0010585, -25.9448996],
-                [28.2712217, -25.9448996],
-                [28.2712217, -25.7768617],
-                [28.0010585, -25.7768617]
-            ]
-        ]
-        },
-        "place_type": "city",
-        "contained_within": [],
-        "name": "Centurion",
-        "attributes": {},
-        "country_code": "ZA",
-        "url": "https:\/\/api.twitter.com\/1.1\/geo\/id\/cc95b56a28712044.json",
-        "country": "South Africa",
-        "full_name": "Centurion, South Africa"
-        }
-        
+    {
+	"place": {
+		"id": "cc95b56a28712044",
+		"bounding_box": {
+			"type": "Polygon",
+			"coordinatesJsonArray": [
+				[
+					[28.0010585, -25.9448996],
+					[28.2712217, -25.9448996],
+					[28.2712217, -25.7768617],
+					[28.0010585, -25.7768617]
+				]
+			]
+		},
+		"place_type": "city",
+		"contained_within": [],
+		"name": "Centurion",
+		"attributes": {},
+		"country_code": "ZA",
+		"url": "https:\/\/api.twitter.com\/1.1\/geo\/id\/cc95b56a28712044.json",
+		"country": "South Africa",
+		"full_name": "Centurion, South Africa"
+            }
+    } 
+    
      */
     private static GeoLocation toGeoLocationByPlace(JSONObject tweetResp) {
         JSONObject placeJson = (JSONObject) tweetResp.get(PLACE);
