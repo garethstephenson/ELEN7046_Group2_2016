@@ -27,29 +27,28 @@
 <script type="text/javascript">
     $(document).ready(function () {
       var dataUrl = "{{dataUrl}}";
-      $.ajax({
-        url: dataUrl,
-        type: "GET",
-        success: function (data) {
+
+      queue()
+        .defer(d3.json, dataUrl)
+        .defer(d3.json, "/data/categoryColors")
+        .await(function (error, data, categoryColors) {
+          if (error) {
+            $('#hm_dataPlaceholder').html("error: " + error);
+            return;
+          }
+
           $('#v_topicHeader').html(data.Header.Topic);
           $('#v_dataPlaceholder').html("");
           $('#v_dataPlaceholder').height(250);
-          basicVBarChart.initialise(data.Data, '#v_dataPlaceholder');
-        },
-        error: function (xhr, ajaxOptions, thrownError) {
-          $('#v_dataPlaceholder').html("error: " + thrownError);
-        },
-        complete: function () {
-
-        }
-      });
+          basicVBarChart.initialise(data.Data, categoryColors, '#v_dataPlaceholder');
+        });
     });
 
     var basicVBarChart = {
-      initialise: function (data, chartSvgSelector) {
+      initialise: function (data, categoryColors, chartSvgSelector) {
         var parent = this;
         parent._setWidth(chartSvgSelector);
-        parent.draw(data, chartSvgSelector);
+        parent.draw(data, categoryColors, chartSvgSelector);
         $(window).resize(function () {
           parent._setWidth(chartSvgSelector);
 
@@ -57,13 +56,13 @@
             .selectAll("g")
             .remove();
           $(chartSvgSelector).empty();
-          parent.draw(data, chartSvgSelector);
+          parent.draw(data, categoryColors, chartSvgSelector);
         });
       },
       _setWidth: function (chartSvgSelector) {
         $(chartSvgSelector).width($(chartSvgSelector).parent().width() - 10);
       },
-      draw: function (data, chartSvgSelector) {
+      draw: function (data, categoryColors, chartSvgSelector) {
         // Code developed following this tutorial: https://bost.ocks.org/mike/bar/3/
         var margin = {top: 20, right: 30, bottom: 30, left: 40};
         var width = $(chartSvgSelector).width() - margin.left - margin.right;
@@ -124,11 +123,20 @@
             return height - y(d.Total);
           })
           .attr("width", x.rangeBand())
-          .attr("style", function (item) {
-            var r = Math.floor(yColor(item.Total));
-            var g = Math.floor(yColor(item.Total)/2);
-            var b = 128 + Math.floor(yColor(item.Total)/2);
-            return "fill:rgb(" + r + "," + g + "," + b + ")";
+          .style("fill", function (item) {
+
+              for (var index = 0; index < categoryColors.length; index++) {
+              var colorItem = categoryColors[index];
+              if (item.Category == colorItem.Category) {
+                return colorItem.Color;
+              }
+            }
+            return "#000000";
+              
+            //var r = Math.floor(yColor(item.Total));
+            //var g = Math.floor(yColor(item.Total) / 2);
+            //var b = 128 + Math.floor(yColor(item.Total) / 2);
+            //return "fill:rgb(" + r + "," + g + "," + b + ")";
             //return "fill:yellow";
           });
 
