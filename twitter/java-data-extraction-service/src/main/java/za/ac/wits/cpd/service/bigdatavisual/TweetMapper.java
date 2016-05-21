@@ -109,13 +109,14 @@ public class TweetMapper {
     private static GeoLocation toGeoLocationByPlace(JSONObject tweetResp) {
         JSONObject placeJson = (JSONObject) tweetResp.get(PLACE);
         if (placeJson!=null) {
-            JSONObject boundingBoxJSON = (JSONObject) placeJson.get(BOUNDING_BOX);
-            String type = (String) boundingBoxJSON.get(TYPE);
-            JSONArray coordinatesJsonArray = (JSONArray) boundingBoxJSON.get(COORDINATES);
-            if (type.equalsIgnoreCase(POLYGON)) {
-                Coordinate[] coordinates = toPolygonCoordinatesArray(coordinatesJsonArray);
-                String name = (String) placeJson.get(NAME);
-                return new GeoLocation(coordinates, type,name);
+            String name = (String)placeJson.get("full_name");
+            if(isValidString(name)){
+               Coordinate geoCodes = LocationResolver.getGeoCodes(name, TEXAS_USA);
+               GeoLocation geoLoc = new GeoLocation();
+               geoLoc.setName(name);
+               geoLoc.setCoordinates(new Coordinate[]{geoCodes});
+               geoLoc.setType(POINT);
+               return geoLoc;
             }
         }
         return null;
@@ -153,6 +154,7 @@ public class TweetMapper {
                 final Double latitude = (Double) geo.get(1);
                 final Coordinate coordinate = new Coordinate(latitude, longitude);
                 Coordinate coords[] = new Coordinate[]{coordinate};
+                //TODO: lookup name by coordinates...
                 return new GeoLocation(coords, POINT,null);
             }
         }
@@ -282,18 +284,15 @@ public class TweetMapper {
     private static final String RETWEETED_STATUS = "retweeted_status";
     private static final String FAVORITE_COUNT = "favorite_count";
     private static final String RETWEET_COUNT = "retweet_count";
-    private static final String BOUNDING_BOX = "bounding_box";
     private static final String COORDINATES = "coordinates";
     private static final String CREATED_AT = "created_at";
+    private static final String TEXAS_USA = "Texas, USA";
     private static final String RETWEETED = "retweeted";
     private static final String LANGUAGE = "language";
     private static final String HASHTAGS = "hashtags";
     private static final String ENTITIES = "entities";
-    private static final String POLYGON = "Polygon";
     private static final String PLACE = "place";
     private static final String POINT = "Point";
-    private static final String NAME = "name";
-    private static final String TYPE = "type";
     private static final String TEXT = "text";
     private static final String USER = "user";
     private static final String UTC = "UTC";
