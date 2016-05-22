@@ -3,7 +3,12 @@
         stroke: #E6E6E6;
         stroke-width:2px;   
     }
-
+    
+    rect.bordered:hover {
+        stroke: #A5A5A5;
+        stroke-width:2px;
+    }
+    
     text.mono {
         font-size: 9pt;
         font-family: Consolas, courier;
@@ -84,12 +89,21 @@
         return -1;
       },
       _getDateValue: function (dateString) {
+        //ref: https://github.com/d3/d3/wiki/Time-Formatting
         var dateFormat = d3.time.format("%Y-%m-%d");
         var printFormat = d3.time.format("%m-%d");
         var date = dateFormat.parse(dateString);
         return printFormat(date);
       },
+      _getDayValue: function (dateString) {
+        //ref: https://github.com/d3/d3/wiki/Time-Formatting
+        var dateFormat = d3.time.format("%Y-%m-%d");
+        var printFormat = d3.time.format("%d");
+        var date = dateFormat.parse(dateString);
+        return printFormat(date);
+      },
       _getMonthValue: function (dateString) {
+        //ref: https://github.com/d3/d3/wiki/Time-Formatting
         var dateFormat = d3.time.format("%Y-%m-%d");
         var printFormat = d3.time.format("%m");
         var date = dateFormat.parse(dateString);
@@ -98,7 +112,7 @@
       _getDays: function () {
         var dateArray = [];
         for (var index = 0; index < 31; index++) {
-          dateArray.push(index);
+          dateArray.push(("0" + (index + 1)).slice(-2));
         }
         return dateArray;
       },
@@ -121,8 +135,26 @@
           }
         }
         return categoryArray;
-      }
-      ,
+      },
+      _getMaxCategoryItem: function (item) {
+        var maxCategoryItem = null;
+        for (var index = 0; index < item.Data.length; index++) {
+          var categoryItem = item.Data[index];
+          if (!maxCategoryItem || categoryItem.Count > maxCategoryItem.Count) {
+            maxCategoryItem = categoryItem;
+          }
+        }
+        return maxCategoryItem;
+      },
+      _getCategoryColor: function (category, categoryColors) {
+        for (var index = 0; index < categoryColors.length; index++) {
+          var colorItem = categoryColors[index];
+          if (category.Category == colorItem.Category) {
+            return colorItem.Color;
+          }
+        }
+        return "#000000";
+      },
       draw: function (data, categoryColors, chartDivSelector) {
         // Code developed following this tutorial: http://bl.ocks.org/tjdecke/5558084
 
@@ -137,14 +169,12 @@
         var margin = {top: 50, right: 0, bottom: 50, left: 30};
         var width = $(chartDivSelector).width() - margin.left - margin.right;
         var gridSize = Math.floor(width / dates.length);
+        
         var divHeight = (months.length * gridSize) + margin.top + margin.bottom + gridSize;
         $(chartDivSelector).height(divHeight);
         var height = $(chartDivSelector).height() - margin.top - margin.bottom;
 
-        var
-          legendElementWidth = gridSize * 2,
-          colors = ["#FBEFEF", "#F5A9A9", "#F78181", "#FA5858", "#FE2E2E", "#FF0000", "#DF0101", "#B40404", "#8A0808"],
-          buckets = 9;
+        var legendElementWidth = gridSize * 2;
 
         var svg = d3.select(chartDivSelector).append("svg")
           .attr("width", width + margin.left + margin.right)
@@ -186,64 +216,58 @@
 
         var mergedData = heatMapCChart._getMergedData(data, dates);
 
-        var colorScale = d3.scale.quantile()
-          .domain([0, buckets - 1, d3.max(mergedData, function (item) {
-
-              return item.Count;
-
-            })])
-          .range(colors);
-
         var colorAlpha = d3.scale.linear()
           .domain([0, d3.max(mergedData, function (item) {
               return item.Count;
             })])
           .range([0, 255]);
-
         var cards = svg.selectAll(".hour")
           .data(data, function (item) {
-            return item.Date + ':' + JSON.stringify(item);
+            return item.Date;
+            //return item.Date + ':' + item.Data[0].Category + ':' + item.Count;
           });
 
         cards.enter().append("rect")
-          .attr("x", function (item, i) {
-            return heatMapCChart._getIndexByValue(item, dates) * gridSize;
+          .attr("x", function (item) {
+            var day = heatMapCChart._getDayValue(item.Date);
+            var x = heatMapCChart._getIndexByValue(day, dates) * gridSize;
+            return x;
           })
           .attr("y", function (item) {
-            return heatMapCChart._getIndexByValue(item, months) * gridSize;
+            var month = heatMapCChart._getMonthValue(item.Date);
+            var y = heatMapCChart._getIndexByValue(month, months.keys()) * gridSize;
+            return y;
           })
           .attr("rx", 4)
           .attr("ry", 4)
           .attr("class", "hour bordered")
           .attr("width", gridSize)
           .attr("height", gridSize)
-          .style("fill", colors[0])
+          .style("fill", "#FFFFFF")
           .append("title", function (item) {
-            return item.Count;
+            debugger;
+            var title = '';
+            for (var index = 0; index < item.Data.length; index++) {
+              var categoryItem = item.Data[index];
+              title += categoryItem.Category + ': ' + categoryItem.Count;
+              if (index < item.Data.length - 1)
+                title += '<br>';
+            }
+            return title;
           });
 
 
         cards.transition().duration(1000)
           .style("fill", function (item) {
-            for (var index = 0; index < categoryColors.length; index++) {
-              var colorItem = categoryColors[index];
-              if (item.Category == colorItem.Category) {
-                return colorItem.Color;
-              }
-            }
-            return "#000000";
+            var maxCategoryItem = heatMapCChart._getMaxCategoryItem(item);
+            var color = heatMapCChart._getCategoryColor(maxCategoryItem, categoryColors);
+            return color;
           })
           .style("fill-opacity", function (item) {
-            var alpha = colorAlpha(item.Count);
+            var maxCategoryItem = heatMapCChart._getMaxCategoryItem(item);
+            var alpha = colorAlpha(maxCategoryItem.Count);
             return alpha / 10;
           });
-
-        /*
-         cards.transition().duration(1000)
-         .style("fill", function (d) {
-         return colorScale(d.Count);
-         });
-         */
 
         cards.select("title").text(function (d) {
           return d.Count;

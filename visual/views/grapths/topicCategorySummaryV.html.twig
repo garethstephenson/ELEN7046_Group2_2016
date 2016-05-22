@@ -1,7 +1,7 @@
 <style>
 
     .v_chart rect {
-        fill: steelblue;
+        fill: white;
     }
 
     .v_chart text {
@@ -109,7 +109,7 @@
               return item.Total;
             })]);
 
-        chart.selectAll(".bar")
+        var bars = chart.selectAll(".bar")
           .data(data)
           .enter().append("rect")
           .attr("class", "bar")
@@ -122,22 +122,18 @@
           .attr("height", function (d) {
             return height - y(d.Total);
           })
-          .attr("width", x.rangeBand())
+          .attr("width", x.rangeBand());
+
+        bars.transition().duration(1000)
           .style("fill", function (item) {
 
-              for (var index = 0; index < categoryColors.length; index++) {
+            for (var index = 0; index < categoryColors.length; index++) {
               var colorItem = categoryColors[index];
               if (item.Category == colorItem.Category) {
                 return colorItem.Color;
               }
             }
             return "#000000";
-              
-            //var r = Math.floor(yColor(item.Total));
-            //var g = Math.floor(yColor(item.Total) / 2);
-            //var b = 128 + Math.floor(yColor(item.Total) / 2);
-            //return "fill:rgb(" + r + "," + g + "," + b + ")";
-            //return "fill:yellow";
           });
 
         /*

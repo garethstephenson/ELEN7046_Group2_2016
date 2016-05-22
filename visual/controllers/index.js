@@ -22,11 +22,10 @@ router.get('/', function (req, res) {
         specialClass: "panel-success"
       },
       {
-        name: "Category Over Time",
-        size: "6",
-        type: "grapths/topicCategoryHeatMap.html.twig",
-        dataUrl: "data/categoryCountPerDay",
-        specialClass: "panel-primary"
+        name: "Global Relational View",
+        size: "3",
+        type: "grapths/global.html.twig",
+        dataUrl: "data/placesData"
       },
       {
         name: "Category Over Time (Combined)",
@@ -36,10 +35,11 @@ router.get('/', function (req, res) {
         specialClass: "panel-primary"
       },
       {
-        name: "Global Relational View",
-        size: "3",
-        type: "grapths/global.html.twig",
-        dataUrl: "data/placesData"
+        name: "Category Over Time",
+        size: "6",
+        type: "grapths/topicCategoryHeatMap.html.twig",
+        dataUrl: "data/categoryCountPerDay",
+        specialClass: "panel-primary"
       },
       {
         name: "Category Summary",
@@ -71,7 +71,7 @@ router.get('/', function (req, res) {
       }
     ]};
 
-  res.render('index.html.twig', { "data": panels});
+  res.render('index.html.twig', {"data": panels});
 });
 
 router.get('/about', function (req, res) {
@@ -85,7 +85,8 @@ router.get('/testerror', function (req, res) {
     this.message = msg;
     this.name = 'error';
     return this;
-  };
+  }
+  ;
 
   throw error('This is bad');
 });
