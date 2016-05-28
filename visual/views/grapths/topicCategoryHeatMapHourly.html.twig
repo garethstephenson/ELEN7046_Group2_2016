@@ -1,0 +1,313 @@
+<style>
+    rect.bordered {
+        stroke: #E6E6E6;
+        stroke-width:2px;   
+    }
+    
+    rect.bordered:hover {
+        stroke: #A5A5A5;
+        stroke-width:2px;
+    }
+    
+    text.mono {
+        font-size: 9pt;
+        font-family: Consolas, courier;
+        fill: #aaa;
+    }
+
+    text.axis-workweek {
+        fill: #808080FF;
+    }
+
+    text.axis-worktime {
+        fill: #808080FF;
+    }
+</style>
+<!--<h4 id="hm_topicHeader"></h4>-->
+<div id="hmh_dataPlaceholder" class="hmh_chart"> Data loading, please wait ... </div>
+<script type="text/javascript">
+    $(document).ready(function () {
+      var dataUrl = "{{dataUrl}}";
+
+      queue()
+        .defer(d3.json, dataUrl)
+        .defer(d3.json, "/data/categoryColors")
+        .await(function (error, data, categoryColors) {
+          if (error) {
+            $('#hm_dataPlaceholder').html("error: " + error);
+            return;
+          }
+
+          $('#hmh_dataPlaceholder').html("");
+          $('#hmh_dataPlaceholder').height(250);
+          heatMapHChart.initialise(data, categoryColors, '#hmh_dataPlaceholder');
+        });
+    });
+
+    var heatMapHChart = {
+      initialise: function (data, categoryColors, chartDivSelector) {
+        var parent = this;
+        parent._setWidth(chartDivSelector);
+        parent.draw(data, categoryColors, chartDivSelector);
+        $(window).resize(function () {
+          parent._setWidth(chartDivSelector);
+
+          d3.select(chartDivSelector)
+            .selectAll("div")
+            .remove();
+          $(chartDivSelector).empty();
+          parent.draw(data, categoryColors, chartDivSelector);
+        });
+      },
+      _setWidth: function (chartDivSelector) {
+        $(chartDivSelector).width($(chartDivSelector).parent().width() - 10);
+      },
+      _getMergedData: function (data, dates) {
+        var mergedArray = [];
+        for (var index = 0; index < data.length; index++) {
+          var item = data[index];
+          for (var categoryIndex = 0; categoryIndex < item.Data.length; categoryIndex++) {
+            var categoryItem = item.Data[categoryIndex];
+            mergedArray.push({
+              'Date': item.Date,
+              'Category': categoryItem.Category,
+              'Count': categoryItem.Count,
+              'CategoryIndex': categoryIndex,
+              'DateIndex': heatMapHChart._getIndexByValue(
+                heatMapHChart._getDateValue(item.Date), dates)
+            });
+          }
+        }
+        return mergedArray;
+      },
+      _getIndexByValue: function (value, array) {
+        for (var index = 0; index < array.length; index++) {
+          if (array[index] == value) {
+            return index;
+          }
+        }
+        return -1;
+      },
+      _getDateValue: function (dateString) {
+        //ref: https://github.com/d3/d3/wiki/Time-Formatting
+        var dateFormat = d3.time.format("%Y-%m-%d");
+        var printFormat = d3.time.format("%m-%d");
+        var date = dateFormat.parse(dateString);
+        return printFormat(date);
+      },
+      _getDayValue: function (dateString) {
+        //ref: https://github.com/d3/d3/wiki/Time-Formatting
+        var dateFormat = d3.time.format("%Y-%m-%d");
+        var printFormat = d3.time.format("%d");
+        var date = dateFormat.parse(dateString);
+        return printFormat(date);
+      },
+      _getMonthValue: function (dateString) {
+        //ref: https://github.com/d3/d3/wiki/Time-Formatting
+        var dateFormat = d3.time.format("%Y-%m-%d");
+        var printFormat = d3.time.format("%m");
+        var date = dateFormat.parse(dateString);
+        return printFormat(date);
+      },
+      _getDays: function () {
+        var dateArray = [];
+        for (var index = 0; index < 31; index++) {
+          dateArray.push(("0" + (index + 1)).slice(-2));
+        }
+        return dateArray;
+      },
+      _getMonths: function (data) {
+        var dateArray = [];
+        for (var index = 0; index < 31; index++) {
+          dateArray.push(index);
+        }
+        return dateArray;
+      },
+      _getCategories: function (data) {
+        // TODO : See if D3 can't extract this better
+        var categoryArray = [];
+
+        if (data.length > 0) {
+          for (var index = 0; index < data[0].Data.length; index++) {
+            var item = data[0].Data[index];
+
+            categoryArray.push(item.Category);
+          }
+        }
+        return categoryArray;
+      },
+      _getMaxCategoryItem: function (item) {
+        var maxCategoryItem = null;
+        for (var index = 0; index < item.Data.length; index++) {
+          var categoryItem = item.Data[index];
+          if (!maxCategoryItem || categoryItem.Count > maxCategoryItem.Count) {
+            maxCategoryItem = categoryItem;
+          }
+        }
+        return maxCategoryItem;
+      },
+      _getCategoryColor: function (category, categoryColors) {
+        for (var index = 0; index < categoryColors.length; index++) {
+          var colorItem = categoryColors[index];
+          if (category.Category == colorItem.Category) {
+            return colorItem.Color;
+          }
+        }
+        return "#000000";
+      },
+      draw: function (data, categoryColors, chartDivSelector) {
+        // Code developed following this tutorial: http://bl.ocks.org/tjdecke/5558084
+
+        var
+          months = d3.map(data, function (data) {
+            return heatMapHChart._getMonthValue(data.Date)
+          });
+        var
+          categories = heatMapHChart._getCategories(data),
+          dates = heatMapHChart._getDays(data);
+
+        var margin = {top: 50, right: 0, bottom: 50, left: 30};
+        var width = $(chartDivSelector).width() - margin.left - margin.right;
+        var gridSize = Math.floor(width / dates.length);
+        
+        var divHeight = (months.length * gridSize) + margin.top + margin.bottom + gridSize;
+        $(chartDivSelector).height(divHeight);
+        var height = $(chartDivSelector).height() - margin.top - margin.bottom;
+
+        var legendElementWidth = gridSize * 2;
+
+        var svg = d3.select(chartDivSelector).append("svg")
+          .attr("width", width + margin.left + margin.right)
+          .attr("height", height + margin.top + margin.bottom)
+          .append("g")
+          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        var dayLabels = svg.selectAll(".dayLabel")
+          .data(months.keys())
+          .enter().append("text")
+          .text(function (d) {
+            return d;
+          })
+          .attr("x", 0)
+          .attr("y", function (d, i) {
+            return i * gridSize;
+          })
+          .style("text-anchor", "end")
+          .attr("transform", "translate(-6," + gridSize / 1.5 + ")")
+          .attr("class", function (d, i) {
+            return ((i >= 0 && i <= 4) ? "dayLabel mono axis axis-workweek" : "dayLabel mono axis");
+          });
+
+        var timeLabels = svg.selectAll(".timeLabel")
+          .data(dates)
+          .enter().append("text")
+          .text(function (d) {
+            return d;
+          })
+          .attr("x", function (d, i) {
+            return i * gridSize;
+          })
+          .attr("y", 0)
+          .style("text-anchor", "middle")
+          .attr("transform", "translate(" + gridSize / 2 + ", -6)")
+          .attr("class", function (d, i) {
+            return ((i >= 7 && i <= 16) ? "timeLabel mono axis axis-worktime" : "timeLabel mono axis");
+          });
+
+        var mergedData = heatMapHChart._getMergedData(data, dates);
+
+        var colorAlpha = d3.scale.linear()
+          .domain([0, d3.max(mergedData, function (item) {
+              return item.Count;
+            })])
+          .range([0, 255]);
+        var cards = svg.selectAll(".hour")
+          .data(data, function (item) {
+            return item.Date;
+            //return item.Date + ':' + item.Data[0].Category + ':' + item.Count;
+          });
+
+        cards.enter().append("rect")
+          .attr("x", function (item) {
+            var day = heatMapHChart._getDayValue(item.Date);
+            var x = heatMapHChart._getIndexByValue(day, dates) * gridSize;
+            return x;
+          })
+          .attr("y", function (item) {
+            var month = heatMapHChart._getMonthValue(item.Date);
+            var y = heatMapHChart._getIndexByValue(month, months.keys()) * gridSize;
+            return y;
+          })
+          .attr("rx", 4)
+          .attr("ry", 4)
+          .attr("class", "hour bordered")
+          .attr("width", gridSize)
+          .attr("height", gridSize)
+          .style("fill", "#FFFFFF")
+          .append("title", function (item) {
+            debugger;
+            var title = '';
+            for (var index = 0; index < item.Data.length; index++) {
+              var categoryItem = item.Data[index];
+              title += categoryItem.Category + ': ' + categoryItem.Count;
+              if (index < item.Data.length - 1)
+                title += '<br>';
+            }
+            return title;
+          });
+
+
+        cards.transition().duration(1000)
+          .style("fill", function (item) {
+            var maxCategoryItem = heatMapHChart._getMaxCategoryItem(item);
+            var color = heatMapHChart._getCategoryColor(maxCategoryItem, categoryColors);
+            return color;
+          })
+          .style("fill-opacity", function (item) {
+            var maxCategoryItem = heatMapHChart._getMaxCategoryItem(item);
+            var alpha = colorAlpha(maxCategoryItem.Count);
+            return alpha / 10;
+          });
+
+        cards.select("title").text(function (d) {
+          return d.Count;
+        });
+
+        cards.exit().remove();
+
+        var legend = svg.selectAll(".legend")
+          .data(categoryColors, function (item) {
+            return item.Category + ':' + item.Color;
+          });
+
+        legend.enter().append("g")
+          .attr("class", "legend");
+
+        legend.append("rect")
+          .attr("x", function (d, i) {
+            return legendElementWidth * i;
+          })
+          .attr("y", height - gridSize)
+          .attr("width", legendElementWidth)
+          .attr("height", gridSize / 2)
+          .attr("class", "bordered")
+          .style("fill", function (d) {
+            return d.Color;
+          });
+
+        legend.append("text")
+          .attr("class", "mono")
+          .text(function (d) {
+            return d.Category;
+          })
+          .attr("x", function (d, i) {
+            return legendElementWidth * i;
+          })
+          .attr("y", (height - gridSize) + (gridSize / 2) + 10);
+
+        legend.exit().remove();
+
+
+      }
+    };
+</script>

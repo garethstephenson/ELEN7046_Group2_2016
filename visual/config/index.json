@@ -1,0 +1,59 @@
+{
+    "panels": [
+        {
+            "name": "Category Over Time - Hourly",
+            "size": "6",
+            "type": "grapths/topicCategoryHeatMapHourly.html.twig",
+            "dataUrl": "data/CategoryCountPerHour",
+            "specialClass": "panel-primary"
+        },
+        {
+            "name": "Category Over Time - Daily",
+            "size": "6",
+            "type": "grapths/topicCategoryHeatMapDaily.html.twig",
+            "dataUrl": "data/categoryCountPerDay",
+            "specialClass": "panel-primary"
+        },
+        {
+            "name": "Category Summary",
+            "size": "3",
+            "type": "grapths/topicCategorySummaryV.html.twig",
+            "dataUrl": "data/topicCategorySummary",
+            "specialClass": "panel-success"
+        },
+        {
+            "name": "Global Relational View",
+            "size": "3",
+            "type": "grapths/global.html.twig",
+            "dataUrl": "data/placesData"
+        },
+        {
+            "name": "Category Summary",
+            "size": "3",
+            "type": "grapths/topicCategorySummaryH.html.twig",
+            "dataUrl": "data/topicCategorySummary",
+            "specialClass": "panel-success"
+        },
+        {
+            "name": "Criteria",
+            "size": "3",
+            "type": "criteria.html.twig",
+            "dataUrl": "filter/criteria",
+            "specialClass": "panel-primary"
+        },
+        {
+            "name": "Crossfilter",
+            "size": "4",
+            "type": "grapths/crossfilter.html.twig",
+            "dataUrl": "data/crossfiler",
+            "specialClass": "panel-warning"
+        },
+        {
+            "name": "Words",
+            "size": "8",
+            "type": "grapths/wordTree.html.twig",
+            "dataUrl": "data/wordtree",
+            "specialClass": "panel-info"
+        }
+    ]
+}

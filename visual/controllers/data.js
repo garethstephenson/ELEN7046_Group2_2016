@@ -15,6 +15,18 @@ router.get('/categoryCountPerDay', function (req, res) {
   });
 });
 
+router.get('/CategoryCountPerHour', function (req, res) {
+
+  var data = fs.readFile(__dirname + "/../data/" + "CategoryCountPerHour.json", 'utf8', function (err, data) {
+    if (err) {
+      console.log("Error reading file: %s", err);
+      res.send(null);
+    }
+    res.setHeader('Content-Type', 'application/json');
+    res.send(JSON.parse(data));
+  });
+});
+
 router.get('/categoryColors', function (req, res) {
 
   var data = fs.readFile(__dirname + "/../data/" + "CategoryColors.json", 'utf8', function (err, data) {
@@ -57,6 +69,7 @@ router.get('/placesData', function (req, res) {
   res.setHeader('Content-Type', 'application/json');
   res.send(JSON.stringify(places));
 });
+
 router.get('/topicCategorySummary', function (req, res) {
 
   var data = {
@@ -87,6 +100,7 @@ router.get('/topicCategorySummary', function (req, res) {
   res.setHeader('Content-Type', 'application/json');
   res.send(JSON.stringify(data));
 });
+
 router.get('/topicCategoryDailyCount', function (req, res) {
 
   var data = {
