@@ -85,16 +85,6 @@
         }
         return dateArray;
       },
-      _getMaxCategoryItem: function (item) {
-        var maxCategoryItem = null;
-        for (var index = 0; index < item.Data.length; index++) {
-          var categoryItem = item.Data[index];
-          if (!maxCategoryItem || categoryItem.Count > maxCategoryItem.Count) {
-            maxCategoryItem = categoryItem;
-          }
-        }
-        return maxCategoryItem;
-      },
       draw: function (data, categoryColors, chartDivSelector) {
         // Code developed following this tutorial: http://bl.ocks.org/tjdecke/5558084
 
@@ -183,7 +173,6 @@
           .attr("height", gridSize)
           .style("fill", "#FFFFFF")
           .append("title", function (item) {
-            debugger;
             var title = '';
             for (var index = 0; index < item.Data.length; index++) {
               var categoryItem = item.Data[index];
@@ -197,12 +186,12 @@
 
         cards.transition().duration(1000)
           .style("fill", function (item) {
-            var maxCategoryItem = heatMapCChart._getMaxCategoryItem(item);
+            var maxCategoryItem = commonCharts.getMaxCategoryItem(item);
             var color = commonCharts.getCategoryColor(maxCategoryItem, categoryColors);
             return color;
           })
           .style("fill-opacity", function (item) {
-            var maxCategoryItem = heatMapCChart._getMaxCategoryItem(item);
+            var maxCategoryItem = commonCharts.getMaxCategoryItem(item);
             var alpha = colorAlpha(maxCategoryItem.Count);
             return alpha / 10;
           });

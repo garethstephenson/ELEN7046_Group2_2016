@@ -10,6 +10,13 @@
         {
             "name": "Category Over Time - Daily",
             "size": "6",
+            "type": "grapths/topicCategoryHeatMap.html.twig",
+            "dataUrl": "data/categoryCountPerDay",
+            "specialClass": "panel-primary"
+        },
+        {
+            "name": "Category Over Time - Daily",
+            "size": "6",
             "type": "grapths/topicCategoryHeatMapDaily.html.twig",
             "dataUrl": "data/categoryCountPerDay",
             "specialClass": "panel-primary"

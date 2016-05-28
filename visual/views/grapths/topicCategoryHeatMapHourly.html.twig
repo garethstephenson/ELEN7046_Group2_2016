@@ -22,6 +22,11 @@
     text.axis-worktime {
         fill: #808080FF;
     }
+
+    .hmh_chart {
+        background-color: #EFEFEF;
+        border-radius: 8px;
+    }
 </style>
 <!--<h4 id="hm_topicHeader"></h4>-->
 <div id="hmh_dataPlaceholder" class="hmh_chart"> Data loading, please wait ... </div>
@@ -64,22 +69,18 @@
       },
       draw: function (data, categoryColors, chartDivSelector) {
         // Code developed following this tutorial: http://bl.ocks.org/tjdecke/5558084
-        
-        var hours = commonCharts.make2DigitNumberArray(1, 24);
-        var days = [
-            "01",
-            "02",
-            "03"
-        ]; // TODO
-        
-        var margin = {top: 50, right: 0, bottom: 50, left: 30};
+
+        var hours = commonCharts.make2DigitNumberArray(0, 23);
+        var days = d3.map(data, function (d) {
+          return commonCharts.getDateValue(d.Date);
+        }).keys();
+
+        var margin = {top: 20, right: 0, bottom: 20, left: 75};
         var width = $(chartDivSelector).width() - margin.left - margin.right;
         var gridSize = Math.floor(width / hours.length); // TODO
         var divHeight = (days.length * gridSize) + margin.top + margin.bottom + gridSize; // TODO : 
         $(chartDivSelector).height(divHeight);
         var height = $(chartDivSelector).height() - margin.top - margin.bottom;
-
-        
 
         // Initialise chart area
         var svg = d3.select(chartDivSelector).append("svg")
@@ -89,7 +90,7 @@
           .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
         //yAxis - Days
-        var dayLabels = svg.selectAll(".dayLabel")
+        svg.selectAll(".dayLabel")
           .data(days)
           .enter().append("text")
           .text(function (d) {
@@ -106,7 +107,7 @@
           });
 
         // xAxis - Hours
-        var xAxisLabels = svg.selectAll(".timeLabel")
+        svg.selectAll(".timeLabel")
           .data(hours)
           .enter().append("text")
           .text(function (d) {
@@ -121,6 +122,93 @@
           .attr("class", function (d, i) {
             return ((i >= 7 && i <= 16) ? "timeLabel mono axis axis-worktime" : "timeLabel mono axis");
           });
+
+        var cards = svg.selectAll(".hour")
+          .data(data);
+
+        cards.enter().append("rect")
+          .attr("x", function (item) {
+            var hour = commonCharts.getHourValue(item.Date);
+            var x = commonCharts.getIndexByValue(hour, hours) * gridSize;
+            return x;
+          })
+          .attr("y", function (item) {
+            var day = commonCharts.getDateValue(item.Date);
+            var y = commonCharts.getIndexByValue(day, days) * gridSize;
+            return y;
+          })
+          .attr("rx", 4)
+          .attr("ry", 4)
+          .attr("class", "hour bordered")
+          .attr("width", gridSize)
+          .attr("height", gridSize)
+          .style("fill", "#FFFFFF")
+          .append("title", function (item) {
+            var title = '';
+            return title;
+          });
+
+        var colorAlpha = d3.scale.linear()
+          .domain([0, d3.max(data, function (item) {
+              return d3.max(item.Data, function (categoryItem) {
+                return categoryItem.Count;
+              });
+            })])
+          .range([0, 255]);
+
+        cards.transition().duration(1000)
+          .style("fill", function (item) {
+            var maxCategoryItem = commonCharts.getMaxCategoryItem(item);
+            var color = commonCharts.getCategoryColor(maxCategoryItem, categoryColors);
+            return color;
+          })
+          .style("fill-opacity", function (item) {
+            var maxCategoryItem = commonCharts.getMaxCategoryItem(item);
+            var alpha = colorAlpha(maxCategoryItem.Count);
+            return alpha / 10;
+          });
+
+        cards.select("title").text(function (d) {
+          return d.Count;
+        });
+
+        cards.exit().remove();
+
+        heatMapHChart._drawLegend(svg, categoryColors, height, gridSize);
+      },
+      _drawLegend: function (svg, categoryColors, height, gridSize) {
+        var legendElementWidth = gridSize * 2;
+        var legend = svg.selectAll(".legend")
+          .data(categoryColors, function (item) {
+            return item.Category + ':' + item.Color;
+          });
+
+        legend.enter().append("g")
+          .attr("class", "legend");
+
+        legend.append("rect")
+          .attr("x", function (d, i) {
+            return legendElementWidth * i;
+          })
+          .attr("y", height - gridSize)
+          .attr("width", legendElementWidth)
+          .attr("height", gridSize / 2)
+          .attr("class", "bordered")
+          .style("fill", function (d) {
+            return d.Color;
+          });
+
+        legend.append("text")
+          .attr("class", "mono")
+          .text(function (d) {
+            return d.Category;
+          })
+          .attr("x", function (d, i) {
+            return legendElementWidth * i;
+          })
+          .attr("y", (height - gridSize) + (gridSize / 2) + 10);
+
+        legend.exit().remove();
       }
     };
 </script>

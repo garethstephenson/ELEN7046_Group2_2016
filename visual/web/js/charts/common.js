@@ -15,7 +15,11 @@ var commonCharts = {
   // Date Helpers
   getDatePartValue: function (dateString, datePart) {
     //ref: https://github.com/d3/d3/wiki/Time-Formatting
+
     var dateFormat = d3.time.format("%Y-%m-%d");
+    if (dateString.indexOf('T') > 0) {
+      dateFormat = d3.time.format("%Y-%m-%dT%H:%MZ");
+    }
     var printFormat = d3.time.format(datePart);
     var date = dateFormat.parse(dateString);
     return printFormat(date);
@@ -48,6 +52,16 @@ var commonCharts = {
       }
     }
     return "#000000";
-  }
+  },
+  getMaxCategoryItem: function (item) {
+    var maxCategoryItem = null;
+    for (var index = 0; index < item.Data.length; index++) {
+      var categoryItem = item.Data[index];
+      if (!maxCategoryItem || categoryItem.Count > maxCategoryItem.Count) {
+        maxCategoryItem = categoryItem;
+      }
+    }
+    return maxCategoryItem;
+  },
 };
 
