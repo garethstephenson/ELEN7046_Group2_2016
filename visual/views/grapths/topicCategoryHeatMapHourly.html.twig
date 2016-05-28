@@ -143,10 +143,7 @@
           .attr("width", gridSize)
           .attr("height", gridSize)
           .style("fill", "#FFFFFF")
-          .append("title", function (item) {
-            var title = '';
-            return title;
-          });
+          .append("title");
 
         var colorAlpha = d3.scale.linear()
           .domain([0, d3.max(data, function (item) {
@@ -168,8 +165,15 @@
             return alpha / 10;
           });
 
-        cards.select("title").text(function (d) {
-          return d.Count;
+        cards.select("title").text(function (item) {
+          var title = commonCharts.getDatePartValue(item.Date, "%Y-%m-%d %H:%M") + '\n';
+          for (var index = 0; index < item.Data.length; index++) {
+            var categoryItem = item.Data[index];
+            title += categoryItem.Category + ': ' + categoryItem.Count;
+            if (index < item.Data.length - 1)
+              title += '\n';
+          }
+          return title;
         });
 
         cards.exit().remove();

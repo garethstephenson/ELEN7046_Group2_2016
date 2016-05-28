@@ -3,12 +3,12 @@
         stroke: #E6E6E6;
         stroke-width:2px;   
     }
-    
+
     rect.bordered:hover {
         stroke: #A5A5A5;
         stroke-width:2px;
     }
-    
+
     text.mono {
         font-size: 9pt;
         font-family: Consolas, courier;
@@ -21,6 +21,11 @@
 
     text.axis-worktime {
         fill: #808080FF;
+    }
+    
+    .hmc_chart {
+        background-color: #EFEFEF;
+        border-radius: 8px;
     }
 </style>
 <!--<h4 id="hm_topicHeader"></h4>-->
@@ -94,10 +99,10 @@
           });
         var dates = commonCharts.make2DigitNumberArray(1, 31);
 
-        var margin = {top: 50, right: 0, bottom: 50, left: 30};
+        var margin = {top: 20, right: 0, bottom: 20, left: 40};
         var width = $(chartDivSelector).width() - margin.left - margin.right;
         var gridSize = Math.floor(width / dates.length);
-        
+
         var divHeight = (months.length * gridSize) + margin.top + margin.bottom + gridSize;
         $(chartDivSelector).height(divHeight);
         var height = $(chartDivSelector).height() - margin.top - margin.bottom;
@@ -172,16 +177,7 @@
           .attr("width", gridSize)
           .attr("height", gridSize)
           .style("fill", "#FFFFFF")
-          .append("title", function (item) {
-            var title = '';
-            for (var index = 0; index < item.Data.length; index++) {
-              var categoryItem = item.Data[index];
-              title += categoryItem.Category + ': ' + categoryItem.Count;
-              if (index < item.Data.length - 1)
-                title += '<br>';
-            }
-            return title;
-          });
+          .append("title");
 
 
         cards.transition().duration(1000)
@@ -196,8 +192,15 @@
             return alpha / 10;
           });
 
-        cards.select("title").text(function (d) {
-          return d.Count;
+        cards.select("title").text(function (item) {
+          var title = commonCharts.getDatePartValue(item.Date, "%Y-%m-%d %H:%M") + '\n';
+          for (var index = 0; index < item.Data.length; index++) {
+            var categoryItem = item.Data[index];
+            title += categoryItem.Category + ': ' + categoryItem.Count;
+            if (index < item.Data.length - 1)
+              title += '\n';
+          }
+          return title;
         });
 
         cards.exit().remove();
