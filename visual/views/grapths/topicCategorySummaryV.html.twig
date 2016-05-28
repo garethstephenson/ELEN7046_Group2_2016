@@ -127,13 +127,7 @@
         bars.transition().duration(1000)
           .style("fill", function (item) {
 
-            for (var index = 0; index < categoryColors.length; index++) {
-              var colorItem = categoryColors[index];
-              if (item.Category == colorItem.Category) {
-                return colorItem.Color;
-              }
-            }
-            return "#000000";
+            return commonCharts.getCategoryColor(item, categoryColors);
           });
 
         /*

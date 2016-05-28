@@ -72,49 +72,11 @@
               'Date': item.Date,
               'Category': categoryItem.Category,
               'Count': categoryItem.Count,
-              'CategoryIndex': categoryIndex,
-              'DateIndex': heatMapCChart._getIndexByValue(
-                heatMapCChart._getDateValue(item.Date), dates)
+              'CategoryIndex': categoryIndex
             });
           }
         }
         return mergedArray;
-      },
-      _getIndexByValue: function (value, array) {
-        for (var index = 0; index < array.length; index++) {
-          if (array[index] == value) {
-            return index;
-          }
-        }
-        return -1;
-      },
-      _getDateValue: function (dateString) {
-        //ref: https://github.com/d3/d3/wiki/Time-Formatting
-        var dateFormat = d3.time.format("%Y-%m-%d");
-        var printFormat = d3.time.format("%m-%d");
-        var date = dateFormat.parse(dateString);
-        return printFormat(date);
-      },
-      _getDayValue: function (dateString) {
-        //ref: https://github.com/d3/d3/wiki/Time-Formatting
-        var dateFormat = d3.time.format("%Y-%m-%d");
-        var printFormat = d3.time.format("%d");
-        var date = dateFormat.parse(dateString);
-        return printFormat(date);
-      },
-      _getMonthValue: function (dateString) {
-        //ref: https://github.com/d3/d3/wiki/Time-Formatting
-        var dateFormat = d3.time.format("%Y-%m-%d");
-        var printFormat = d3.time.format("%m");
-        var date = dateFormat.parse(dateString);
-        return printFormat(date);
-      },
-      _getDays: function () {
-        var dateArray = [];
-        for (var index = 0; index < 31; index++) {
-          dateArray.push(("0" + (index + 1)).slice(-2));
-        }
-        return dateArray;
       },
       _getMonths: function (data) {
         var dateArray = [];
@@ -122,19 +84,6 @@
           dateArray.push(index);
         }
         return dateArray;
-      },
-      _getCategories: function (data) {
-        // TODO : See if D3 can't extract this better
-        var categoryArray = [];
-
-        if (data.length > 0) {
-          for (var index = 0; index < data[0].Data.length; index++) {
-            var item = data[0].Data[index];
-
-            categoryArray.push(item.Category);
-          }
-        }
-        return categoryArray;
       },
       _getMaxCategoryItem: function (item) {
         var maxCategoryItem = null;
@@ -146,25 +95,14 @@
         }
         return maxCategoryItem;
       },
-      _getCategoryColor: function (category, categoryColors) {
-        for (var index = 0; index < categoryColors.length; index++) {
-          var colorItem = categoryColors[index];
-          if (category.Category == colorItem.Category) {
-            return colorItem.Color;
-          }
-        }
-        return "#000000";
-      },
       draw: function (data, categoryColors, chartDivSelector) {
         // Code developed following this tutorial: http://bl.ocks.org/tjdecke/5558084
 
         var
           months = d3.map(data, function (data) {
-            return heatMapCChart._getMonthValue(data.Date)
+            return commonCharts.getMonthValue(data.Date);
           });
-        var
-          categories = heatMapCChart._getCategories(data),
-          dates = heatMapCChart._getDays(data);
+        var dates = commonCharts.make2DigitNumberArray(1, 31);
 
         var margin = {top: 50, right: 0, bottom: 50, left: 30};
         var width = $(chartDivSelector).width() - margin.left - margin.right;
@@ -229,13 +167,13 @@
 
         cards.enter().append("rect")
           .attr("x", function (item) {
-            var day = heatMapCChart._getDayValue(item.Date);
-            var x = heatMapCChart._getIndexByValue(day, dates) * gridSize;
+            var day = commonCharts.getDayValue(item.Date);
+            var x = commonCharts.getIndexByValue(day, dates) * gridSize;
             return x;
           })
           .attr("y", function (item) {
-            var month = heatMapCChart._getMonthValue(item.Date);
-            var y = heatMapCChart._getIndexByValue(month, months.keys()) * gridSize;
+            var month = commonCharts.getMonthValue(item.Date);
+            var y = commonCharts.getIndexByValue(month, months.keys()) * gridSize;
             return y;
           })
           .attr("rx", 4)
@@ -260,7 +198,7 @@
         cards.transition().duration(1000)
           .style("fill", function (item) {
             var maxCategoryItem = heatMapCChart._getMaxCategoryItem(item);
-            var color = heatMapCChart._getCategoryColor(maxCategoryItem, categoryColors);
+            var color = commonCharts.getCategoryColor(maxCategoryItem, categoryColors);
             return color;
           })
           .style("fill-opacity", function (item) {
