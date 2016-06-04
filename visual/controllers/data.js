@@ -39,6 +39,7 @@ router.get('/categoryColors', function (req, res) {
   });
 });
 
+
 router.get('/placesData', function (req, res) {
 
   var places = {
@@ -146,6 +147,17 @@ router.get('/topicCategoryDailyCount', function (req, res) {
   };
   res.setHeader('Content-Type', 'application/json');
   res.send(JSON.stringify(data));
+});
+
+router.get('/ConProHomeStatePrimaries', function (req, res) {
+  var data = fs.readFile(__dirname + "/../data/" + "ConProHomeStatePrimaries.json", 'utf8', function (err, data) {
+    if (err) {
+      console.log("Error reading file: %s", err);
+      res.send(null);
+    }
+    res.setHeader('Content-Type', 'application/json');
+    res.send(JSON.parse(data));
+  });
 });
 
 module.exports = router;

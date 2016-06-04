@@ -6,7 +6,7 @@ var url = require('url');
 var nQuery = require('nodeQuery');
 nQuery.use(app);
 
-// Hanlde Static content
+// Handle Static content
 app.use('/', express.static(__dirname + '/web'));
 // load controllers. NOTE : Index.js is required to set routes.
 app.use(require('./controllers'));
