@@ -17,9 +17,6 @@ project/plugins/project/
 .scala_dependencies
 .worksheet
 
-# IntelliJ specific
-.idea/
-
 # User-specific stuff:
 .idea/workspace.xml
 .idea/tasks.xml
