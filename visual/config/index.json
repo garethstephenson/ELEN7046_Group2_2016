@@ -1,6 +1,13 @@
 {
     "panels": [
         {
+            "name": "Map",
+            "size": "6",
+            "type": "grapths/map.html.twig",
+            "dataUrl": "data/CategoryCountPerHour",
+            "specialClass": "panel-success"
+        },
+        {
             "name": "Category Over Time - Hourly",
             "size": "6",
             "type": "grapths/topicCategoryHeatMapHourly.html.twig",
