@@ -1,0 +1,12 @@
+[
+    {
+        "id": 1,
+        "name": "South Africa Municipal Elections (2016)",
+        "folder": "sa-2016"
+    }, 
+    {
+        "id": 2,
+        "name": "US Elections (2016)",
+        "folder": "us-2016"
+    }
+]

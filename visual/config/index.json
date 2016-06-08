@@ -59,7 +59,7 @@
             "name": "Criteria",
             "size": "3",
             "type": "criteria.html.twig",
-            "dataUrl": "filter/criteria",
+            "dataUrl": "config",
             "specialClass": "panel-primary"
         },
         {
