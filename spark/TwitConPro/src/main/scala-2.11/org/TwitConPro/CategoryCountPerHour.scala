@@ -45,9 +45,18 @@ object CategoryCountPerHour {
 
             tweets.registerTempTable("tweets")
 
+            val categoryTweetHours = sqlContext.sql(s"SELECT COUNT(A.*) Count, HOUR(A.createdAt) Hour FROM tweets A " +
+              s"JOIN (SELECT DISTINCT HOUR(createdAt) Hour FROM tweets) B WHERE A.tweetText LIKE '%$category%' AND " +
+              s"HOUR(A.createdAt) = B.Hour GROUP BY HOUR(A.createdAt)")
+
+            // Push results into a 'table' of |Category|Date|Hour|Count|
+            categoryTweetHours.show()
+
+/*
             val count = sqlContext.sql(s"SELECT COUNT(*) FROM tweets WHERE tweetText LIKE '%$category%'")
             count.write.json(s"/data/$category-count.out")
             merge(s"/data/$category-count.out", s"/data/$category-count.json")
+*/
         }
 
         sparkContext.stop()
