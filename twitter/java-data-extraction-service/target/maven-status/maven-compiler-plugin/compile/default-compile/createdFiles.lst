@@ -4,6 +4,7 @@ za/ac/wits/cpd/service/bigdatavisual/TweetsDataExtractor.class
 za/ac/wits/cpd/service/bigdatavisual/Coordinate.class
 za/ac/wits/cpd/service/bigdatavisual/Authenticator.class
 za/ac/wits/cpd/service/bigdatavisual/PersistenceManager$1.class
+za/ac/wits/cpd/service/bigdatavisual/PersistenceManager$2.class
 za/ac/wits/cpd/service/bigdatavisual/GeoLocation.class
 za/ac/wits/cpd/service/bigdatavisual/TweetMapper.class
 za/ac/wits/cpd/service/bigdatavisual/LocationResolver.class

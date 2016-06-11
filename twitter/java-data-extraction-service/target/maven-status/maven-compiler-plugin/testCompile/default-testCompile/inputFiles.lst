@@ -1,2 +1,4 @@
-/home/mkhwinana/Dev/eduworkspace/TwitterAuthService/src/test/java/za/ac/wits/cpd/elen7046/group2/PersistenceManagerTest.java
-/home/mkhwinana/Dev/eduworkspace/TwitterAuthService/src/test/java/za/ac/wits/cpd/elen7046/group2/DataExtractorTest.java
+/home/mkhwinana/Dev/eduworkspace/ELEN7046_Group2_2016/twitter/java-data-extraction-service/src/test/java/za/ac/wits/cpd/elen7046/group2/DataExtractorTest.java
+/home/mkhwinana/Dev/eduworkspace/ELEN7046_Group2_2016/twitter/java-data-extraction-service/src/test/java/za/ac/wits/cpd/elen7046/group2/ExtractAndStoreTweetsTest.java
+/home/mkhwinana/Dev/eduworkspace/ELEN7046_Group2_2016/twitter/java-data-extraction-service/src/test/java/za/ac/wits/cpd/elen7046/group2/PersistenceManagerTest.java
+/home/mkhwinana/Dev/eduworkspace/ELEN7046_Group2_2016/twitter/java-data-extraction-service/src/test/java/za/ac/wits/cpd/elen7046/group2/LocationResolverUnitTest.java
