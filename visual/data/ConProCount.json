@@ -1,10 +1,10 @@
 [
-    {"name": "#day-1","value":-15},
-    {"name": "#day-2","value":-20},
-    {"name": "#day-3","value":-18},
-    {"name": "#day-4","value":-22},
-    {"name": "#day-1","value":2},
-    {"name": "#day-2","value":6},
-    {"name": "#day-3","value":26},
-    {"name": "#day-4","value":18}
+    {"name": "13-June-2016","value":-15},
+    {"name": "12-June-2016","value":-20},
+    {"name": "11-June-2016","value":-18},
+    {"name": "10-June-2016","value":-22},
+    {"name": "13-June-2016","value":2},
+    {"name": "12-June-2016","value":6},
+    {"name": "11-June-2016","value":26},
+    {"name": "10-June-2016","value":18}
 ]
