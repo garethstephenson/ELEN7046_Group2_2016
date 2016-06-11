@@ -1,10 +1,10 @@
 {
     "panels": [
         {
-            "name": "Map",
+            "name": "Con vs Pro 4 days prior to home state primaries",
             "size": "6",
-            "type": "grapths/map.html.twig",
-            "dataUrl": "data/CategoryCountPerHour",
+            "type": "grapths/topicConProHomeState.html.twig",
+            "dataUrl": "data/ConProCount",
             "specialClass": "panel-success"
         },
         {
@@ -29,23 +29,17 @@
             "specialClass": "panel-primary"
         },
         {
+            "name": "Criteria",
+            "size": "3",
+            "type": "criteria.html.twig",
+            "dataUrl": "config",
+            "specialClass": "panel-primary"
+        },
+        {
             "name": "Category Summary",
             "size": "3",
             "type": "grapths/topicCategorySummaryV.html.twig",
             "dataUrl": "data/topicCategorySummary",
-            "specialClass": "panel-success"
-        },
-        {
-            "name": "Global Relational View",
-            "size": "3",
-            "type": "grapths/global.html.twig",
-            "dataUrl": "data/placesData"
-        },
-        {
-            "name": "Con vs Pro 4 days prior to home state primaries",
-            "size": "6",
-            "type": "grapths/topicConProHomeState.html.twig",
-            "dataUrl": "data/ConProCount",
             "specialClass": "panel-success"
         },
         {
@@ -54,13 +48,6 @@
             "type": "grapths/topicCategorySummaryH.html.twig",
             "dataUrl": "data/topicCategorySummary",
             "specialClass": "panel-success"
-        },
-        {
-            "name": "Criteria",
-            "size": "3",
-            "type": "criteria.html.twig",
-            "dataUrl": "config",
-            "specialClass": "panel-primary"
         },
         {
             "name": "Crossfilter",
@@ -75,6 +62,19 @@
             "type": "grapths/wordTree.html.twig",
             "dataUrl": "data/wordtree",
             "specialClass": "panel-info"
+        },
+        {
+            "name": "Map",
+            "size": "6",
+            "type": "grapths/map.html.twig",
+            "dataUrl": "data/CategoryCountPerHour",
+            "specialClass": "panel-success"
+        },
+        {
+            "name": "Global Relational View",
+            "size": "3",
+            "type": "grapths/global.html.twig",
+            "dataUrl": "data/placesData"
         }
     ]
 }
