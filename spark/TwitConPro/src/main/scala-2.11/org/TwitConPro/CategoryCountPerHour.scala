@@ -1,8 +1,8 @@
 package org.TwitConPro
 
+import net.liftweb.json.DefaultFormats
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs._
-import org.apache.spark.sql.SQLContext
 import org.apache.spark.{SparkConf, SparkContext}
 
 /**
@@ -37,6 +37,21 @@ object CategoryCountPerHour {
             return
         }
 
+        implicit val formats = DefaultFormats
+        val tweetsAsText = sparkContext.textFile(inputPath)
+
+        for (category <- categories) {
+            val tweetsForCategory = tweetsAsText
+                .map(line => net.liftweb.json.parse(line).extract[Tweet])
+                .filter(_.tweetText.contains(category))
+
+            val countPerHour = tweetsForCategory
+                .map(tweet => (tweet.createdAt.getHour, 1))
+                .reduceByKey(_ + _)
+
+            println(countPerHour.collect())
+        }
+/*
         val sqlContext = new SQLContext(sparkContext)
         val tweets = sqlContext.read.json(inputPath)
 
@@ -58,7 +73,7 @@ object CategoryCountPerHour {
             merge(s"/data/$category-count.out", s"/data/$category-count.json")
 */
         }
-
+*/
         sparkContext.stop()
     }
 
