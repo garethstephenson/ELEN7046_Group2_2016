@@ -4,6 +4,7 @@ import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs._
 import org.apache.spark.{SparkConf, SparkContext}
 import spray.json._
+import TweetJsonProtocol._
 
 /**
   * Created by Gareth on 2016/06/06.
@@ -41,50 +42,20 @@ object CategoryCountPerHour {
 
     for (category <- categories) {
 
-      println(s"\tProcessing category $category")
+      println(s"\n\tProcessing category $category")
 
-      import TweetJsonProtocol._
-
-      val tweetsForCategory = tweetsAsText
+      val tweetsPerCategoryPerHour = tweetsAsText
         .map(_.parseJson.convertTo[Tweet])
         .filter(_.tweetText.contains(category))
-      //.map(tweet => java.time.LocalDateTime.parse(tweet.createdAt))
-
-      val countPerHour = tweetsForCategory
         .map(tweet => (java.time.ZonedDateTime.parse(tweet.createdAt).getHour, 1))
         .reduceByKey(_ + _)
 
-      val results = countPerHour.collect()
+      val results = tweetsPerCategoryPerHour.collect()
       for (result <- results) {
-        println(s"\t\tCategory: $category\n\t\tHour:\t${result._1}\n\t\tCount:\t${result._2}")
+        println(s"\n\t\tCategory:\t$category\n\t\tHour:\t\t${result._1}\n\t\tCount:\t\t${result._2}")
       }
-      //println(s"\t$category: ${countPerHour.collect()}")
-
-      //println(s"\t=============> $category: ${tweetsForCategory.count()}")
     }
-    /*
-            val sqlContext = new SQLContext(sparkContext)
-            val tweets = sqlContext.read.json(inputPath)
 
-            for (category <- categories) {
-                println(s"\tWorking on category '$category'")
-
-                tweets.registerTempTable("tweets")
-
-                val categoryTweetHours = sqlContext.sql(s"SELECT COUNT(A.*) Count, HOUR(A.createdAt) Hour FROM tweets A " +
-                  s"JOIN (SELECT DISTINCT HOUR(createdAt) Hour FROM tweets) B WHERE A.tweetText LIKE '%$category%' AND " +
-                  s"HOUR(A.createdAt) = B.Hour GROUP BY HOUR(A.createdAt)")
-
-                // Push results into a 'table' of |Category|Date|Hour|Count|
-                categoryTweetHours.show()
-
-    /*
-                val count = sqlContext.sql(s"SELECT COUNT(*) FROM tweets WHERE tweetText LIKE '%$category%'")
-                count.write.json(s"/data/$category-count.out")
-                merge(s"/data/$category-count.out", s"/data/$category-count.json")
-    */
-            }
-    */
     sparkContext.stop()
   }
 
