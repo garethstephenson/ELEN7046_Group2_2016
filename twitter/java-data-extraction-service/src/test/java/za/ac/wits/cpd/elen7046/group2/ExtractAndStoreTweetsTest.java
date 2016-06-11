@@ -1,20 +1,25 @@
 package za.ac.wits.cpd.elen7046.group2;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.logging.Level;
+import lombok.extern.java.Log;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import za.ac.wits.cpd.service.bigdatavisual.PersistenceManager;
-import za.ac.wits.cpd.service.bigdatavisual.Tweet;
-import za.ac.wits.cpd.service.bigdatavisual.TweetsDataExtractor;
+import org.junit.Ignore;
+import za.ac.wits.cpd.service.twitconpro.PersistenceManager;
+import za.ac.wits.cpd.service.twitconpro.Tweet;
+import za.ac.wits.cpd.service.twitconpro.TweetsDataExtractor;
 
 /**
  *
  * @author Matsobane Khwinana (Matsobane.Khwinana@momentum.co.za)
  */
+@Log
 public class ExtractAndStoreTweetsTest {
 
     private PersistenceManager persistenceManager;
@@ -26,58 +31,84 @@ public class ExtractAndStoreTweetsTest {
         this.dataExtractor = new TweetsDataExtractor();
     }
 
+    @Ignore
     @Test
     public void testExtractAndStoreById() {
         //Given
         Long twitterId = 729674502339055617L;
-        
+
         //When
         Tweet tweet = this.dataExtractor.extractTweetById(twitterId);
         this.persistenceManager.persist(tweet);
         Tweet dbTweet = persistenceManager.findByTwitterId(tweet.getTwitterId());
-        
+
         //Then
         assertTrue(Objects.equals(dbTweet.getTwitterId(), twitterId));
     }
-    
-    
-    @Test
-    public void testExtractAndStoreTrumpPriorToNYPrimary() {
-        //Given
-        final String hashtag = "MakeAmericaGreatAgain";
-        final Map<String, String> options = hundredTweetsBeforeNewYorkOptions();
 
-        //When
-        List<Tweet> tweetData = this.dataExtractor.extractHashtagTweets(hashtag, options);
-        for (Tweet tweet : tweetData) {
-            this.persistenceManager.persist(tweet);
-            Tweet dbTweet = persistenceManager.findByTwitterId(tweet.getTwitterId());
-            
-            //Then 
-            assertTrue(Objects.equals(dbTweet.getTwitterId(), tweet.getTwitterId()));
+    @Test
+    public void testExtractTrumpAndHilary10Times() {
+        for (int i = 0; i < 10; i++) {
+            log.log(Level.SEVERE, "Hilary attempt # {0}", i);
+            testExtractAndStoreHilaryTweetsDuringPrimaries();
+            log.log(Level.SEVERE, "Trump attempt # {0}", i);
+            testExtractAndStoreTrumpTweetsDuringPrimaries();
         }
     }
 
-    private Map<String, String> fiveTweetsBeforeNewYorkOptions() {
-        //https://twitter.com/search?q=%23MakeAmericaGreatAgain%20since%3A2016-03-19%20until%3A2016-04-19
-        final Map<String, String> options = new HashMap<>();
-        options.put(COUNT, FIVE);
-        options.put(SINCE, NY_PRIMARY_THIRTY_DAYS_PRIOR);
-        options.put(UNTIL, NY_PRIMARY_2016);
-        return options;
+    @Test
+    public void testExtractAndStoreTrumpTweetsDuringPrimaries() {
+        //Given
+        final List<String> hashtags = new ArrayList<>();
+        hashtags.add("donaldtrump");
+        hashtags.add("MakeAmericaGreatAgain");
+        hashtags.add("#nevertrump");
+
+        final Map<String, String> options = hundredTweetsDuringPrimariesOptions();
+
+        //When
+        List<Tweet> tweetData = this.dataExtractor.extractHashtagsTweets(hashtags, options);
+        for (Tweet tweet : tweetData) {
+            this.persistenceManager.persist(tweet);
+            Tweet dbTweet = persistenceManager.findByTwitterId(tweet.getTwitterId());
+
+            //Then 
+            //assertNotNull(dbTweet);
+        }
     }
-    
-    private Map<String, String> hundredTweetsBeforeNewYorkOptions() {
-        //https://twitter.com/search?q=%23MakeAmericaGreatAgain%20since%3A2016-03-19%20until%3A2016-04-19
+
+    @Test
+    public void testExtractAndStoreHilaryTweetsDuringPrimaries() {
+        //https://twitter.com/search?q=%23hillaryclinton%20OR%20%23iamwither%20OR%20%23crookedhillary%20since%3A2016-02-01%20until%3A2016-06-07
+        //Given
+        final List<String> hashtags = new ArrayList<>();
+        hashtags.add("#iamwither");
+        hashtags.add("#hillaryclinton");
+        hashtags.add("#crookedhillary");
+
+        final Map<String, String> options = hundredTweetsDuringPrimariesOptions();
+
+        //When
+        List<Tweet> tweetData = this.dataExtractor.extractHashtagsTweets(hashtags, options);
+        for (Tweet tweet : tweetData) {
+            this.persistenceManager.persist(tweet);
+            Tweet dbTweet = persistenceManager.findByTwitterId(tweet.getTwitterId());
+
+            //Then 
+            //assertNotNull(dbTweet);
+        }
+    }
+
+    private Map<String, String> hundredTweetsDuringPrimariesOptions() {
         final Map<String, String> options = new HashMap<>();
         options.put(COUNT, HUNDRED);
-        options.put(SINCE, NY_PRIMARY_THIRTY_DAYS_PRIOR);
-        options.put(UNTIL, NY_PRIMARY_2016);
+        options.put(SINCE, PRIMARIES_START_DATE);
+        options.put(UNTIL, PRIMARIES_END_DATE);
         return options;
     }
-    
-    private static final String NY_PRIMARY_THIRTY_DAYS_PRIOR = "2016-03-19";
-    private static final String NY_PRIMARY_2016 = "2016-04-19";
+
+    private static final String PRIMARIES_START_DATE = "2016-03-15";
+    private static final String PRIMARIES_END_DATE = "2016-03-30";
     private static final String COUNT = "count";
     private static final String SINCE = "since";
     private static final String UNTIL = "until";

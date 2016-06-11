@@ -10,10 +10,11 @@ import lombok.extern.java.Log;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import za.ac.wits.cpd.service.bigdatavisual.Coordinate;
-import za.ac.wits.cpd.service.bigdatavisual.GeoLocation;
-import za.ac.wits.cpd.service.bigdatavisual.PersistenceManager;
-import za.ac.wits.cpd.service.bigdatavisual.Tweet;
+import org.junit.Ignore;
+import za.ac.wits.cpd.service.twitconpro.Coordinate;
+import za.ac.wits.cpd.service.twitconpro.GeoLocation;
+import za.ac.wits.cpd.service.twitconpro.PersistenceManager;
+import za.ac.wits.cpd.service.twitconpro.Tweet;
 
 /**
  *
@@ -71,7 +72,7 @@ public class PersistenceManagerTest {
         log.log(Level.SEVERE, "#### Number of tweets: {0}", tweets.size());
     }
     
-    @Test
+    @Ignore @Test
     public void testRemoveAll() {
         //Given
         
@@ -139,7 +140,7 @@ public class PersistenceManagerTest {
         Coordinate coordinate = new Coordinate(125.6, 10.6);
         geoLocation.setName("Pretoria");
         geoLocation.setType("point");
-        geoLocation.setCoordinates(new Coordinate[]{coordinate});
+        geoLocation.setCoordinates(coordinate);
         return geoLocation;
     }
 }

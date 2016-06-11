@@ -5,8 +5,8 @@ import java.util.logging.Level;
 import lombok.extern.java.Log;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import za.ac.wits.cpd.service.bigdatavisual.Coordinate;
-import za.ac.wits.cpd.service.bigdatavisual.LocationResolver;
+import za.ac.wits.cpd.service.twitconpro.Coordinate;
+import za.ac.wits.cpd.service.twitconpro.LocationResolver;
 
 /**
  *

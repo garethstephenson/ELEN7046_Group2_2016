@@ -1,8 +1,8 @@
 package za.ac.wits.cpd.elen7046.group2;
 
 import java.util.Arrays;
-import za.ac.wits.cpd.service.bigdatavisual.Tweet;
-import za.ac.wits.cpd.service.bigdatavisual.TweetsDataExtractor;
+import za.ac.wits.cpd.service.twitconpro.Tweet;
+import za.ac.wits.cpd.service.twitconpro.TweetsDataExtractor;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
