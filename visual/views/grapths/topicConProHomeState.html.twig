@@ -26,7 +26,7 @@
         console.log(dataUrl);
         queue()
         .defer(d3.json, dataUrl)
-        .defer(d3.json, "/data/ConProHomeStatePrimaries")
+        .defer(d3.json, "/data/ConProCount")
         .await(function (error, data) {
           if (error) {
             $('#cp_dataPlaceholder').html("error: " + error);
@@ -76,7 +76,7 @@
                   .scale(x).orient("bottom");
 
           var yAxis = d3.svg.axis()
-                      .scale(y).orient("left")
+                      .scale(y).orient("right")
                       .tickSize(6, 0);
           
           var svg = d3.select(chartSvgSelector)

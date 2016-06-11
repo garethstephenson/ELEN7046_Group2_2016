@@ -149,8 +149,8 @@ router.get('/topicCategoryDailyCount', function (req, res) {
   res.send(JSON.stringify(data));
 });
 
-router.get('/ConProHomeStatePrimaries', function (req, res) {
-  var data = fs.readFile(__dirname + "/../data/" + "ConProHomeStatePrimaries.json", 'utf8', function (err, data) {
+router.get('/ConProCount', function (req, res) {
+  var data = fs.readFile(__dirname + "/../data/" + "ConProCount.json", 'utf8', function (err, data) {
     if (err) {
       console.log("Error reading file: %s", err);
       res.send(null);

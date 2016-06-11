@@ -45,7 +45,7 @@
             "name": "Con vs Pro 4 days prior to home state primaries",
             "size": "6",
             "type": "grapths/topicConProHomeState.html.twig",
-            "dataUrl": "data/ConProHomeStatePrimaries",
+            "dataUrl": "data/ConProCount",
             "specialClass": "panel-success"
         },
         {
