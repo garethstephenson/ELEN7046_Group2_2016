@@ -22,18 +22,62 @@
 </form>
 <script type="text/javascript">
 
+    $(document).ready(function () {
+      $("#criteriaForm").hide();
+      var dataUrl = "{{dataUrl}}";
+      ConfigHandler.loadConfigData(dataUrl);
+
+      $('#criteriaApply').click(function () {
+        ConfigHandler.applyConfig(dataUrl);
+      });
+      $('#criteriaReset').click(function () {
+        ConfigHandler.resetConfig();
+      });
+
+    });
+
     var ConfigHandler = {
+      applyConfig: function (dataUrl) {
+        var data = {
+          topicsPath: $('#topicsPath').val(),
+          topicsPathIsRelative: $('#topicsPathIsRelative').prop('checked') === 'checked',
+          defaultTopicId: $('#topicsDropdown').val()
+        };
+
+        $.ajax({
+          url: dataUrl,
+          type: "post",
+          contentType: "application/json",
+          data: data,
+          success: function (data) {
+            // Populate dropdown
+            if (data.success === true) {
+              location.reload();
+            } else {
+              alert("Cannot save topics: Please check server log for reason");
+            }
+          },
+          error: function (xhr, ajaxOptions, thrownError) {
+            alert("Cannot save topics: " + thrownError);
+          },
+          complete: function () {
+
+          }
+        });
+      },
+      resetConfig: function () {
+        location.reload();
+      },
       loadConfigData: function (dataUrl) {
         $.ajax({
           url: dataUrl,
           type: "GET",
           success: function (data) {
             $('#dataLoadingPlaceholder').html('');
+            $('#topicsPathIsRelative').prop('checked', data.data.topicsPathIsRelative);
+            $('#topicsPath').val(data.data.topicsPath);
 
-            $('#topicsPathIsRelative').prop('checked', data.topicsPathIsRelative);
-            $('#topicsPath').val(data.topicsPath);
-
-            ConfigHandler.loadTopics(dataUrl + '/topics', data.defaultTopic);
+            ConfigHandler.loadTopics(dataUrl + '/topics', data.data.defaultTopicId);
 
             $("#criteriaForm").show();
           },
@@ -45,20 +89,20 @@
           }
         });
       },
-      loadTopics: function (dataUrl, defaultTopic){
-          $.ajax({
+      loadTopics: function (dataUrl, defaultTopic) {
+        $.ajax({
           url: dataUrl,
           type: "GET",
           success: function (data) {
             // Populate dropdown
-            $.each(data, function(index, item){
-                //defaultTopic
-               var option = $('<option>', {value: item.folder})
-                 .html(item.name); 
-               if (item.id === defaultTopic){
-                   option.attr('selected','selected');
-               }
-               $('#topicsDropdown').append(option);
+            $.each(data, function (index, item) {
+              //defaultTopic
+              var option = $('<option>', {value: item.id})
+                .html(item.name);
+              if (item.id === defaultTopic) {
+                option.attr('selected', 'selected');
+              }
+              $('#topicsDropdown').append(option);
             });
           },
           error: function (xhr, ajaxOptions, thrownError) {
@@ -70,10 +114,4 @@
         });
       }
     };
-
-    $(document).ready(function () {
-      $("#criteriaForm").hide();
-      var dataUrl = "{{dataUrl}}";
-      ConfigHandler.loadConfigData(dataUrl);
-    });
 </script>

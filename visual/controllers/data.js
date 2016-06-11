@@ -1,41 +1,41 @@
 var express = require('express');
 var router = express.Router();
 var fs = require("fs");
-// /config/*
+var config = require("./../config/common");
 
 router.get('/categoryCountPerDay', function (req, res) {
-
-  var data = fs.readFile(__dirname + "/../data/" + "CategoryCountPerDay.json", 'utf8', function (err, data) {
-    if (err) {
-      console.log("Error reading file: %s", err);
-      res.send(null);
-    }
+  config.getDefaultTopicDataFile('CategoryCountPerDay.json', function (data) {
     res.setHeader('Content-Type', 'application/json');
-    res.send(JSON.parse(data));
+    res.send(data);
+  }, function () {
+    res.send(null);
   });
 });
 
 router.get('/CategoryCountPerHour', function (req, res) {
-
-  var data = fs.readFile(__dirname + "/../data/" + "CategoryCountPerHour.json", 'utf8', function (err, data) {
-    if (err) {
-      console.log("Error reading file: %s", err);
-      res.send(null);
-    }
+  config.getDefaultTopicDataFile('CategoryCountPerHour.json', function (data) {
     res.setHeader('Content-Type', 'application/json');
-    res.send(JSON.parse(data));
+    res.send(data);
+  }, function () {
+    res.send(null);
   });
 });
 
 router.get('/categoryColors', function (req, res) {
-
-  var data = fs.readFile(__dirname + "/../data/" + "CategoryColors.json", 'utf8', function (err, data) {
-    if (err) {
-      console.log("Error reading file: %s", err);
-      res.send(null);
-    }
+  config.getDefaultTopicDataFile('CategoryColors.json', function (data) {
     res.setHeader('Content-Type', 'application/json');
-    res.send(JSON.parse(data));
+    res.send(data);
+  }, function () {
+    res.send(null);
+  });
+});
+
+router.get('/ConProCount', function (req, res) {
+  config.getDefaultTopicDataFile('ConProCount.json', function (data) {
+    res.setHeader('Content-Type', 'application/json');
+    res.send(data);
+  }, function () {
+    res.send(null);
   });
 });
 
@@ -147,17 +147,6 @@ router.get('/topicCategoryDailyCount', function (req, res) {
   };
   res.setHeader('Content-Type', 'application/json');
   res.send(JSON.stringify(data));
-});
-
-router.get('/ConProCount', function (req, res) {
-  var data = fs.readFile(__dirname + "/../data/" + "ConProCount.json", 'utf8', function (err, data) {
-    if (err) {
-      console.log("Error reading file: %s", err);
-      res.send(null);
-    }
-    res.setHeader('Content-Type', 'application/json');
-    res.send(JSON.parse(data));
-  });
 });
 
 module.exports = router;

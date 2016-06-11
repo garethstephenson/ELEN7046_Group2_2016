@@ -18,7 +18,7 @@ var commonCharts = {
 
     var dateFormat = d3.time.format("%Y-%m-%d");
     if (dateString.indexOf('T') > 0) {
-      dateFormat = d3.time.format("%Y-%m-%dT%H:%MZ");
+      dateFormat = d3.time.format("%Y-%m-%dT%H:%M:%SZ");
     }
     var printFormat = d3.time.format(datePart);
     var date = dateFormat.parse(dateString);

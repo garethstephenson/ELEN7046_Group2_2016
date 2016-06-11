@@ -1,5 +1,1 @@
-{
-    "topicsPathIsRelative": true,
-    "topicsPath": "/../data/topics/",
-    "defaultTopic": 2
-}
+{"topicsPathIsRelative": true,"topicsPath": "/../data/topics/","defaultTopicId": 1}

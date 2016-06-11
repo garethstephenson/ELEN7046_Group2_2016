@@ -1,12 +1,11 @@
 var express = require('express');
 var router = express.Router();
-var Twig = require("twig");
 var fs = require("fs");
-// /config/*
+var config = require("./../config/common");
 
 router.get('/', function (req, res) {
 
-  getConfigData(function (configData) {
+  config.getConfigData(function (configData) {
     res.setHeader('Content-Type', 'application/json');
     res.send(configData);
   }, function () {
@@ -14,43 +13,36 @@ router.get('/', function (req, res) {
     res.send(null);
   });
 });
+
+router.post('/', function (req, res) {
+
+//console.log(req.body);
+  //console.log(JSON.stringify(req.body.topicsPath));
+
+//  var data = '{"topicsPathIsRelative": true,"topicsPath": "/../data/topics/","defaultTopicId": 1}';
+//  config.setConfigData(data, function () {
+//    res.setHeader('Content-Type', 'application/json');
+//    req = null;
+//    res.send({'success': true});
+//  }, function () {
+    res.setHeader('Content-Type', 'application/json');
+    res.send({'success': false});
+//  });
+});
+
 router.get('/topics', function (req, res) {
 
-  getConfigData(function (configData) {
+  config.getConfigData(function (configData) {
 
-    getTopicsData(__dirname + configData.topicsPath, function (topicData) {
+    config.getTopicsData(configData, function (topicData) {
       res.setHeader('Content-Type', 'application/json');
       res.send(topicData);
     }, function () {
-      res.setHeader('Content-Type', 'application/json');
       res.send(null);
     });
   }, function () {
-    res.setHeader('Content-Type', 'application/json');
     res.send(null);
   });
 });
-
-function getConfigData(successCallBack, errorCallBack) {
-  fs.readFile(__dirname + "/../config/" + "dataConfig.json", 'utf8', function (error, data) {
-    if (error) {
-      console.log("Error reading file: %s", error);
-      errorCallBack(err);
-    }
-    var configData = JSON.parse(data);
-    successCallBack(configData);
-  });
-}
-
-function getTopicsData(topicsPath, successCallBack, errorCallBack) {
-  fs.readFile(topicsPath + "topics.json", 'utf8', function (error, data) {
-    if (error) {
-      console.log("Error reading file: %s", error);
-      errorCallBack(err);
-    }
-    var topicsData = JSON.parse(data);
-    successCallBack(topicsData);
-  });
-}
 
 module.exports = router;
