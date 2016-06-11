@@ -189,7 +189,7 @@
           .style("fill-opacity", function (item) {
             var maxCategoryItem = commonCharts.getMaxCategoryItem(item);
             var alpha = colorAlpha(maxCategoryItem.Count);
-            return alpha / 10;
+            return alpha / 100;
           });
 
         cards.select("title").text(function (item) {
