@@ -11,7 +11,7 @@ import spray.json.{DefaultJsonProtocol, DeserializationException, JsString, JsVa
 object TweetJsonProtocol extends DefaultJsonProtocol {
 
     implicit object DateJsonFormat extends RootJsonFormat[ZonedDateTime] {
-        private val formatter: format.DateTimeFormatter = format.DateTimeFormatter.ISO_ZONED_DATE_TIME //.ofPattern("yyyy-MM-dd'T'HH:00:00'Z'") //.ISO_ZONED_DATE_TIME
+        private val formatter: format.DateTimeFormatter = format.DateTimeFormatter.ISO_ZONED_DATE_TIME
 
         def write(value: ZonedDateTime) = JsString(value.format(formatter))
 
@@ -26,7 +26,4 @@ object TweetJsonProtocol extends DefaultJsonProtocol {
         "twitterID", "inReplyToName", "inReplyToStatusID", "inReplyToUserID", "isRetweet", "language", "place", "sensitive",
         "quotedStatusID", "retweeted", "retweetedCount", "tweetText", "tweetURL")
 
-    implicit val categoryCountFormat = jsonFormat(CategoryCount, "Category", "Count")
-    implicit val containerFormat = jsonFormat(CategoryCountContainer, "Date", "Data")
-    implicit val outputFormat = jsonFormat(CategoryCountPerHourOutput, "container")
 }

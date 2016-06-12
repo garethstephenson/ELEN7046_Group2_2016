@@ -16,8 +16,8 @@ import scala.collection.mutable
   * Created by Gareth on 2016/06/06.
   */
 object CategoryCountPerHour {
-    def main(args: Array[String]): Unit = {
 
+    def main(args: Array[String]): Unit = {
 
         if (args.length < 1) {
             println("An invalid source path was supplied.")
@@ -31,12 +31,12 @@ object CategoryCountPerHour {
             printUsage()
             return
         }
+        val categories = args(1).split(",")
 
         val sparkConfig = new SparkConf()
         sparkConfig.setAppName("Category Count Per Hour")
 
         val sparkContext = new SparkContext(sparkConfig)
-        val categories = args(1).split(",")
 
         val tweets = sparkContext
             .textFile(inputPath)
@@ -80,15 +80,21 @@ object CategoryCountPerHour {
                         println(s"Category:\t${thing._2._1}\nCount:\t\t${thing._2._2}\n")
                     })
             })
-            val container = CategoryCountContainer(date, categoryCount.toArray)
+            val container = CategoryCountContainer(date, categoryCount.toList)
             containers.+=(container)
         })
 
-        val output = CategoryCountPerHourOutput(containers.toArray)
+        val output = CategoryCountPerHourOutput(containers.toList)
 
         println(output)
-        println(output.container.toJson)
+        println(output.container.toJson.prettyPrint)
+
         sparkContext.stop()
+
+        import java.io._
+        val pw = new PrintWriter(new File("./results.json"))
+        pw.write(output.container.toJson.prettyPrint)
+        pw.close
     }
 
     def getHour(tweet: Tweet): Int = {
