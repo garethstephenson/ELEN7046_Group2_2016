@@ -11,6 +11,7 @@ import org.apache.spark.{SparkConf, SparkContext}
 import spray.json._
 
 import scala.collection.mutable
+import java.io._
 
 /**
   * Created by Gareth on 2016/06/06.
@@ -42,17 +43,16 @@ object CategoryCountPerHour {
             .textFile(inputPath)
             .map(_.parseJson.convertTo[Tweet])
 
-        //import ZonedDateTimeSort._
+        import ZonedDateTimeSort._
         val dates = tweets
             .map(tweet => {
-                val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:00:00'Z'")
+                val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:00:00'Z'") // Convert to same hour date
                 ZonedDateTime.parse(tweet.createdAt.format(formatter))
-            }) // Convert to same hour date
-            //.sortBy(date => date)
+            })
             .distinct() // Reduce to unique hourly times
+            .sortBy(date => date)
             .collect()
 
-        //val output = CategoryCountPerHourOutput(mutable.MutableList())
         val containers = mutable.MutableList[CategoryCountContainer]()
         dates.foreach(date => {
 
@@ -61,38 +61,32 @@ object CategoryCountPerHour {
                     tweets
                         .filter(tweet => tweet.tweetText.contains(category) && tweet.createdAt.getHour == date.getHour) // For each hour
                         .map(tweet => (category, 1))
-                        .reduceByKey(_ + _) // Returns (Category, CountPerHour)
-                        .map(x => (date, (x._1, x._2))) // Returns (Date, (Category, CountPerHour))
+                        .reduceByKey(_ + _) // Returns tuple (Category, CountPerHour)
+                        .map(categoryCountTuple => (date, (categoryCountTuple._1, categoryCountTuple._2))) // Returns tuple (Date, (Category, CountPerHour))
                         .collect()
                 })
 
-            val categoryCount: mutable.MutableList[CategoryCount] = mutable.MutableList()
-            println(s"\nDate:\t\t$date")
+            val categoryCounts: mutable.MutableList[CategoryCount] = mutable.MutableList()
+            //println(s"\nDate:\t\t$date")
 
-            results.foreach(arr => {
+            results.foreach(result => {
 
-                arr
-                    .filter(tuple => tuple._1 == date)
-                    .foreach(thing => {
+                result
+                    .filter(datedCategoryCountTuple => datedCategoryCountTuple._1 == date)
+                    .foreach(datedCategoryCountTuple => {
+                        val categoryCountTuple = datedCategoryCountTuple._2
+                        categoryCounts.+=(CategoryCount(categoryCountTuple._1, categoryCountTuple._2))
 
-                        categoryCount.+=(CategoryCount(thing._2._1, thing._2._2))
-
-                        println(s"Category:\t${thing._2._1}\nCount:\t\t${thing._2._2}\n")
+                        //println(s"Category:\t${categoryCountTuple._1}\nCount:\t\t${categoryCountTuple._2}\n")
                     })
             })
-            val container = CategoryCountContainer(date, categoryCount.toList)
+            val container = CategoryCountContainer(date, categoryCounts.toList)
             containers.+=(container)
         })
-
-        val output = CategoryCountPerHourOutput(containers.toList)
-
-        println(output)
-        println(output.container.toJson.prettyPrint)
-
         sparkContext.stop()
 
-        import java.io._
-        val pw = new PrintWriter(new File("./results.json"))
+        val output = CategoryCountPerHourOutput(containers.toList)
+        val pw = new PrintWriter(new File(inputPath + ".results.json"))
         pw.write(output.container.toJson.prettyPrint)
         pw.close
     }
@@ -108,7 +102,7 @@ object CategoryCountPerHour {
 
     def merge(srcPath: String, dstPath: String): Unit = {
         val hadoopConfig = new Configuration()
-        val hdfs = FileSystem.get(hadoopConfig)
+        val hdfs = org.apache.hadoop.fs.FileSystem.get(hadoopConfig)
         FileUtil.copyMerge(hdfs, new Path(srcPath), hdfs, new Path(dstPath), false, hadoopConfig, null)
         FileUtil.fullyDelete(hdfs, new Path(srcPath))
     }
