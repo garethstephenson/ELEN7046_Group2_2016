@@ -1,6 +1,7 @@
 package org.TwitConPro
 
-import java.time.{Instant, ZoneId, ZonedDateTime}
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 import org.TwitConPro.JsonFormats.Tweet
 import org.TwitConPro.JsonProtocols.TweetJsonProtocol._
@@ -15,56 +16,72 @@ import spray.json._
 object CategoryCountPerHour {
     def main(args: Array[String]): Unit = {
 
-        var inputPath: String = null
-        if (args.length > 0)
-            inputPath = args(0)
-        else {
+
+        if (args.length < 1) {
             println("An invalid source path was supplied.")
             printUsage()
             return
         }
+        val inputPath: String = args(0)
 
-        var categories: Array[String] = null
-        if (args.length > 1) {
-            categories = args(1).split(",")
-            println(s"\tFound ${categories.length} categories")
-        }
-        else {
+        if (args.length < 2) {
             println("Categories must be supplied.")
             printUsage()
             return
         }
+        //val categories: Array[String] = args(1).split(",")
 
         val sparkConfig = new SparkConf()
         sparkConfig.setAppName("Category Count Per Hour")
 
         val sparkContext = new SparkContext(sparkConfig)
-        val tweetsAsText = sparkContext.textFile(inputPath)
+        val categories = args(1).split(",")
 
-        categories.foreach(category => {
-            println(s"\n\tProcessing category $category")
+        val tweets = sparkContext
+            .textFile(inputPath)
+            .map(_.parseJson.convertTo[Tweet])
 
-            val tweetsPerCategoryPerHour = tweetsAsText
-                .map(_.parseJson.convertTo[Tweet])
-                .filter(_.tweetText.contains(category))
-                .map(tweet => (getHour(tweet), 1))
-                .reduceByKey(_ + _)
+        //import ZonedDateTimeSort._
+        val dates = tweets
+            .map(tweet => {
+                val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:00:00'Z'")
+                ZonedDateTime.parse(getDate(tweet).format(formatter))
+            }) // Convert to same hour date
+            //.sortBy(date => date)
+            .distinct() // Reduce to unique hourly times
+            .collect()
 
-            val results = tweetsPerCategoryPerHour.collect
-            for (result <- results) {
-                println(s"\n\t\tCategory:\t$category\n\t\tHour:\t\t${result._1}\n\t\tCount:\t\t${result._2}")
-            }
+        dates.foreach(date => {
+
+            val results = categories
+                .map(category => {
+                    tweets
+                        .filter(tweet => tweet.tweetText.contains(category) && getDate(tweet).getHour == date.getHour) // For each hour
+                        .map(tweet => (category, 1))
+                        .reduceByKey(_ + _) // Returns (Category, CountPerHour)
+                        .map(x => (date, (x._1, x._2)))
+                        .collect()
+                })
+
+            println(s"\nDate:\t\t$date")
+            results
+                .foreach(arr => {
+                    arr
+                        .filter(tuple => tuple._1 == date)
+                        .foreach(thing => println(s"Category:\t${thing._2._1}\nCount:\t\t${thing._2._2}\n"))
+                })
         })
 
         sparkContext.stop()
     }
 
     def getDate(tweet: Tweet): ZonedDateTime = {
-        if (tweet.createdAt.isLeft) {
+        tweet.createdAt
+        /*if (tweet.createdAt.isLeft) {
             tweet.createdAt.left.get
         } else {
             Instant.ofEpochSecond(tweet.createdAt.right.get.$date).atZone(ZoneId.of("GMT"))
-        }
+        }*/
     }
 
     def getHour(tweet: Tweet): Int = {
