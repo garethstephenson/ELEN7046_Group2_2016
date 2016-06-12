@@ -6,7 +6,7 @@ var commonCharts = {
   // Array Helpers
   getIndexByValue: function (value, array) {
     for (var index = 0; index < array.length; index++) {
-      if (array[index] === value) {
+      if (array[index] == value) {
         return index;
       }
     }
@@ -47,7 +47,7 @@ var commonCharts = {
   getCategoryColor: function (category, categoryColors) {
     for (var index = 0; index < categoryColors.length; index++) {
       var colorItem = categoryColors[index];
-      if (category.Category === colorItem.Category) {
+      if (category.Category == colorItem.Category) {
         return colorItem.Color;
       }
     }

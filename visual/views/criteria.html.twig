@@ -40,18 +40,18 @@
       applyConfig: function (dataUrl) {
         var data = {
           topicsPath: $('#topicsPath').val(),
-          topicsPathIsRelative: $('#topicsPathIsRelative').prop('checked') === 'checked',
+          topicsPathIsRelative: $('#topicsPathIsRelative').prop('checked'),
           defaultTopicId: $('#topicsDropdown').val()
         };
 
         $.ajax({
           url: dataUrl,
           type: "post",
-          contentType: "application/json",
-          data: data,
+          contentType: "application/json; charset=utf-8",
+          data: JSON.stringify(data),
           success: function (data) {
             // Populate dropdown
-            if (data.success === true) {
+            if (data.success == true) {
               location.reload();
             } else {
               alert("Cannot save topics: Please check server log for reason");
@@ -99,7 +99,7 @@
               //defaultTopic
               var option = $('<option>', {value: item.id})
                 .html(item.name);
-              if (item.id === defaultTopic) {
+              if (item.id == defaultTopic) {
                 option.attr('selected', 'selected');
               }
               $('#topicsDropdown').append(option);

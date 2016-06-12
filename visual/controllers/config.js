@@ -15,19 +15,19 @@ router.get('/', function (req, res) {
 });
 
 router.post('/', function (req, res) {
-
-//console.log(req.body);
-  //console.log(JSON.stringify(req.body.topicsPath));
-
-//  var data = '{"topicsPathIsRelative": true,"topicsPath": "/../data/topics/","defaultTopicId": 1}';
-//  config.setConfigData(data, function () {
-//    res.setHeader('Content-Type', 'application/json');
-//    req = null;
-//    res.send({'success': true});
-//  }, function () {
+  var data = JSON.stringify({
+    topicsPathIsRelative: req.body.topicsPathIsRelative,
+    topicsPath: req.body.topicsPath,
+    defaultTopicId: req.body.defaultTopicId
+  });
+  config.setConfigData(data, function () {
+    res.setHeader('Content-Type', 'application/json');
+    req = null;
+    res.send({'success': true});
+  }, function () {
     res.setHeader('Content-Type', 'application/json');
     res.send({'success': false});
-//  });
+  });
 });
 
 router.get('/topics', function (req, res) {
