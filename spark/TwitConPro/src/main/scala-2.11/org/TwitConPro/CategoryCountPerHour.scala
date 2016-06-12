@@ -3,12 +3,14 @@ package org.TwitConPro
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
-import org.TwitConPro.JsonFormats.Tweet
+import org.TwitConPro.JsonFormats.{CategoryCount, CategoryCountContainer, CategoryCountPerHourOutput, Tweet}
 import org.TwitConPro.JsonProtocols.TweetJsonProtocol._
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs._
 import org.apache.spark.{SparkConf, SparkContext}
 import spray.json._
+
+import scala.collection.mutable
 
 /**
   * Created by Gareth on 2016/06/06.
@@ -22,14 +24,13 @@ object CategoryCountPerHour {
             printUsage()
             return
         }
-        val inputPath: String = args(0)
+        val inputPath = args(0)
 
         if (args.length < 2) {
             println("Categories must be supplied.")
             printUsage()
             return
         }
-        //val categories: Array[String] = args(1).split(",")
 
         val sparkConfig = new SparkConf()
         sparkConfig.setAppName("Category Count Per Hour")
@@ -45,47 +46,53 @@ object CategoryCountPerHour {
         val dates = tweets
             .map(tweet => {
                 val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:00:00'Z'")
-                ZonedDateTime.parse(getDate(tweet).format(formatter))
+                ZonedDateTime.parse(tweet.createdAt.format(formatter))
             }) // Convert to same hour date
             //.sortBy(date => date)
             .distinct() // Reduce to unique hourly times
             .collect()
 
+        //val output = CategoryCountPerHourOutput(mutable.MutableList())
+        val containers = mutable.MutableList[CategoryCountContainer]()
         dates.foreach(date => {
 
             val results = categories
                 .map(category => {
                     tweets
-                        .filter(tweet => tweet.tweetText.contains(category) && getDate(tweet).getHour == date.getHour) // For each hour
+                        .filter(tweet => tweet.tweetText.contains(category) && tweet.createdAt.getHour == date.getHour) // For each hour
                         .map(tweet => (category, 1))
                         .reduceByKey(_ + _) // Returns (Category, CountPerHour)
-                        .map(x => (date, (x._1, x._2)))
+                        .map(x => (date, (x._1, x._2))) // Returns (Date, (Category, CountPerHour))
                         .collect()
                 })
 
+            val categoryCount: mutable.MutableList[CategoryCount] = mutable.MutableList()
             println(s"\nDate:\t\t$date")
-            results
-                .foreach(arr => {
-                    arr
-                        .filter(tuple => tuple._1 == date)
-                        .foreach(thing => println(s"Category:\t${thing._2._1}\nCount:\t\t${thing._2._2}\n"))
-                })
+
+            results.foreach(arr => {
+
+                arr
+                    .filter(tuple => tuple._1 == date)
+                    .foreach(thing => {
+
+                        categoryCount.+=(CategoryCount(thing._2._1, thing._2._2))
+
+                        println(s"Category:\t${thing._2._1}\nCount:\t\t${thing._2._2}\n")
+                    })
+            })
+            val container = CategoryCountContainer(date, categoryCount.toArray)
+            containers.+=(container)
         })
 
+        val output = CategoryCountPerHourOutput(containers.toArray)
+
+        println(output)
+        println(output.container.toJson)
         sparkContext.stop()
     }
 
-    def getDate(tweet: Tweet): ZonedDateTime = {
-        tweet.createdAt
-        /*if (tweet.createdAt.isLeft) {
-            tweet.createdAt.left.get
-        } else {
-            Instant.ofEpochSecond(tweet.createdAt.right.get.$date).atZone(ZoneId.of("GMT"))
-        }*/
-    }
-
     def getHour(tweet: Tweet): Int = {
-        getDate(tweet).getHour
+        tweet.createdAt.getHour
     }
 
     private def printUsage(): Unit = {

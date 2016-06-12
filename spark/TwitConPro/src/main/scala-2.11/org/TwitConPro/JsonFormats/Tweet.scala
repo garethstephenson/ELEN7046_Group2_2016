@@ -7,7 +7,7 @@ import java.time.ZonedDateTime
   */
 case class Tweet(_id: String,
                  createdBy: String,
-                 createdAt: ZonedDateTime, //Either[ZonedDateTime, date],
+                 createdAt: ZonedDateTime,
                  coords: Array[Either[String, Double]],
                  favouriteCount: Int,
                  hashtags: Array[HashTag],

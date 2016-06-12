@@ -2,7 +2,7 @@ package org.TwitConPro.JsonProtocols
 
 import java.time.{ZonedDateTime, format}
 
-import org.TwitConPro.JsonFormats.{HashTag, Tweet, date}
+import org.TwitConPro.JsonFormats._
 import spray.json.{DefaultJsonProtocol, DeserializationException, JsString, JsValue, RootJsonFormat}
 
 /**
@@ -21,9 +21,12 @@ object TweetJsonProtocol extends DefaultJsonProtocol {
         }
     }
 
-    implicit val dateFormat = jsonFormat(date, "$date")
     implicit val hashTagFormat = jsonFormat(HashTag, "hashTag")
     implicit val tweetFormat = jsonFormat(Tweet, "_id", "createdBy", "createdAt", "coords", "favouriteCount", "hashtags",
         "twitterID", "inReplyToName", "inReplyToStatusID", "inReplyToUserID", "isRetweet", "language", "place", "sensitive",
         "quotedStatusID", "retweeted", "retweetedCount", "tweetText", "tweetURL")
+
+    implicit val categoryCountFormat = jsonFormat(CategoryCount, "Category", "Count")
+    implicit val containerFormat = jsonFormat(CategoryCountContainer, "Date", "Data")
+    implicit val outputFormat = jsonFormat(CategoryCountPerHourOutput, "container")
 }
