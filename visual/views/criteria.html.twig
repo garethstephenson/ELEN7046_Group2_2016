@@ -1,25 +1,40 @@
-<form id="criteriaForm">
-    <p id ="dataLoadingPlaceholder">Loading Data, please wait ...</p>
-    <div class="input-group input-group-sm">
-        <span class="input-group-addon"><span class="glyphicon glyphicon-book"></span></span>
-        <input type="text" class="form-control" id="topicsPath" placeholder="categories" aria-describedby="sizing-addon3">
-    </div>
+<!-- Modal -->
+<div class="modal fade" id="criteriaModal" tabindex="-1" role="dialog" aria-labelledby="criteriaModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Criteria</h4>
+            </div>
+            <div class="modal-body">
 
-    <div class="checkbox pull-right">
-        <label>
-            <input type="checkbox" id="topicsPathIsRelative"> Use Relative Path Mapping
-        </label>
-    </div><br/><br/>
-    <div class="input-group input-group-sm">
-        <span class="input-group-addon"><span class="glyphicon glyphicon-tags"></span></span>
-        <select class="form-control" id="topicsDropdown" aria-describedby="sizing-addon3">
-        </select>
-    </div><br/>
-    <div class="clearfix btn-group pull-right" role="group" aria-label="...">
-        <button id="criteriaApply" type="button" class="btn btn-sm btn-default"> <span class="glyphicon glyphicon-floppy-saved" aria-hidden="true"></span> </button>
-        <button id="criteriaReset" type="button" class="btn btn-sm btn-default"> <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> </button>
+                <p id ="dataLoadingPlaceholder">Loading Data, please wait ...</p>
+                <div class="input-group input-group-sm">
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-book"></span></span>
+                    <input type="text" class="form-control" id="topicsPath" placeholder="categories" aria-describedby="sizing-addon3">
+                </div>
+
+                <div class="checkbox pull-right">
+                    <label>
+                        <input type="checkbox" id="topicsPathIsRelative"> Use Relative Path Mapping
+                    </label>
+                </div><br/><br/>
+                <div class="input-group input-group-sm">
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-tags"></span></span>
+                    <select class="form-control" id="topicsDropdown" aria-describedby="sizing-addon3">
+                    </select>
+                </div><br/>
+
+            </div>
+            <div class="modal-footer">
+                <div class="btn-group pull-right" role="group" aria-label="...">
+                    <button id="criteriaApply" type="button" class="btn btn-sm btn-default" title="Apply"> <span class="glyphicon glyphicon-floppy-saved" aria-hidden="true"></span> </button>
+                    <button id="criteriaReset" type="button" class="btn btn-sm btn-default" title="Reset"> <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> </button>
+                </div>
+            </div>
+        </div>
     </div>
-</form>
+</div>
 <script type="text/javascript">
 
     $(document).ready(function () {

@@ -29,13 +29,6 @@
             "specialClass": "panel-primary"
         },
         {
-            "name": "Criteria",
-            "size": "3",
-            "type": "criteria.html.twig",
-            "dataUrl": "config",
-            "specialClass": "panel-primary"
-        },
-        {
             "name": "Category Summary",
             "size": "3",
             "type": "grapths/topicCategorySummaryV.html.twig",
