@@ -1,16 +1,85 @@
 {% extends 'layout.html.twig' %}
 {% block body %}
-    <h1>The men, the legends, the developers</h1>
-    <div class="container">
-        <table>
-            <tr>
-                <th>Team Member</th>
-                <th>Contribution</th>
-            </tr>
-            <tr>
-                <td style="padding: 10px">Dave Cloete</td>
-                <td style="padding: 10px"></td>
-            </tr>
-        </table> 
+    <style>
+        .img-carousel{
+            width: 100%;
+            min-height: 300px;
+        }
+
+        .heading-carousel{
+            font-size: 45px;
+            color: black;
+            font-weight: 900;
+        }
+        
+         .content-carousel{
+            color: black;
+        }
+
+
+    </style>
+    <h1>Meet the team</h1>
+    <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+        <!-- Indicators -->
+        <ol class="carousel-indicators">
+            <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+            <li data-target="#carousel-example-generic" data-slide-to="1"></li>
+            <li data-target="#carousel-example-generic" data-slide-to="2"></li>
+            <li data-target="#carousel-example-generic" data-slide-to="3"></li>
+            <li data-target="#carousel-example-generic" data-slide-to="4"></li>
+        </ol>
+
+        <!-- Wrapper for slides -->
+        <div class="carousel-inner" role="listbox">
+            <div class="item active">
+                <img src="images/matrix.gif" alt="..." class="img-carousel">
+                <div class="carousel-caption">
+                    <p class="heading-carousel">Gareth Stephenson</p>
+                    <p class="well well-sm content-carousel">Scala and PI guru</p>
+                </div>
+            </div>
+
+            <div class="item">
+                <img src="images/matrix.gif" alt="..." class="img-carousel">
+                <div class="carousel-caption">
+                    <p class="heading-carousel">Matsobane Khwinana</p>
+                    <p class="well well-sm content-carousel">Twitter History API Java Data Puller and Graphing guru</p>
+                </div>
+            </div>
+
+            <div class="item">
+                <img src="images/matrix.gif" alt="..." class="img-carousel">
+                <div class="carousel-caption">
+                    <p class="heading-carousel">Sidwell Mokhemisa</p>
+                    <p class="well well-sm content-carousel">BA / SA / Documentor guru</p>
+                </div>
+            </div>
+
+            <div class="item">
+                <img src="images/matrix.gif" alt="..." class="img-carousel">
+                <div class="carousel-caption">
+                    <p class="heading-carousel">Dave Cloete</p>
+                    <p class="well well-sm content-carousel">UI guru</p>
+                </div>
+            </div>
+
+            <div class="item">
+                <img src="images/matrix.gif" alt="..." class="img-carousel">
+                <div class="carousel-caption">
+                    <p class="heading-carousel">Kyle Trehaeven</p>
+                    <p class="well well-sm content-carousel">Twitter .NET Streamer API and Algo guru</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls 
+        <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a> -->
     </div>
 {% endblock %}
