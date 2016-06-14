@@ -8,6 +8,13 @@
             "specialClass": "panel-success"
         },
         {
+            "name": "Word Cloud",
+            "size": "6",
+            "type": "grapths/wordcloud.html.twig",
+            "dataUrl": "data/wordcloud",
+            "specialClass": "panel-info"
+        },
+        {
             "name": "Category Over Time - Hourly",
             "size": "6",
             "type": "grapths/topicCategoryHeatMapHourly.html.twig",
@@ -48,13 +55,6 @@
             "type": "grapths/crossfilter.html.twig",
             "dataUrl": "data/crossfiler",
             "specialClass": "panel-warning"
-        },
-        {
-            "name": "Words",
-            "size": "8",
-            "type": "grapths/wordTree.html.twig",
-            "dataUrl": "data/wordtree",
-            "specialClass": "panel-info"
         },
         {
             "name": "Map",

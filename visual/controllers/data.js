@@ -48,6 +48,14 @@ router.get('/topicCategorySummary', function (req, res) {
   });
 });
 
+router.get('/wordcloud', function (req, res) {
+  config.getDefaultTopicDataFile('words.json', function (data) {
+    res.setHeader('Content-Type', 'application/json');
+    res.send(data);
+  }, function () {
+    res.send(null);
+  });
+});
 
 router.get('/placesData', function (req, res) {
 

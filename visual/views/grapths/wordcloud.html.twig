@@ -1,0 +1,58 @@
+<div id="wc_dataPlaceholder"> Data loading, please wait ...</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+      var dataUrl = "{{dataUrl}}";
+
+      queue()
+        .defer(d3.json, dataUrl)
+        .await(function (error, data) {
+          if (error) {
+            $('#wc_dataPlaceholder').html("error: " + error);
+            return;
+          }
+
+          $('#wc_dataPlaceholder').html("");
+          $('#wc_dataPlaceholder').height(250);
+          WordCloudChart.initialise(data, '#wc_dataPlaceholder');
+        });
+    });
+
+    var WordCloudChart = {
+      initialise: function (data, chartDivSelector) {
+        var parent = this;
+        parent._setWidth(chartDivSelector);
+        parent.draw(data, chartDivSelector);
+        $(window).resize(function () {
+          parent._setWidth(chartDivSelector);
+
+          d3.select(chartDivSelector)
+            .selectAll("div")
+            .remove();
+          $(chartDivSelector).empty();
+          parent.draw(data, chartDivSelector);
+        });
+      },
+      _setWidth: function (chartDivSelector) {
+        $(chartDivSelector).width($(chartDivSelector).parent().width() - 10);
+      },
+      converDataToArrayList: function(data){
+        var list = [];
+        
+        for(var i = 0; i < data.length; i++){
+            list.push([data[i].word, data[i].count]);
+        }
+        
+        return list;
+      },
+      draw: function (data, chartDivSelector) {
+        // Using World cload component https://github.com/timdream/wordcloud2.js
+
+        var list = WordCloudChart.converDataToArrayList(data); //[['elections', 4], ['scary', 18], ['bob', 9], ['money', 44]];
+
+        var width = $(chartDivSelector).width();
+        $(chartDivSelector).height(width / 2);
+
+        WordCloud($(chartDivSelector).get(0), {list: list});
+      }
+    };
+</script>
