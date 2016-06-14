@@ -12,7 +12,7 @@ router.get('/categoryCountPerDay', function (req, res) {
   });
 });
 
-router.get('/CategoryCountPerHour', function (req, res) {
+router.get('/categoryCountPerHour', function (req, res) {
   config.getDefaultTopicDataFile('CategoryCountPerHour.json', function (data) {
     res.setHeader('Content-Type', 'application/json');
     res.send(data);
@@ -32,6 +32,15 @@ router.get('/categoryColors', function (req, res) {
 
 router.get('/ConProCount', function (req, res) {
   config.getDefaultTopicDataFile('ConProCount.json', function (data) {
+    res.setHeader('Content-Type', 'application/json');
+    res.send(data);
+  }, function () {
+    res.send(null);
+  });
+});
+
+router.get('/topicCategorySummary', function (req, res) {
+  config.getDefaultTopicDataFile('CategorySummary.json', function (data) {
     res.setHeader('Content-Type', 'application/json');
     res.send(data);
   }, function () {
@@ -69,37 +78,6 @@ router.get('/placesData', function (req, res) {
 
   res.setHeader('Content-Type', 'application/json');
   res.send(JSON.stringify(places));
-});
-
-router.get('/topicCategorySummary', function (req, res) {
-
-  var data = {
-    "Header": {
-      "Topic": "SA Elections"
-    },
-    "Data": [
-      {
-        "Category": "ANC",
-        "Pro": 870,
-        "Con": 200,
-        "Total": 1070
-      },
-      {
-        "Category": "EFF",
-        "Pro": 2000,
-        "Con": 150,
-        "Total": 2150
-      },
-      {
-        "Category": "DA",
-        "Pro": 520,
-        "Con": 60,
-        "Total": 580
-      }
-    ]
-  };
-  res.setHeader('Content-Type', 'application/json');
-  res.send(JSON.stringify(data));
 });
 
 router.get('/topicCategoryDailyCount', function (req, res) {

@@ -11,7 +11,7 @@
             "name": "Category Over Time - Hourly",
             "size": "6",
             "type": "grapths/topicCategoryHeatMapHourly.html.twig",
-            "dataUrl": "data/CategoryCountPerHour",
+            "dataUrl": "data/categoryCountPerHour",
             "specialClass": "panel-primary"
         },
         {
