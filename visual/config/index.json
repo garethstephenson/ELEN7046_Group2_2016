@@ -8,10 +8,17 @@
             "specialClass": "panel-success"
         },
         {
+            "name": "Word Cloud",
+            "size": "6",
+            "type": "grapths/wordcloud.html.twig",
+            "dataUrl": "data/wordcloud",
+            "specialClass": "panel-info"
+        },
+        {
             "name": "Category Over Time - Hourly",
             "size": "6",
             "type": "grapths/topicCategoryHeatMapHourly.html.twig",
-            "dataUrl": "data/CategoryCountPerHour",
+            "dataUrl": "data/categoryCountPerHour",
             "specialClass": "panel-primary"
         },
         {
@@ -26,13 +33,6 @@
             "size": "6",
             "type": "grapths/topicCategoryHeatMapDaily.html.twig",
             "dataUrl": "data/categoryCountPerDay",
-            "specialClass": "panel-primary"
-        },
-        {
-            "name": "Criteria",
-            "size": "3",
-            "type": "criteria.html.twig",
-            "dataUrl": "config",
             "specialClass": "panel-primary"
         },
         {
@@ -55,13 +55,6 @@
             "type": "grapths/crossfilter.html.twig",
             "dataUrl": "data/crossfiler",
             "specialClass": "panel-warning"
-        },
-        {
-            "name": "Words",
-            "size": "8",
-            "type": "grapths/wordTree.html.twig",
-            "dataUrl": "data/wordtree",
-            "specialClass": "panel-info"
         },
         {
             "name": "Map",

@@ -1,13 +1,13 @@
-package org.TwitConPro
+package org.TwitConPro.JsonFormats
 
-import spray.json.DefaultJsonProtocol
+import java.time.ZonedDateTime
 
 /**
   * Created by Gareth on 2016/06/11.
   */
 case class Tweet(_id: String,
                  createdBy: String,
-                 createdAt: String,
+                 createdAt: ZonedDateTime,
                  coords: Array[Either[String, Double]],
                  favouriteCount: Int,
                  hashtags: Array[HashTag],
@@ -24,10 +24,3 @@ case class Tweet(_id: String,
                  retweetedCount: Int,
                  tweetText: String,
                  tweetURL: String)
-
-object TweetJsonProtocol extends DefaultJsonProtocol {
-  implicit val hashTagFormat = jsonFormat(HashTag, "hashTag")
-  implicit val tweetFormat = jsonFormat(Tweet, "_id", "createdBy", "createdAt", "coords", "favouriteCount", "hashtags",
-    "twitterID", "inReplyToName", "inReplyToStatusID", "inReplyToUserID", "isRetweet", "language", "place", "sensitive",
-    "quotedStatusID", "retweeted", "retweetedCount", "tweetText", "tweetURL")
-}

@@ -56,7 +56,7 @@ module.exports = {
       self.getTopicsData(configData, function (topicsData) {
         for (var index = 0; index < topicsData.length; index++) {
           var item = topicsData[index];
-          if (item.id === configData.data.defaultTopicId) {
+          if (item.id == configData.data.defaultTopicId) {
 
             var data = {
               'configData': configData,

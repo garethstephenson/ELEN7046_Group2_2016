@@ -28,16 +28,4 @@ router.get('/about', function (req, res) {
   res.render('about.html.twig', {});
 });
 
-router.get('/error', function (req, res) {
-
-  function error(msg) {
-    this.message = msg;
-    this.name = 'error';
-    return this;
-  }
-  ;
-
-  throw error('This is bad');
-});
-
 module.exports = router;

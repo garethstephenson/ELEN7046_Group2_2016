@@ -10,6 +10,7 @@ nQuery.use(app);
 var config = require('./controllers/config');
 
 // parse json/applciation
+//app.use(express.bodyParser());
 app.use(bodyParser.json());
 
 // Handle Static content
