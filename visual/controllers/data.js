@@ -49,7 +49,7 @@ router.get('/topicCategorySummary', function (req, res) {
 });
 
 router.get('/wordcloud', function (req, res) {
-  config.getDefaultTopicDataFile('words.json', function (data) {
+  config.getDefaultTopicDataFile('WordCount.json', function (data) {
     res.setHeader('Content-Type', 'application/json');
     res.send(data);
   }, function () {
