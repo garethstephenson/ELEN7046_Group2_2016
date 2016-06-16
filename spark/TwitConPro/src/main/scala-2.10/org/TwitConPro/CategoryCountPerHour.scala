@@ -1,5 +1,6 @@
 package org.TwitConPro
 
+import java.io._
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
@@ -11,7 +12,6 @@ import org.apache.spark.{SparkConf, SparkContext}
 import spray.json._
 
 import scala.collection.mutable
-import java.io._
 
 /**
   * Created by Gareth on 2016/06/06.
@@ -38,9 +38,21 @@ object CategoryCountPerHour {
         sparkConfig.setAppName("Category Count Per Hour")
 
         val sparkContext = new SparkContext(sparkConfig)
+        sparkContext.defaultMinPartitions
+
+        var numPartitions: Int = sparkContext.defaultMinPartitions
+        if (args.length > 2) {
+            numPartitions = args(2).toInt
+        }
+
+        println("Using settings:")
+        println(s"\tInput path:\t$inputPath")
+        println(s"\tCategories:\t${categories.mkString(", ")}")
+        println(s"\tPartitions:\t$numPartitions")
 
         val tweets = sparkContext
-            .textFile(inputPath)
+            .textFile(inputPath, numPartitions)
+            .map(stripObjectInitializers(Array("ObjectId", "ISODate", "NumberLong"), _))
             .map(_.parseJson.convertTo[Tweet])
 
         import ZonedDateTimeSort._
@@ -86,9 +98,19 @@ object CategoryCountPerHour {
         sparkContext.stop()
 
         val output = CategoryCountPerHourOutput(containers.toList)
-        val pw = new PrintWriter(new File(inputPath + ".results.json"))
-        pw.write(output.container.toJson.prettyPrint)
-        pw.close
+        writeToFile(output.container.toJson.prettyPrint, s"$inputPath.results.json")
+    }
+
+    def writeToFile(contents: String, fileName: String): Unit = {
+        val printWriter = new PrintWriter(new File(fileName))
+        printWriter.write(contents)
+        printWriter.close
+    }
+
+    def stripObjectInitializers(initializers: Array[String], content: String): String = {
+        val initializerArray = initializers.mkString("|")
+        val pattern = ("""((?:""" + initializerArray + """)\((\S*)\))""").r
+        pattern.replaceAllIn(content, foundMatch => foundMatch.subgroups(1))
     }
 
     def getHour(tweet: Tweet): Int = {
