@@ -22,7 +22,6 @@
     }
 
 </style>
-<h4 id="v_topicHeader"></h4>
 <svg id="v_dataPlaceholder" class="v_chart"> Data loading, please wait ... </svg>
 <script type="text/javascript">
     $(document).ready(function () {
@@ -36,11 +35,9 @@
             $('#hm_dataPlaceholder').html("error: " + error);
             return;
           }
-
-          $('#v_topicHeader').html(data.Header.Topic);
           $('#v_dataPlaceholder').html("");
           $('#v_dataPlaceholder').height(250);
-          basicVBarChart.initialise(data.Data, categoryColors, '#v_dataPlaceholder');
+          basicVBarChart.initialise(data, categoryColors, '#v_dataPlaceholder');
         });
     });
 
