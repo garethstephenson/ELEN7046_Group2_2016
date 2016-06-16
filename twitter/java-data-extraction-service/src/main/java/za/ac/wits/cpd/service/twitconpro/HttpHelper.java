@@ -5,6 +5,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import javax.ejb.Stateless;
 import javax.net.ssl.HttpsURLConnection;
 
 /**
@@ -12,10 +13,11 @@ import javax.net.ssl.HttpsURLConnection;
  * 
  * @author Matsobane Khwinana (Matsobane.Khwinana@momentum.co.za)
  */
+@Stateless
 public class HttpHelper {
 
     
-    public static boolean writeRequest(HttpsURLConnection connection, String textBody) {
+    public boolean writeRequest(HttpsURLConnection connection, String textBody) {
         try {
             try (BufferedWriter wr = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream()))) {
                 wr.write(textBody);
@@ -28,7 +30,7 @@ public class HttpHelper {
     }
 
 
-    public static String readResponse(HttpsURLConnection connection) {
+    public String readResponse(HttpsURLConnection connection) {
         try {
             StringBuilder str = new StringBuilder();
 

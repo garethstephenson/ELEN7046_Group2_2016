@@ -1,5 +1,6 @@
 package za.ac.wits.cpd.service.twitconpro;
 
+import java.io.Serializable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -18,7 +19,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @XmlAccessorType(XmlAccessType.FIELD)
-public class GeoLocation {
+public class GeoLocation implements Serializable{
+    private static final long serialVersionUID = 8511377733993533387L;
 
     @XmlAttribute
     private Coordinate coordinates;

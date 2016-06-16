@@ -6,7 +6,10 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLEncoder;
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
 import javax.net.ssl.HttpsURLConnection;
+import lombok.extern.java.Log;
 import org.apache.commons.codec.binary.Base64;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -16,19 +19,23 @@ import org.json.simple.JSONValue;
  *
  * @author Matsobane Khwinana (Matsobane.Khwinana@momentum.co.za)
  */
+@Log
+@Stateless
 public class Authenticator {
+    @EJB
+    private HttpHelper httpHelper;
 
-    public static String requestBearerToken(String endPointUrl) throws IOException {
+    public String requestBearerToken(String endPointUrl) throws IOException {
         HttpsURLConnection connection = null;
         String encodedCredentials = encodeKeys(CONSUMER_KEY, CONSUMER_SECRET);
 
         try {
             connection = createConnectionToTwitter(endPointUrl, connection, encodedCredentials);
 
-            boolean success = HttpHelper.writeRequest(connection, GRANT_TYPE_CLIENT_CREDENTIALS);
+            boolean success = httpHelper.writeRequest(connection, GRANT_TYPE_CLIENT_CREDENTIALS);
             if (success) {
                 // Parse the JSON response into a JSON mapped object to fetch fields from.
-                JSONObject obj = (JSONObject) JSONValue.parse(HttpHelper.readResponse(connection));
+                JSONObject obj = (JSONObject) JSONValue.parse(httpHelper.readResponse(connection));
                 
                 if (obj != null) {
                     String tokenType = (String) obj.get("token_type");

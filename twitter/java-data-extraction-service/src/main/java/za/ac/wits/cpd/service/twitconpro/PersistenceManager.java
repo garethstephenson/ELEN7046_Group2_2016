@@ -4,12 +4,15 @@ import com.mongodb.Block;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.FindIterable;
+import com.mongodb.util.JSON;
 
 import java.util.ArrayList;
 import static java.util.Arrays.asList;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
+import javax.annotation.PostConstruct;
+import javax.ejb.Stateless;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -20,10 +23,12 @@ import org.bson.json.JsonMode;
 import org.bson.json.JsonWriterSettings;
 
 /**
- *
+ * Used for persisting tweets in a persistent storage.
+ * 
  * @author Matsobane Khwinana (Matsobane.Khwinana@momentum.co.za)
  */
 @Log
+@Stateless
 public class PersistenceManager {
 
     private MongoDatabase db;
@@ -32,15 +37,10 @@ public class PersistenceManager {
     private String databaseName = "test"; //default test
     private MongoClient mongoClient;
 
-    public PersistenceManager() {
+    @PostConstruct
+    public void init() {
         this.mongoClient = new MongoClient();
         this.db = this.mongoClient.getDatabase(getDatabaseName());
-    }
-
-    public PersistenceManager(String databaseName) {
-        this.databaseName = databaseName;
-        this.mongoClient = new MongoClient();
-        this.db = mongoClient.getDatabase(databaseName);
     }
 
     public void persist(@NonNull Tweet tweet) {
@@ -68,8 +68,10 @@ public class PersistenceManager {
                     JsonWriterSettings shellSettings = new JsonWriterSettings(JsonMode.SHELL);
                     JsonWriterSettings strictSettings = new JsonWriterSettings(JsonMode.STRICT);
                     System.out.println("#####  JsonMode.SHELL : " + bsonDoc.toJson(shellSettings));
-                    System.out.println("#####  JsonMode.STRICT : " +doc.toJson());
-                    
+                    final String toJson = doc.toJson();
+                    System.out.println("#####  JsonMode.STRICT : " + toJson);
+                    String gson = JSON.serialize(doc);
+                    System.out.println("#####  Gson JSON : " + gson);
                     Tweet tweet = new Tweet();
                     tweet.setTwitterId(doc.getLong("twitterID"));
                     tweet.setText(doc.getString("tweetText"));

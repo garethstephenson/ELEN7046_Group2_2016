@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
 import javax.net.ssl.HttpsURLConnection;
 import lombok.NonNull;
 import lombok.extern.java.Log;
@@ -22,7 +24,17 @@ import org.json.simple.JSONValue;
  * @author Matsobane Khwinana (Matsobane.Khwinana@momentum.co.za)
  */
 @Log
+@Stateless
 public class TweetsDataExtractor {
+    
+    @EJB
+    private TweetMapper mapper;
+    
+    @EJB
+    private HttpHelper httpHelper;
+    
+    @EJB
+    private Authenticator authenticator;
 
     public List<Tweet> extractHashtagTweets(@NonNull String hashtag) {
         return fetchTweets(String.format(HASHTAG_URL_FORMAT, validateHashtag(hashtag)));
@@ -66,7 +78,7 @@ public class TweetsDataExtractor {
         final String url = String.format(TWEET_BY_ID_URL, twitterID);
         JSONObject payload = retrieveTweetStatus(url);
         if (payload != null) {
-            return TweetMapper.toTweet(payload);
+            return mapper.toTweet(payload);
         }
 
         return null;
@@ -82,10 +94,10 @@ public class TweetsDataExtractor {
 
     private JSONObject retrieveTweetStatus(String twitterUrl) {
         try {
-            String bearerToken = Authenticator.requestBearerToken(TWITTER_API_OAUTH2_URL);
+            String bearerToken = authenticator.requestBearerToken(TWITTER_API_OAUTH2_URL);
             if (isValidString(bearerToken)) {
                 HttpsURLConnection connection = createConnectionToTwitter(twitterUrl, bearerToken);
-                final JSONObject obj = (JSONObject) JSONValue.parse(HttpHelper.readResponse(connection));
+                final JSONObject obj = (JSONObject) JSONValue.parse(httpHelper.readResponse(connection));
                 if (obj != null) {
                     return obj;
                 }
@@ -98,23 +110,23 @@ public class TweetsDataExtractor {
     }
     
     private JSONArray retrieveTwitterData(String twitterUrl) throws IOException {
-        String bearerToken = Authenticator.requestBearerToken(TWITTER_API_OAUTH2_URL);
+        String bearerToken = authenticator.requestBearerToken(TWITTER_API_OAUTH2_URL);
         if (isValidString(bearerToken)) {
             HttpsURLConnection connection = createConnectionToTwitter(twitterUrl, bearerToken);
-            return (JSONArray) JSONValue.parse(HttpHelper.readResponse(connection));
+            return (JSONArray) JSONValue.parse(httpHelper.readResponse(connection));
         }
 
         return null;
     }
 
     private JSONArray retrieveTwitterStatuses(String twitterUrl) throws IOException {
-        String bearerToken = Authenticator.requestBearerToken(TWITTER_API_OAUTH2_URL);
+        String bearerToken = authenticator.requestBearerToken(TWITTER_API_OAUTH2_URL);
         if (isValidString(bearerToken)) {
             JSONArray resp = new JSONArray();
             String urlWithCursor = twitterUrl + "&cursor=0";
             log.log(Level.SEVERE, "url: {0}", urlWithCursor);
             HttpsURLConnection connection = createConnectionToTwitter(urlWithCursor, bearerToken);
-            final JSONObject obj = (JSONObject) JSONValue.parse(HttpHelper.readResponse(connection));
+            final JSONObject obj = (JSONObject) JSONValue.parse(httpHelper.readResponse(connection));
             FileHelper.write(obj);
             resp.addAll((JSONArray) obj.get(STATUSES));
 
@@ -134,7 +146,7 @@ public class TweetsDataExtractor {
                 List<Tweet> hashtagTweets = new ArrayList<>();
                 for (int i = 0; i < hashArray.size(); i++) {
                     JSONObject tweetResp = (JSONObject) hashArray.get(i);
-                    Tweet tweet = TweetMapper.toTweet(tweetResp);
+                    Tweet tweet = this.mapper.toTweet(tweetResp);
                     log.log(Level.SEVERE, "**** Number of tweets before determining the location: {0}", hashArray.size());
                     if (tweet.getGeoLocation() != null) {
                         hashtagTweets.add(tweet);
@@ -163,7 +175,7 @@ public class TweetsDataExtractor {
                 Iterator iterator = jsonArray.iterator();
                 List<Tweet> tweets = new ArrayList<>();
                 while (iterator.hasNext())
-                    tweets.add(TweetMapper.toTweet((JSONObject) iterator.next()));
+                    tweets.add(this.mapper.toTweet((JSONObject) iterator.next()));
                 if (!tweets.isEmpty()) return tweets;
             }
         }catch (MalformedURLException e) {
@@ -215,13 +227,13 @@ public class TweetsDataExtractor {
         StringBuilder urlBuilder = new StringBuilder();
         
         urlBuilder.append(String.format(HASHTAG_URL_FORMAT, hashtagParams));
-        for (String key : options.keySet()) {
+        options.keySet().stream().forEach((key) -> {
             if (key.equalsIgnoreCase(SINCE) || key.equalsIgnoreCase(UNTIL)) {
                 urlBuilder.append(ENCODED_SPACE).append(key).append(ENCODED_COLON).append(options.get(key));
             } else {
                 urlBuilder.append(AMPERSAND).append(key).append(EQUAL_SIGN).append(options.get(key));
             }
-        }
+        });
 
         return urlBuilder;
     }

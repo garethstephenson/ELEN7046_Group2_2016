@@ -5,6 +5,7 @@ import com.google.maps.GeocodingApi;
 import com.google.maps.model.*;
 
 import java.util.logging.Level;
+import javax.ejb.Stateless;
 import lombok.extern.java.Log;
 
 /**
@@ -12,6 +13,7 @@ import lombok.extern.java.Log;
  * @author Matsobane Khwinana (Matsobane.Khwinana@momentum.co.za)
  */
 @Log
+@Stateless
 public class LocationResolver {
 
     /**
@@ -23,7 +25,7 @@ public class LocationResolver {
      * @param locationName
      * @return Coordinate - latitude and longitude
      */
-    public static Coordinate getGeoCodes(String locationName) {
+    public Coordinate getGeoCodes(String locationName) {
         try {
             return lookupCoordinates(locationName);
         } catch (Exception ex) {
@@ -34,7 +36,7 @@ public class LocationResolver {
     }
 
     
-    public static Coordinate getGeoCodes(String locationName, String defaultLocationName) {
+    public Coordinate getGeoCodes(String locationName, String defaultLocationName) {
         try {
             final Coordinate coordinates = lookupCoordinates(locationName); 
             if (coordinates!=null) 
@@ -48,7 +50,7 @@ public class LocationResolver {
         return null;
     }
     
-    private static Coordinate lookupCoordinates(String locationName) throws Exception {
+    private Coordinate lookupCoordinates(String locationName) throws Exception {
         GeoApiContext context = new GeoApiContext().setApiKey(GOOGLE_API_KEY);
         GeocodingResult[] results = GeocodingApi.geocode(context, locationName).await();
         if (results != null && results.length > 0) {

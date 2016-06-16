@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 import java.util.logging.Level;
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
 import lombok.extern.java.Log;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -16,9 +18,13 @@ import org.json.simple.JSONObject;
  * @author Matsobane Khwinana (Matsobane.Khwinana@momentum.co.za)
  */
 @Log
+@Stateless
 public class TweetMapper {
+    
+    @EJB
+    private LocationResolver locationResolver;
 
-    public static Tweet toTweet(JSONObject tweetResp) {
+    public Tweet toTweet(JSONObject tweetResp) {
         final Tweet tweet = new Tweet();
         tweet.setTwitterId(toTwitterId(tweetResp));
         tweet.setCreatedBy(toCreatedBy(tweetResp));
@@ -41,13 +47,13 @@ public class TweetMapper {
         return tweet;
     }
 
-    private static String toCreatedBy(JSONObject tweetResp) {
+    private String toCreatedBy(JSONObject tweetResp) {
         JSONObject userJson = (JSONObject)tweetResp.get(USER);
         String createdBy = userJson!=null?(String)userJson.get("name"):null;
         return createdBy;
     }
 
-    private static GeoLocation toGeoLocation(JSONObject tweetJson) {
+    private GeoLocation toGeoLocation(JSONObject tweetJson) {
         GeoLocation geo = toGeoLocationByCoordinates(tweetJson);
         if (geo != null)return geo;
 
@@ -60,13 +66,13 @@ public class TweetMapper {
         return null;
     }
 
-    private static GeoLocation toGeoLocationByUserProfile(JSONObject tweetJson){
+    private GeoLocation toGeoLocationByUserProfile(JSONObject tweetJson){
         //TODO: try user profile location
         JSONObject userJson = (JSONObject)tweetJson.get(USER);
         if(userJson!=null){
            String locationJson = (String)userJson.get("location");
            if(isValidString(locationJson)){
-               Coordinate geoCodes = LocationResolver.getGeoCodes(locationJson);
+               Coordinate geoCodes = locationResolver.getGeoCodes(locationJson);
                GeoLocation geoLoc = new GeoLocation();
                geoLoc.setName(locationJson);
                geoLoc.setCoordinates(geoCodes);
@@ -79,39 +85,12 @@ public class TweetMapper {
         return null;
     }
     
-    /*
-    {
-	"place": {
-		"id": "cc95b56a28712044",
-		"bounding_box": {
-			"type": "Polygon",
-			"coordinatesJsonArray": [
-				[
-					[28.0010585, -25.9448996],
-					[28.2712217, -25.9448996],
-					[28.2712217, -25.7768617],
-					[28.0010585, -25.7768617]
-				]
-			]
-		},
-		"place_type": "city",
-		"contained_within": [],
-		"name": "Centurion",
-		"attributes": {},
-		"country_code": "ZA",
-		"url": "https:\/\/api.twitter.com\/1.1\/geo\/id\/cc95b56a28712044.json",
-		"country": "South Africa",
-		"full_name": "Centurion, South Africa"
-            }
-    } 
-    
-     */
-    private static GeoLocation toGeoLocationByPlace(JSONObject tweetResp) {
+    private GeoLocation toGeoLocationByPlace(JSONObject tweetResp) {
         JSONObject placeJson = (JSONObject) tweetResp.get(PLACE);
         if (placeJson!=null) {
             String name = (String)placeJson.get("full_name");
             if(isValidString(name)){
-               Coordinate geoCodes = LocationResolver.getGeoCodes(name, TEXAS_USA);
+               Coordinate geoCodes = locationResolver.getGeoCodes(name, TEXAS_USA);
                GeoLocation geoLoc = new GeoLocation();
                geoLoc.setName(name);
                geoLoc.setCoordinates(geoCodes);
@@ -122,7 +101,7 @@ public class TweetMapper {
         return null;
     }
 
-    private static Coordinate[] toPolygonCoordinatesArray(JSONArray jsonCoordinates) {
+    private Coordinate[] toPolygonCoordinatesArray(JSONArray jsonCoordinates) {
         Coordinate[] coordinates = new Coordinate[4];
         final JSONArray parentArray = (JSONArray)jsonCoordinates.get(0);
         
@@ -145,7 +124,7 @@ public class TweetMapper {
         return coordinates;
     }
 
-    private static GeoLocation toGeoLocationByCoordinates(JSONObject tweetResp) {
+    private GeoLocation toGeoLocationByCoordinates(JSONObject tweetResp) {
         JSONObject coordinates = (JSONObject) tweetResp.get(COORDINATES);
         if (coordinates != null) {
             JSONArray geo = (JSONArray) coordinates.get(COORDINATES);
@@ -161,7 +140,7 @@ public class TweetMapper {
         return null;
     }
 
-    private static GregorianCalendar toGregorianCalendar(String dateUtc) {
+    private GregorianCalendar toGregorianCalendar(String dateUtc) {
         try {
             //Input date: "Wed Apr 27 13:29:08 +0000 2016"
             TimeZone timeZone = TimeZone.getTimeZone(UTC);
@@ -177,51 +156,51 @@ public class TweetMapper {
         return null;
     }
     
-    private static Long toFavouriteCount(JSONObject tweetResp) {
+    private Long toFavouriteCount(JSONObject tweetResp) {
         Long count = (Long)tweetResp.get(FAVORITE_COUNT);
         return count!=null?count:0L;
     }
 
-    private static Long toTwitterId(JSONObject tweetResp) {
+    private Long toTwitterId(JSONObject tweetResp) {
         return (Long)tweetResp.get(ID)!=null?(Long)tweetResp.get(ID):null;
     }
 
-    private static String toInReplyToName(JSONObject tweetResp) {
+    private String toInReplyToName(JSONObject tweetResp) {
         String inReplyToNameJson = (String)tweetResp.get(IN_REPLY_TO_SCREEN_NAME);
         return inReplyToNameJson!=null?inReplyToNameJson:"";
     }
 
-    private static Long toInReplyToStatusId(JSONObject tweetResp) {
+    private Long toInReplyToStatusId(JSONObject tweetResp) {
         Long inReplyToStatusIdJson = (Long)tweetResp.get(IN_REPLY_TO_STATUS_ID);
         return inReplyToStatusIdJson!=null?inReplyToStatusIdJson:-1L;
     }
 
-    private static Long toInReplyToUserId(JSONObject tweetResp) {
+    private Long toInReplyToUserId(JSONObject tweetResp) {
         Long inReplyToUserIdJson = (Long)tweetResp.get(IN_REPLY_TO_USER_ID);
         return inReplyToUserIdJson!=null?inReplyToUserIdJson:-1L;
     }
 
-    private static boolean toRetweeted(JSONObject tweetResp) {
+    private boolean toRetweeted(JSONObject tweetResp) {
         Boolean isRetweeted = (Boolean)tweetResp.get(RETWEETED);
         return isRetweeted!=null?isRetweeted:false;
     }
 
-    private static boolean toIsRetweet(JSONObject tweetResp) {
+    private boolean toIsRetweet(JSONObject tweetResp) {
         JSONObject isRetweeted = (JSONObject)tweetResp.get(RETWEETED_STATUS);
         return isRetweeted!=null;
     }
 
-    private static Long toRetweetCount(JSONObject tweetResp) {
+    private Long toRetweetCount(JSONObject tweetResp) {
         Long retweetCountJson = (Long)tweetResp.get(RETWEET_COUNT);
         return retweetCountJson!=null?retweetCountJson:0L;
     }
 
-    private static Long toQuotedStatusId(JSONObject tweetResp) {
+    private Long toQuotedStatusId(JSONObject tweetResp) {
         Long quotedStatusIdJson = (Long)tweetResp.get(QUOTED_STATUS_ID);
         return quotedStatusIdJson!=null?quotedStatusIdJson:-1L;
     }
     
-    private static String[] toHashTags(JSONObject tweetResp) {
+    private String[] toHashTags(JSONObject tweetResp) {
         JSONObject entitiesJson = (JSONObject)tweetResp.get(ENTITIES);
         if(entitiesJson!=null){
             JSONArray hashtagsJsonArray = (JSONArray)entitiesJson.get(HASHTAGS);
@@ -238,19 +217,19 @@ public class TweetMapper {
         return null;
     }
 
-    private static String toHashtagText(JSONArray hashtagsJsonArray, int i) {
+    private String toHashtagText(JSONArray hashtagsJsonArray, int i) {
         JSONObject hashtagJson = (JSONObject) hashtagsJsonArray.get(i);
         final String text = (String)hashtagJson.get(TEXT);
         return text;
     }
 
-    private static String toLanguage(JSONObject tweetResp) {
+    private String toLanguage(JSONObject tweetResp) {
         String lang = (String)tweetResp.get(LANGUAGE);
         //TODO: translate the BCP 47??
         return lang==null||lang.equalsIgnoreCase(UND)?EMPTY:lang;
     }
 
-    private static boolean toSensitive(JSONObject tweetResp) {
+    private boolean toSensitive(JSONObject tweetResp) {
         /*This field only surfaces when a tweet contains a link. 
             The meaning of the field doesn’t pertain to the tweet content itself, 
             but instead it is an indicator that the URL contained in the tweet 
@@ -260,18 +239,18 @@ public class TweetMapper {
         return isSensitive!=null?isSensitive:false;
     }
 
-    private static String toTweetUrl(JSONObject tweetResp) {        
+    private String toTweetUrl(JSONObject tweetResp) {        
         Long id = toTwitterId(tweetResp);
         String screenName = toUserScreenName(tweetResp);
         return (id!=null && isValidString(screenName))?String.format(TWEET_URL_FORMAT, screenName, id):EMPTY;    
     }
 
-    private static String toUserScreenName(JSONObject tweetResp) {
+    private String toUserScreenName(JSONObject tweetResp) {
         JSONObject userJson = (JSONObject)tweetResp.get(USER);
         return userJson!=null?(String)userJson.get("screen_name"):EMPTY;
     }
 
-    private static boolean isValidString(String string) {
+    private boolean isValidString(String string) {
         return string!=null&&!string.isEmpty();
     }
 
