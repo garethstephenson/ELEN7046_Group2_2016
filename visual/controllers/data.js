@@ -57,6 +57,15 @@ router.get('/wordcloud', function (req, res) {
   });
 });
 
+router.get('/categoryConProCountPerHour', function (req, res) {
+  config.getDefaultTopicDataFile('ConProCountPerHour.json', function (data) {
+    res.setHeader('Content-Type', 'application/json');
+    res.send(data);
+  }, function () {
+    res.send(null);
+  });
+});
+
 router.get('/placesData', function (req, res) {
 
   var places = {

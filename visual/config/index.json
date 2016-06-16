@@ -1,11 +1,18 @@
 {
     "panels": [
         {
-            "name": "Con vs Pro 4 days prior to home state primaries",
+            "name": "Pro vs Con 4 days prior to home state primaries",
             "size": "6",
             "type": "grapths/topicConProHomeState.html.twig",
             "dataUrl": "data/ConProCount",
             "specialClass": "panel-success"
+        },
+        {
+            "name": "Pro vs Con Per Category Over Time - Hourly",
+            "size": "6",
+            "type": "grapths/topicCategoryStreamConProHourly.html.twig",
+            "dataUrl": "data/categoryConProCountPerHour",
+            "specialClass": "panel-warning"
         },
         {
             "name": "Word Cloud",
@@ -48,13 +55,6 @@
             "type": "grapths/topicCategorySummaryH.html.twig",
             "dataUrl": "data/topicCategorySummary",
             "specialClass": "panel-success"
-        },
-        {
-            "name": "Crossfilter",
-            "size": "4",
-            "type": "grapths/crossfilter.html.twig",
-            "dataUrl": "data/crossfiler",
-            "specialClass": "panel-warning"
         },
         {
             "name": "Map",

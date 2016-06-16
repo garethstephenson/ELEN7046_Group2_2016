@@ -1,0 +1,60 @@
+<style>
+
+</style>
+<div id="cph_dataPlaceholder" class="cph_chart"> Data loading, please wait ... </div>
+<script type="text/javascript">
+    $(document).ready(function () {
+      var dataUrl = "{{dataUrl}}";
+
+      queue()
+        .defer(d3.json, dataUrl)
+        .defer(d3.json, "/data/categoryColors")
+        .await(function (error, data, categoryColors) {
+          if (error) {
+            $('#cph_dataPlaceholder').html("error: " + error);
+            return;
+          }
+
+          $('#cph_dataPlaceholder').html("");
+          $('#cph_dataPlaceholder').height(250);
+          streamChart.initialise(data, categoryColors, '#cph_dataPlaceholder');
+        });
+    });
+
+    var streamChart = {
+      initialise: function (data, categoryColors, chartDivSelector) {
+        var parent = this;
+        parent._setWidth(chartDivSelector);
+        parent.draw(data, categoryColors, chartDivSelector);
+        $(window).resize(function () {
+          parent._setWidth(chartDivSelector);
+
+          d3.select(chartDivSelector)
+            .selectAll("div")
+            .remove();
+          $(chartDivSelector).empty();
+          parent.draw(data, categoryColors, chartDivSelector);
+        });
+      },
+      _setWidth: function (chartDivSelector) {
+        $(chartDivSelector).width($(chartDivSelector).parent().width() - 10);
+      },
+      draw: function (data, categoryColors, chartDivSelector) {
+        // Code developed following ???
+
+        var hours = commonCharts.make2DigitNumberArray(0, 23);
+        var days = d3.map(data, function (d) {
+          return commonCharts.getDateValue(d.Date);
+        }).keys();
+
+        var margin = {top: 20, right: 0, bottom: 20, left: 75};
+        var width = $(chartDivSelector).width() - margin.left - margin.right;
+        var gridSize = Math.floor(width / hours.length); // TODO
+        var divHeight = (days.length * gridSize) + margin.top + margin.bottom + gridSize; // TODO : 
+        $(chartDivSelector).height(divHeight);
+        var height = $(chartDivSelector).height() - margin.top - margin.bottom;
+
+
+      }
+    };
+</script>
