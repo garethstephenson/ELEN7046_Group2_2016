@@ -1,25 +1,20 @@
-{
-    "Header": {
-      "Topic": "SA Elections"
-    },
-    "Data": [
-      {
+[
+    {
         "Category": "ANC",
         "Pro": 870,
         "Con": 200,
         "Total": 1070
-      },
-      {
+    },
+    {
         "Category": "EFF",
         "Pro": 2000,
         "Con": 150,
         "Total": 2150
-      },
-      {
+    },
+    {
         "Category": "DA",
         "Pro": 520,
         "Con": 60,
         "Total": 580
-      }
-    ]
-  }
+    }
+]
