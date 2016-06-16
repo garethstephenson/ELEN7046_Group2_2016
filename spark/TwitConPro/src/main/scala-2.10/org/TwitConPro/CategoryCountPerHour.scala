@@ -11,7 +11,7 @@ import org.apache.hadoop.fs._
 import org.apache.spark.{SparkConf, SparkContext}
 import spray.json._
 
-import scala.collection.mutable
+import scala.collection.mutable.ListBuffer
 
 /**
   * Created by Gareth on 2016/06/06.
@@ -61,41 +61,31 @@ object CategoryCountPerHour {
                 val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:00:00'Z'") // Convert to same hour date
                 ZonedDateTime.parse(tweet.createdAt.format(formatter))
             })
-            .distinct() // Reduce to unique hourly times
+            .distinct // Reduce to unique hourly times
             .sortBy(date => date)
-            .collect()
+            .collect
 
-        val containers = mutable.MutableList[CategoryCountContainer]()
+        val containers: ListBuffer[CategoryCountContainer] = new ListBuffer[CategoryCountContainer]
         dates.foreach(date => {
 
             val results = categories
-                .map(category => {
-                    tweets
-                        .filter(tweet => tweet.tweetText.contains(category) && tweet.createdAt.getHour == date.getHour) // For each hour
-                        .map(tweet => (category, 1))
-                        .reduceByKey(_ + _) // Returns tuple (Category, CountPerHour)
-                        .map(categoryCountTuple => (date, (categoryCountTuple._1, categoryCountTuple._2))) // Returns tuple (Date, (Category, CountPerHour))
-                        .collect()
-                })
+                .map(category => tweets
+                    .filter(tweet => tweet.tweetText.contains(category))
+                    .filter(tweet => getHour(tweet) == date.getHour) // For each hour
+                    .map(tweet => (category, 1))
+                    .reduceByKey(_ + _) // Returns tuple (Category, CountPerHour)
+                    .map(categoryCountTuple => (date, categoryCountTuple._1, categoryCountTuple._2)) // Returns tuple (Date, Category, CountPerHour)
+                    .collect)
 
-            val categoryCounts: mutable.MutableList[CategoryCount] = mutable.MutableList()
-            //println(s"\nDate:\t\t$date")
-
-            results.foreach(result => {
-
-                result
+            val categoryCounts: ListBuffer[CategoryCount] = new ListBuffer[CategoryCount]
+            results.foreach(result => categoryCounts
+                .appendAll(result
                     .filter(datedCategoryCountTuple => datedCategoryCountTuple._1 == date)
-                    .foreach(datedCategoryCountTuple => {
-                        val categoryCountTuple = datedCategoryCountTuple._2
-                        categoryCounts.+=(CategoryCount(categoryCountTuple._1, categoryCountTuple._2))
+                    .map(datedCategoryCountTuple => CategoryCount(datedCategoryCountTuple._2, datedCategoryCountTuple._3))))
 
-                        //println(s"Category:\t${categoryCountTuple._1}\nCount:\t\t${categoryCountTuple._2}\n")
-                    })
-            })
-            val container = CategoryCountContainer(date, categoryCounts.toList)
-            containers.+=(container)
+            containers += CategoryCountContainer(date, categoryCounts.toList)
         })
-        sparkContext.stop()
+        sparkContext.stop
 
         val output = CategoryCountPerHourOutput(containers.toList)
         writeToFile(output.container.toJson.prettyPrint, s"$inputPath.results.json")
@@ -104,7 +94,7 @@ object CategoryCountPerHour {
     def writeToFile(contents: String, fileName: String): Unit = {
         val printWriter = new PrintWriter(new File(fileName))
         printWriter.write(contents)
-        printWriter.close
+        printWriter.close()
     }
 
     def stripObjectInitializers(initializers: Array[String], content: String): String = {
