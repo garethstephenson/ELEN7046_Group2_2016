@@ -1,4 +1,4 @@
-package za.ac.wits.cpd.service.twitconpro;
+package za.ac.wits.cpd.service.twitconpro.api;
 
 import java.io.Serializable;
 import java.util.GregorianCalendar;

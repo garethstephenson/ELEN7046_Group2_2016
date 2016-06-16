@@ -1,5 +1,6 @@
-package za.ac.wits.cpd.service.twitconpro;
+package za.ac.wits.cpd.service.twitconpro.impl;
 
+import za.ac.wits.cpd.service.twitconpro.api.Tweet;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;

@@ -14,13 +14,14 @@ import static org.hamcrest.CoreMatchers.is;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
+import static org.hamcrest.CoreMatchers.is;
 
 /**
  *
  * @author Matsobane Khwinana (Matsobane.Khwinana@momentum.co.za)
  */
 @Log
-public class ExtractAndStoreTweetsTest {
+public class DataExtractionServiceTest {
     private Client client;
 
     @Before
@@ -42,7 +43,6 @@ public class ExtractAndStoreTweetsTest {
         log.severe(payload);
     }
     
-
     @Test
     public void testExtractAndStoreById() {
         //Given

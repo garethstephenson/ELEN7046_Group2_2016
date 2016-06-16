@@ -1,5 +1,8 @@
-package za.ac.wits.cpd.service.twitconpro;
+package za.ac.wits.cpd.service.twitconpro.impl;
 
+import za.ac.wits.cpd.service.twitconpro.api.GeoLocation;
+import za.ac.wits.cpd.service.twitconpro.api.Tweet;
+import za.ac.wits.cpd.service.twitconpro.api.Coordinate;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;

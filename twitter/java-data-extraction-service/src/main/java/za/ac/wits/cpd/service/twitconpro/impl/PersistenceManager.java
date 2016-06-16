@@ -1,5 +1,7 @@
-package za.ac.wits.cpd.service.twitconpro;
+package za.ac.wits.cpd.service.twitconpro.impl;
 
+import za.ac.wits.cpd.service.twitconpro.api.GeoLocation;
+import za.ac.wits.cpd.service.twitconpro.api.Tweet;
 import com.mongodb.Block;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;

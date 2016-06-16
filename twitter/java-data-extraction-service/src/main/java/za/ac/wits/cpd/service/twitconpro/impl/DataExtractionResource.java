@@ -1,6 +1,7 @@
 
-package za.ac.wits.cpd.service.twitconpro;
+package za.ac.wits.cpd.service.twitconpro.impl;
 
+import za.ac.wits.cpd.service.twitconpro.api.Tweet;
 import java.util.logging.Level;
 import javax.annotation.Resource;
 import javax.ejb.EJB;

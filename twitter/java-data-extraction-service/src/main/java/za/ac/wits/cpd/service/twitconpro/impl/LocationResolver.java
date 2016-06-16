@@ -1,5 +1,6 @@
-package za.ac.wits.cpd.service.twitconpro;
+package za.ac.wits.cpd.service.twitconpro.impl;
 
+import za.ac.wits.cpd.service.twitconpro.api.Coordinate;
 import com.google.maps.GeoApiContext;
 import com.google.maps.GeocodingApi;
 import com.google.maps.model.*;

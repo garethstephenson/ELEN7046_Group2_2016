@@ -1,4 +1,4 @@
-package za.ac.wits.cpd.service.twitconpro;
+package za.ac.wits.cpd.service.twitconpro.impl;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
