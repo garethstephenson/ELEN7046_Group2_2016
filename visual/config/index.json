@@ -10,7 +10,7 @@
         {
             "name": "Category Over Time - Daily",
             "size": "6",
-            "type": "grapths/topicCategoryStreamHourly.html.twig",
+            "type": "grapths/topicCategoryStreamDaily.html.twig",
             "dataUrl": "data/categoryCountPerDay",
             "specialClass": "panel-warning"
         },
