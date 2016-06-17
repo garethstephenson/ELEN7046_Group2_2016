@@ -11,22 +11,23 @@
             color: black;
             font-weight: 900;
         }
-        
-         .content-carousel{
+
+        .content-carousel{
             color: black;
         }
 
 
     </style>
+<div class="container">
     <h1>Meet the team</h1>
-    <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+    <div id="carousel-team" class="carousel slide" data-ride="carousel">
         <!-- Indicators -->
         <ol class="carousel-indicators">
-            <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
-            <li data-target="#carousel-example-generic" data-slide-to="1"></li>
-            <li data-target="#carousel-example-generic" data-slide-to="2"></li>
-            <li data-target="#carousel-example-generic" data-slide-to="3"></li>
-            <li data-target="#carousel-example-generic" data-slide-to="4"></li>
+            <li data-target="#carousel-team" data-slide-to="0" class="active"></li>
+            <li data-target="#carousel-team" data-slide-to="1"></li>
+            <li data-target="#carousel-team" data-slide-to="2"></li>
+            <li data-target="#carousel-team" data-slide-to="3"></li>
+            <li data-target="#carousel-team" data-slide-to="4"></li>
         </ol>
 
         <!-- Wrapper for slides -->
@@ -73,13 +74,24 @@
         </div>
 
         <!-- Controls 
-        <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+        <a class="left carousel-control" href="#carousel-team" role="button" data-slide="prev">
             <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
             <span class="sr-only">Previous</span>
         </a>
-        <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+        <a class="right carousel-control" href="#carousel-team" role="button" data-slide="next">
             <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
             <span class="sr-only">Next</span>
         </a> -->
     </div>
+    <h5>LICENSE</h5>
+    <p>TODO ?? <a target="_blank" href="https://opensource.org/licenses/GPL-3.0">GNU General Public License, version 3</a></p>
+    <p>TODO ?? <a href="http://opensource.org/licenses/BSD-3-Clause">BSD license</a></p>
+</div>
+    <script type='text/javascript'>
+        $(document).ready(function() {
+         $('#carousel-team').carousel({
+             interval: 3000
+         })
+    });   
+    </script>
 {% endblock %}
