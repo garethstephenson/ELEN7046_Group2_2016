@@ -10,7 +10,9 @@ import javax.ejb.Stateless;
 import lombok.extern.java.Log;
 
 /**
- *
+ * A helper class used to determine location Geo-coordinates.
+ * It uses Google's Geocoding API to resolve the coordinates.
+ * 
  * @author Matsobane Khwinana (Matsobane.Khwinana@momentum.co.za)
  */
 @Log
@@ -19,12 +21,14 @@ public class LocationResolver {
 
     /**
      * Converts a given location name to Geo-location coordinates.
-     * See the URL below for more documentation...
-     * 
+     * For information, see the URL below for more documentation:
      * https://developers.google.com/maps/web-services/client-library
      * 
+     * TODO: cache location coordinates for repeating location names 
+     *      to avoid the roundtrip to Google.
+     * 
      * @param locationName
-     * @return Coordinate - latitude and longitude
+     * @return Coordinate - latitude and longitude representation.
      */
     public Coordinate getGeoCodes(String locationName) {
         try {
@@ -56,7 +60,7 @@ public class LocationResolver {
         GeocodingResult[] results = GeocodingApi.geocode(context, locationName).await();
         if (results != null && results.length > 0) {
             GeocodingResult result = results[0];
-            log.severe(result.toString());
+            log.log(Level.INFO, "#### GeocodingResult: {0}", result.toString());
             Geometry geometry = result.geometry;
             LatLng coordinates = geometry.location;
             return new Coordinate(coordinates.lat, coordinates.lng);
