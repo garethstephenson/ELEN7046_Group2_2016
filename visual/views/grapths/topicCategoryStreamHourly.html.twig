@@ -4,6 +4,7 @@
         border-radius: 8px;
     }
 </style>
+<select id="sh_daysInput" class="pull-right"></select>
 <div id="sh_dataPlaceholder" class="sh_chart"> Data loading, please wait ... </div>
 <script type="text/javascript">
     $(document).ready(function () {
@@ -19,36 +20,63 @@
 
           $('#sh_dataPlaceholder').html("");
           $('#sh_dataPlaceholder').height(250);
-          streamDailyChart.initialise(data, categoryColors, '#sh_dataPlaceholder');
+          streamHourlyChart.initialise(data, categoryColors, '#sh_dataPlaceholder', '#sh_daysInput');
         });
     });
-    var streamDailyChart = {
-      initialise: function (data, categoryColors, chartDivSelector) {
+    var streamHourlyChart = {
+      initialise: function (data, categoryColors, chartDivSelector, daysSelector) {
         var parent = this;
         parent._setWidth(chartDivSelector);
-        parent.draw(data, categoryColors, chartDivSelector);
+        var days = parent._getDays(data);
+        var day = days[0];
+        parent._populateDateSelect(daysSelector, days);
+        $(daysSelector).change(function () {
+            day = $(daysSelector).val();
+          d3.select(chartDivSelector)
+            .selectAll("div")
+            .remove();
+          $(chartDivSelector).empty();
+          parent.draw(data, categoryColors, chartDivSelector, day);
+        });
+
+        parent.draw(data, categoryColors, chartDivSelector, day);
         $(window).resize(function () {
           parent._setWidth(chartDivSelector);
           d3.select(chartDivSelector)
             .selectAll("div")
             .remove();
           $(chartDivSelector).empty();
-          parent.draw(data, categoryColors, chartDivSelector);
+          parent.draw(data, categoryColors, chartDivSelector, day);
         });
+      },
+      _populateDateSelect: function (daysSelector, days) {
+        $(daysSelector).empty();
+        for (var index = 0; index < days.length; index++) {
+          var option = $('<option>', {value: days[index]})
+            .html(days[index]);
+          if (index == 0) {
+            option.attr('selected', 'selected');
+          }
+          $(daysSelector).append(option);
+        }
       },
       _setWidth: function (chartDivSelector) {
         $(chartDivSelector).width($(chartDivSelector).parent().width() - 10);
       },
-      draw: function (data, categoryColors, chartDivSelector) {
-        // Used the following chart as a base: http://bl.ocks.org/mbostock/1256572
-        // http://bl.ocks.org/mbostock/4060954
-        
-        if (data == null || data.length <= 0)
-            return;
-        
+      _getDays: function (data) {
         var days = d3.map(data, function (d) {
           return commonCharts.getDateValue(d.Date);
         }).keys();
+        return days;
+      },
+      draw: function (data, categoryColors, chartDivSelector, day) {
+        // Used the following chart as a base: http://bl.ocks.org/mbostock/1256572
+        // http://bl.ocks.org/mbostock/4060954
+
+        if (data == null || data.length <= 0)
+          return;
+
+        var hours = commonCharts.make2DigitNumberArray(0, 23);
         var margin = {top: 0, right: 0, bottom: 30, left: 0};
         var width = $(chartDivSelector).width() - margin.left - margin.right;
         var divHeight = 250;
@@ -63,7 +91,9 @@
         var stack = d3.layout.stack().offset(stackOffset);
         var dataStack = stack(d3.range(categoryColors.length).map(function (colorIndex) {
           var stackArray = [];
-          $.each(data, function (index, item) {
+          $.each(data.filter(function (d) {
+            return commonCharts.getDateValue(d.Date) == day
+          }), function (index, item) {
             var categoryIndex = 0;
             for (var i = 0; i < item.Data.length; i++) {
               if (categoryColors[colorIndex].Category == item.Data[i].Category) {
@@ -73,7 +103,7 @@
             }
 
             var element = {
-              x: index, //commonCharts.getDateValue(item.Date),
+              x: commonCharts.getHourValue(item.Date),
               y: item.Data[categoryIndex].Count,
               categoryIndex: categoryIndex,
               colorIndex: colorIndex,
@@ -83,9 +113,9 @@
           });
           return stackArray;
         }));
-        // days -> Width
+        // hours -> Width
         var x = d3.scale.linear()
-          .domain([0, days.length - 1])
+          .domain([0, hours.length - 1])
           .range([0, width]);
 
         // y scale max total count
@@ -124,7 +154,7 @@
             return "#FFFFFF";
           });
 
-        streamDailyChart._drawLegend(svg, categoryColors, height, margin.bottom, width / days.length);
+        streamHourlyChart._drawLegend(svg, categoryColors, height, margin.bottom, width / hours.length);
       },
       _drawLegend: function (svg, categoryColors, height, marginBottom, gridSize) {
         var legendElementWidth = gridSize * 2;

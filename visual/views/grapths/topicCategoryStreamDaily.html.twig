@@ -1,10 +1,10 @@
 <style>
-    .sh_chart {
+    .sd_chart {
         background-color: #EFEFEF;
         border-radius: 8px;
     }
 </style>
-<div id="sh_dataPlaceholder" class="sh_chart"> Data loading, please wait ... </div>
+<div id="sd_dataPlaceholder" class="sd_chart"> Data loading, please wait ... </div>
 <script type="text/javascript">
     $(document).ready(function () {
       var dataUrl = "{{dataUrl}}";
@@ -13,13 +13,13 @@
         .defer(d3.json, "/data/categoryColors")
         .await(function (error, data, categoryColors) {
           if (error) {
-            $('#sh_dataPlaceholder').html("error: " + error);
+            $('#sd_dataPlaceholder').html("error: " + error);
             return;
           }
 
-          $('#sh_dataPlaceholder').html("");
-          $('#sh_dataPlaceholder').height(250);
-          streamDailyChart.initialise(data, categoryColors, '#sh_dataPlaceholder');
+          $('#sd_dataPlaceholder').html("");
+          $('#sd_dataPlaceholder').height(250);
+          streamDailyChart.initialise(data, categoryColors, '#sd_dataPlaceholder');
         });
     });
     var streamDailyChart = {
