@@ -1,10 +1,6 @@
 package za.ac.wits.cpd.service.twitconpro.test;
 
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.ws.rs.client.Client;
@@ -16,8 +12,6 @@ import lombok.extern.java.Log;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
-import static org.hamcrest.CoreMatchers.is;
-import org.junit.Ignore;
 import static org.hamcrest.CoreMatchers.is;
 
 /**
@@ -51,9 +45,9 @@ public class DataExtractionServiceTest {
     public void testExtractById() {
         //Given
         Long twitterId = 729674502339055617L;
-        final String url = String.format(tweetByIdPathFormat,twitterId);
-        log.severe(url);
+        final String url = String.format(extractTweetByIdPathFormat,twitterId);
         WebTarget target = this.client.target(url);
+        log.info(target.getUri().toString());
         
         //When
         Response response = target.request(MediaType.APPLICATION_JSON)
@@ -70,7 +64,7 @@ public class DataExtractionServiceTest {
     public void testExtractAndStoreById() {
         //Given
         Long twitterId = 729674502339055617L;
-        final String url = String.format(tweetByIdAndStorePathFormat,twitterId);
+        final String url = String.format(extractAndPersistTweetByIdPathFormat,twitterId);
         log.severe(url);
         WebTarget target = this.client.target(url);
         
@@ -86,11 +80,54 @@ public class DataExtractionServiceTest {
     }
     
     @Test
-    public void testExtractHistoricTrumpTweetsDuringPrimaries() {
+    public void testExtractHistoricEFFTweetsByHashtag(){
+        //Given 
+        String hashtag = "EFFmanifesto";
+        WebTarget target = this.client.target(extractHistoryTweetsByHashtagUrl);
         
+        //When
+        Response response = target.queryParam("hashtag",hashtag)
+                                .queryParam(COUNT, 900)
+                                .queryParam(SINCE, EFF_MANIFESTO_LAUNCH_DATE)
+                                .queryParam(UNTIL, THIRDY_DAYS_AFTER_EFF_MANIFESTO_LAUNCH)
+                                .request(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .get();
+        
+        //Then
+        assertThat(response.getStatus(), is(200));
+        JsonArray tweets = response.readEntity(JsonArray.class);
+        assertTrue(tweets.size()>0);
+    } 
+    
+    @Test
+    public void testExtractAndPersistHistoricEFFTweetsByHashtag(){
+        //Given 
+        WebTarget target = this.client.target(extractAndPersitHistoryTweetsByHashtagUrl);
+        target = target.queryParam(HASHTAG,"EFFmanifesto")
+                                .queryParam(COUNT, 900)
+                                .queryParam(SINCE, EFF_MANIFESTO_LAUNCH_DATE)
+                                .queryParam(UNTIL, THIRDY_DAYS_AFTER_EFF_MANIFESTO_LAUNCH);
+        
+        log.severe(target.getUri().toString());
+        
+        //When
+        Response response = target.request(MediaType.APPLICATION_JSON)
+                                    .accept(MediaType.APPLICATION_JSON)
+                                    .get();
+        
+        
+        //Then
+        assertThat(response.getStatus(), is(200));
+        JsonArray tweets = response.readEntity(JsonArray.class);
+        assertTrue(tweets.size()>0);
+    }       
+    
+    @Test
+    public void testExtractHistoricTrumpTweetsDuringPrimaries() {
         //Given    
-        log.severe(historyTweetsByHashtagsUrl);        
-        WebTarget target = this.client.target(historyTweetsByHashtagsUrl);
+        log.severe(extractHistoryTweetsByHashtagsUrl);        
+        WebTarget target = this.client.target(extractAndPersitHistoryTweetsByHashtagsUrl);
         
         //When
         Response response = target.queryParam(HASHTAGS,"donaldtrump")
@@ -112,8 +149,8 @@ public class DataExtractionServiceTest {
     @Test
     public void testExtractAndStoreHistoricTrumpTweetsDuringPrimaries() {
         //Given    
-        log.severe(historyTweetsByHashtagsUrl);        
-        WebTarget target = this.client.target(historyTweetsByHashtagsUrl);
+        log.severe(extractHistoryTweetsByHashtagsUrl);        
+        WebTarget target = this.client.target(extractHistoryTweetsByHashtagsUrl);
         
         //When
         Response response = target.queryParam(HASHTAGS,"donaldtrump")
@@ -155,12 +192,19 @@ public class DataExtractionServiceTest {
 //        }
 //    }
 
-    private final String tweetByIdPathFormat = "http://localhost:8080/java-data-extraction-service/rest/extract-data/byId/%d";
-    private final String historyTweetsByHashtagsUrl = "http://localhost:8080/historic-data-extraction-service/rest/extract-data/historyByHashtags";
-    private final String tweetByIdAndStorePathFormat = "http://localhost:8080/historic-data-extraction-service/rest/extract-data/byIdAndPersist/%d";
+    private final String extractTweetByIdPathFormat = "http://localhost:8080/historic-data-extraction-service/rest/extract-data/byId/%d";
+    private final String extractHistoryTweetsByHashtagUrl = "http://localhost:8080/historic-data-extraction-service/rest/extract-data/historyByHashtag";
+    private final String extractHistoryTweetsByHashtagsUrl = "http://localhost:8080/historic-data-extraction-service/rest/extract-data/historyByHashtags";
+    private final String extractAndPersistTweetByIdPathFormat = "http://localhost:8080/historic-data-extraction-service/rest/extract-data/byIdAndPersist/%d";
+    private final String extractAndPersitHistoryTweetsByHashtagUrl = "http://localhost:8080/historic-data-extraction-service/rest/extract-data/extractAndPersistHistoryByHashtag";
+    private final String extractAndPersitHistoryTweetsByHashtagsUrl = "http://localhost:8080/historic-data-extraction-service/rest/extract-data/extractAndPersistHistoryByHashtags";
+    
+    private static final String THIRDY_DAYS_AFTER_EFF_MANIFESTO_LAUNCH = "2016-05-30";
+    private static final String EFF_MANIFESTO_LAUNCH_DATE = "2016-04-30";
     private static final String PRIMARIES_START_DATE = "2016-03-15";
     private static final String PRIMARIES_END_DATE = "2016-03-30";
     private static final String HASHTAGS = "hashtags";
+    private static final String HASHTAG = "hashtag";
     private static final String COUNT = "count";
     private static final String SINCE = "since";
     private static final String UNTIL = "until";
