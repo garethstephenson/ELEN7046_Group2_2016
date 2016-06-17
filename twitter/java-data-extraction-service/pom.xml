@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>za.ac.wits.cpd.elen7046.group2</groupId>
-    <artifactId>java-data-extraction-service</artifactId>
+    <groupId>za.ac.wits.cpd.elen7046.twitconpro</groupId>
+    <artifactId>historic-data-extraction-service</artifactId>
     <version>1.0.0</version>
     <packaging>war</packaging>
-    <name>java-data-extraction-service</name>
-    <description>The Twitter Data Extraction Service</description>
+    <name>historic-data-extraction-service</name>
+    <description>The History Twitter Data Extraction Service</description>
     
     <properties>
+        <failOnMissingWebXml>false</failOnMissingWebXml>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <failOnMissingWebXml>false</failOnMissingWebXml>
     </properties>
     
     <dependencyManagement>
@@ -84,12 +84,13 @@
             <groupId>org.mongodb</groupId>
             <artifactId>mongodb-driver</artifactId>
         </dependency>
-        <!-- testing framework -->
+        <!-- Unit testing framework -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
+        <!-- REST Client libraries for testing purpose -->
         <dependency>
             <groupId>org.glassfish.jersey.core</groupId>
             <artifactId>jersey-client</artifactId>
@@ -106,57 +107,5 @@
             <version>2.23</version>
         </dependency>
     </dependencies>
-    
-    <build>
-        <finalName>twit-con-pro-datasource</finalName>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.17</version>
-            </plugin>
-        </plugins>
-    </build>
 
-    <!--profiles>
-        <profile>
-            <id>arquillian-glassfish-remote</id>
-            <dependencies>
-                <dependency>
-                    <groupId>org.jboss.arquillian.container</groupId>
-                    <artifactId>arquillian-glassfish-remote-3.1</artifactId>
-                    <version>1.0.0.CR3</version>
-                    <scope>test</scope>
-                    <exclusions>
-                        <exclusion>
-                            <groupId>org.jboss.arquillian.container</groupId>
-                            <artifactId>arquillian-container-spi</artifactId>
-                        </exclusion>
-                    </exclusions>
-                </dependency>
-                <dependency>
-                    <groupId>org.glassfish.main.extras</groupId>
-                    <artifactId>glassfish-embedded-all</artifactId>
-                    <version>3.1.2</version>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>javax</groupId>
-                    <artifactId>javaee-api</artifactId>
-                    <version>7.0</version>
-                    <scope>provided</scope>
-                </dependency>
-            </dependencies>
-            <build>
-                <testResources>
-                    <testResource>
-                        <directory>src/test/resources</directory>
-                    </testResource>
-                    <testResource>
-                        <directory>src/test/resources-glassfish-remote</directory>
-                    </testResource>
-                </testResources>
-            </build>
-        </profile>
-    </profiles-->
 </project>
