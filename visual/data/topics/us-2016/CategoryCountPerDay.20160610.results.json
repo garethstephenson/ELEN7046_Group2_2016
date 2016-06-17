@@ -1,0 +1,190 @@
+[{
+  "Date": "2016-06-10T03:00:00Z",
+  "Data": [{
+    "Category": "Trump",
+    "Count": 9947
+  }, {
+    "Category": "Clinton",
+    "Count": 6125
+  }]
+}, {
+  "Date": "2016-06-10T04:00:00Z",
+  "Data": [{
+    "Category": "Trump",
+    "Count": 11512
+  }, {
+    "Category": "Clinton",
+    "Count": 7130
+  }]
+}, {
+  "Date": "2016-06-10T05:00:00Z",
+  "Data": [{
+    "Category": "Trump",
+    "Count": 12377
+  }, {
+    "Category": "Clinton",
+    "Count": 8278
+  }]
+}, {
+  "Date": "2016-06-10T06:00:00Z",
+  "Data": [{
+    "Category": "Trump",
+    "Count": 12401
+  }, {
+    "Category": "Clinton",
+    "Count": 8319
+  }]
+}, {
+  "Date": "2016-06-10T07:00:00Z",
+  "Data": [{
+    "Category": "Trump",
+    "Count": 12361
+  }, {
+    "Category": "Clinton",
+    "Count": 8534
+  }]
+}, {
+  "Date": "2016-06-10T08:00:00Z",
+  "Data": [{
+    "Category": "Trump",
+    "Count": 11928
+  }, {
+    "Category": "Clinton",
+    "Count": 7728
+  }]
+}, {
+  "Date": "2016-06-10T09:00:00Z",
+  "Data": [{
+    "Category": "Trump",
+    "Count": 11058
+  }, {
+    "Category": "Clinton",
+    "Count": 8137
+  }]
+}, {
+  "Date": "2016-06-10T10:00:00Z",
+  "Data": [{
+    "Category": "Trump",
+    "Count": 12419
+  }, {
+    "Category": "Clinton",
+    "Count": 8539
+  }]
+}, {
+  "Date": "2016-06-10T11:00:00Z",
+  "Data": [{
+    "Category": "Trump",
+    "Count": 11630
+  }, {
+    "Category": "Clinton",
+    "Count": 7380
+  }]
+}, {
+  "Date": "2016-06-10T12:00:00Z",
+  "Data": [{
+    "Category": "Trump",
+    "Count": 4954
+  }, {
+    "Category": "Clinton",
+    "Count": 2874
+  }]
+}, {
+  "Date": "2016-06-10T13:00:00Z",
+  "Data": [{
+    "Category": "Trump",
+    "Count": 4002
+  }, {
+    "Category": "Clinton",
+    "Count": 2544
+  }]
+}, {
+  "Date": "2016-06-10T14:00:00Z",
+  "Data": [{
+    "Category": "Trump",
+    "Count": 4136
+  }, {
+    "Category": "Clinton",
+    "Count": 2273
+  }]
+}, {
+  "Date": "2016-06-10T15:00:00Z",
+  "Data": [{
+    "Category": "Trump",
+    "Count": 3643
+  }, {
+    "Category": "Clinton",
+    "Count": 2216
+  }]
+}, {
+  "Date": "2016-06-10T16:00:00Z",
+  "Data": [{
+    "Category": "Trump",
+    "Count": 3967
+  }, {
+    "Category": "Clinton",
+    "Count": 2700
+  }]
+}, {
+  "Date": "2016-06-10T17:00:00Z",
+  "Data": [{
+    "Category": "Trump",
+    "Count": 721
+  }, {
+    "Category": "Clinton",
+    "Count": 501
+  }]
+}, {
+  "Date": "2016-06-10T18:00:00Z",
+  "Data": [{
+    "Category": "Trump",
+    "Count": 8469
+  }, {
+    "Category": "Clinton",
+    "Count": 5400
+  }]
+}, {
+  "Date": "2016-06-10T19:00:00Z",
+  "Data": [{
+    "Category": "Trump",
+    "Count": 7710
+  }, {
+    "Category": "Clinton",
+    "Count": 5122
+  }]
+}, {
+  "Date": "2016-06-10T20:00:00Z",
+  "Data": [{
+    "Category": "Trump",
+    "Count": 5795
+  }, {
+    "Category": "Clinton",
+    "Count": 4012
+  }]
+}, {
+  "Date": "2016-06-10T21:00:00Z",
+  "Data": [{
+    "Category": "Trump",
+    "Count": 5459
+  }, {
+    "Category": "Clinton",
+    "Count": 3771
+  }]
+}, {
+  "Date": "2016-06-10T22:00:00Z",
+  "Data": [{
+    "Category": "Trump",
+    "Count": 5337
+  }, {
+    "Category": "Clinton",
+    "Count": 3724
+  }]
+}, {
+  "Date": "2016-06-10T23:00:00Z",
+  "Data": [{
+    "Category": "Trump",
+    "Count": 5192
+  }, {
+    "Category": "Clinton",
+    "Count": 3289
+  }]
+}]

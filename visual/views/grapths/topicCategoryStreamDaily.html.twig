@@ -128,6 +128,7 @@
       },
       _drawLegend: function (svg, categoryColors, height, marginBottom, gridSize) {
         var legendElementWidth = gridSize * 2;
+        var legendXOffset = 5;
         var legend = svg.selectAll(".legend")
           .data(categoryColors, function (item) {
             return item.Category + ':' + item.Color;
@@ -138,7 +139,7 @@
 
         legend.append("rect")
           .attr("x", function (d, i) {
-            return legendElementWidth * i;
+            return legendXOffset + (legendElementWidth * i);
           })
           .attr("y", height)
           .attr("width", legendElementWidth)
@@ -154,7 +155,7 @@
             return d.Category;
           })
           .attr("x", function (d, i) {
-            return legendElementWidth * i;
+            return legendXOffset + (legendElementWidth * i);
           })
           .attr("y", (height) + (gridSize / 2) + 10);
 
