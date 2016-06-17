@@ -127,7 +127,6 @@ public class TweetsDataExtractor {
             log.log(Level.INFO, "url: {0}", urlWithCursor);
             HttpsURLConnection connection = createConnectionToTwitter(urlWithCursor, bearerToken);
             final JSONObject obj = (JSONObject) JSONValue.parse(httpHelper.readResponse(connection));
-            FileHelper.write(obj);
             resp.addAll((JSONArray) obj.get(STATUSES));
 
             if (!resp.isEmpty()) {
