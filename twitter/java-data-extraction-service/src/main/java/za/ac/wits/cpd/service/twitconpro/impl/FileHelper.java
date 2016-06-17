@@ -32,7 +32,7 @@ public class FileHelper {
         }
     }
     
-    public static void write(String tweet){
+    public void write(String tweet){
         try {
             File file = new File("/home/mkhwinana/Dev/eduworkspace/data/" + System.currentTimeMillis()+DOT_JSON);
             try (FileWriter writer = new FileWriter(file)) {
