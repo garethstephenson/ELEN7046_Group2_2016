@@ -112,6 +112,10 @@
       },
       draw: function (data, categoryColors, chartDivSelector) {
         // Code developed following this tutorial: http://bl.ocks.org/tjdecke/5558084
+        
+        if (data == null || data.length <= 0)
+            return;
+        
         var
           categoreis = heatMapChart._getCategories(data),
           dates = heatMapChart._getDates(data);

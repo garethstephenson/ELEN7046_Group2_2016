@@ -8,6 +8,13 @@
             "specialClass": "panel-success"
         },
         {
+            "name": "Category Over Time - Daily",
+            "size": "6",
+            "type": "grapths/topicCategoryStreamHourly.html.twig",
+            "dataUrl": "data/categoryCountPerDay",
+            "specialClass": "panel-warning"
+        },
+        {
             "name": "Pro vs Con Per Category Over Time - Hourly",
             "size": "6",
             "type": "grapths/topicCategoryStreamConProHourly.html.twig",

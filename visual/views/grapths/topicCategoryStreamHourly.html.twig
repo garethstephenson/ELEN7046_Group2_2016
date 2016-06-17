@@ -1,0 +1,164 @@
+<style>
+    .sh_chart {
+        background-color: #EFEFEF;
+        border-radius: 8px;
+    }
+</style>
+<div id="sh_dataPlaceholder" class="sh_chart"> Data loading, please wait ... </div>
+<script type="text/javascript">
+    $(document).ready(function () {
+      var dataUrl = "{{dataUrl}}";
+      queue()
+        .defer(d3.json, dataUrl)
+        .defer(d3.json, "/data/categoryColors")
+        .await(function (error, data, categoryColors) {
+          if (error) {
+            $('#sh_dataPlaceholder').html("error: " + error);
+            return;
+          }
+
+          $('#sh_dataPlaceholder').html("");
+          $('#sh_dataPlaceholder').height(250);
+          streamDailyChart.initialise(data, categoryColors, '#sh_dataPlaceholder');
+        });
+    });
+    var streamDailyChart = {
+      initialise: function (data, categoryColors, chartDivSelector) {
+        var parent = this;
+        parent._setWidth(chartDivSelector);
+        parent.draw(data, categoryColors, chartDivSelector);
+        $(window).resize(function () {
+          parent._setWidth(chartDivSelector);
+          d3.select(chartDivSelector)
+            .selectAll("div")
+            .remove();
+          $(chartDivSelector).empty();
+          parent.draw(data, categoryColors, chartDivSelector);
+        });
+      },
+      _setWidth: function (chartDivSelector) {
+        $(chartDivSelector).width($(chartDivSelector).parent().width() - 10);
+      },
+      draw: function (data, categoryColors, chartDivSelector) {
+        // Used the following chart as a base: http://bl.ocks.org/mbostock/1256572
+        // http://bl.ocks.org/mbostock/4060954
+        
+        if (data == null || data.length <= 0)
+            return;
+        
+        var days = d3.map(data, function (d) {
+          return commonCharts.getDateValue(d.Date);
+        }).keys();
+        var margin = {top: 0, right: 0, bottom: 30, left: 0};
+        var width = $(chartDivSelector).width() - margin.left - margin.right;
+        var divHeight = 250;
+        $(chartDivSelector).height(divHeight);
+        var height = $(chartDivSelector).height() - margin.top - margin.bottom;
+
+        var stackOffset = 'silhouette';
+        //stackOffset = 'wiggle';
+        //stackOffset = 'expand';
+        //stackOffset = 'zero';
+
+        var stack = d3.layout.stack().offset(stackOffset);
+        var dataStack = stack(d3.range(categoryColors.length).map(function (colorIndex) {
+          var stackArray = [];
+          $.each(data, function (index, item) {
+            var categoryIndex = 0;
+            for (var i = 0; i < item.Data.length; i++) {
+              if (categoryColors[colorIndex].Category == item.Data[i].Category) {
+                categoryIndex = i;
+                break;
+              }
+            }
+
+            var element = {
+              x: index, //commonCharts.getDateValue(item.Date),
+              y: item.Data[categoryIndex].Count,
+              categoryIndex: categoryIndex,
+              colorIndex: colorIndex,
+              item: item.Data[categoryIndex]
+            };
+            stackArray.push(element);
+          });
+          return stackArray;
+        }));
+        // days -> Width
+        var x = d3.scale.linear()
+          .domain([0, days.length - 1])
+          .range([0, width]);
+
+        // y scale max total count
+        var y = d3.scale.linear()
+          .domain([0, d3.max(dataStack, function (stackItem) {
+              return d3.max(stackItem, function (item) {
+                return item.y + item.y0;
+              });
+            })])
+          .range([height, 0]);
+
+        var area = d3.svg.area()
+          .interpolate("monotone")
+          .x(function (d) {
+            return x(d.x);
+          })
+          .y0(function (d) {
+            return y(d.y0);
+          })
+          .y1(function (d) {
+            return y(d.y0 + d.y);
+          });
+
+        var svg = d3.select(chartDivSelector).append("svg")
+          .attr("width", width)
+          .attr("height", height + margin.bottom);
+
+
+        svg.selectAll("path")
+          .data(dataStack)
+          .enter().append("path")
+          .attr("d", area)
+          .style("fill", function (d) {
+            if (d.length > 0)
+              return categoryColors[d[0].colorIndex].Color;
+            return "#FFFFFF";
+          });
+
+        streamDailyChart._drawLegend(svg, categoryColors, height, margin.bottom, width / days.length);
+      },
+      _drawLegend: function (svg, categoryColors, height, marginBottom, gridSize) {
+        var legendElementWidth = gridSize * 2;
+        var legend = svg.selectAll(".legend")
+          .data(categoryColors, function (item) {
+            return item.Category + ':' + item.Color;
+          });
+
+        legend.enter().append("g")
+          .attr("class", "legend");
+
+        legend.append("rect")
+          .attr("x", function (d, i) {
+            return legendElementWidth * i;
+          })
+          .attr("y", height)
+          .attr("width", legendElementWidth)
+          .attr("height", gridSize / 2)
+          .attr("class", "bordered")
+          .style("fill", function (d) {
+            return d.Color;
+          });
+
+        legend.append("text")
+          .attr("class", "mono")
+          .text(function (d) {
+            return d.Category;
+          })
+          .attr("x", function (d, i) {
+            return legendElementWidth * i;
+          })
+          .attr("y", (height) + (gridSize / 2) + 10);
+
+        legend.exit().remove();
+      }
+    };
+</script>

@@ -1,10 +1,12 @@
 [
     {
         "Category": "Clinton",
-        "Color": "#FF0000"
+        "Color": "#FF0000",
+        "ConColor": "#440000"
     },
     {
         "Category": "Trump",
-        "Color": "#0000FF"
+        "Color": "#0000FF",
+        "ConColor": "#000044"
     }
 ]
