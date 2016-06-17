@@ -1,8 +1,11 @@
 package za.ac.wits.cpd.service.twitconpro.test;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -10,10 +13,11 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import lombok.extern.java.Log;
-import static org.hamcrest.CoreMatchers.is;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
+import static org.hamcrest.CoreMatchers.is;
+import org.junit.Ignore;
 import static org.hamcrest.CoreMatchers.is;
 
 /**
@@ -30,7 +34,7 @@ public class DataExtractionServiceTest {
     }
     
     @Test
-    public void testHello(){
+    public void testPing(){
         //Given
         WebTarget target = this.client.target("http://localhost:8080/java-data-extraction-service/rest/extract-data");
         
@@ -44,7 +48,7 @@ public class DataExtractionServiceTest {
     }
     
     @Test
-    public void testExtractAndStoreById() {
+    public void testExtractById() {
         //Given
         Long twitterId = 729674502339055617L;
         final String url = String.format(tweetByIdPathFormat,twitterId);
@@ -62,58 +66,72 @@ public class DataExtractionServiceTest {
         assertTrue(tweet.getJsonNumber("twitterId").toString().startsWith(twitterId.toString()));
     }
     
-//    @Ignore
-//    @Test
-//    public void testExtractAndStoreTrumpTweetsDuringPrimaries() {
-//        
-//        //Given
-//        final List<String> hashtags = new ArrayList<>();
-//        hashtags.add("donaldtrump");
-//        hashtags.add("MakeAmericaGreatAgain");
-//        hashtags.add("#nevertrump");
-//        final Map<String, String> options = hundredTweetsDuringPrimariesOptions();
-//        
-//        final String url = String.format("http://localhost:8080/java-data-extraction-service/rest/extract-data/hashtags");
-//        log.severe(url);
-//        WebTarget target = this.client.target(url);
-//        
-//        //When
-//        Response response = target.request(MediaType.APPLICATION_JSON)
-//                            .accept(MediaType.APPLICATION_JSON).post(hashtags,List.class);
-//
-//        //When
-//        assertThat(response.getStatus(), is(200));
-//        String tweet = response.readEntity(String.class);
-//        assertTrue(tweet.contains(twitterId.toString()));
-//        
-//        
-//        
-//        //Given
-//
-//
-//        //When
-//        List<Tweet> tweetData = this.dataExtractor.extractHashtagsTweets(hashtags, options);
-//        for (Tweet tweet : tweetData) {
-//            this.persistenceManager.persist(tweet);
-//            Tweet dbTweet = persistenceManager.findByTwitterId(tweet.getTwitterId());
-//
-//            //Then 
-//            //assertNotNull(dbTweet);
-//        }
-//    }
-//
-//    @Ignore
-//    @Test
-//    public void testExtractTrumpAndHilary10Times() {
-//        for (int i = 0; i < 10; i++) {
-//            log.log(Level.SEVERE, "Hilary attempt # {0}", i);
-//            testExtractAndStoreHilaryTweetsDuringPrimaries();
-//            log.log(Level.SEVERE, "Trump attempt # {0}", i);
-//            testExtractAndStoreTrumpTweetsDuringPrimaries();
-//        }
-//    }
-//
-//
+    @Test
+    public void testExtractAndStoreById() {
+        //Given
+        Long twitterId = 729674502339055617L;
+        final String url = String.format(tweetByIdAndStorePathFormat,twitterId);
+        log.severe(url);
+        WebTarget target = this.client.target(url);
+        
+        //When
+        Response response = target.request(MediaType.APPLICATION_JSON)
+                            .accept(MediaType.APPLICATION_JSON).get();
+
+        //When
+        assertThat(response.getStatus(), is(200));
+        JsonObject tweet = response.readEntity(JsonObject.class);
+        log.severe(tweet.toString());
+        assertTrue(tweet.getJsonNumber("twitterId").toString().startsWith(twitterId.toString()));
+    }
+    
+    @Test
+    public void testExtractHistoricTrumpTweetsDuringPrimaries() {
+        
+        //Given    
+        log.severe(historyTweetsByHashtagsUrl);        
+        WebTarget target = this.client.target(historyTweetsByHashtagsUrl);
+        
+        //When
+        Response response = target.queryParam(HASHTAGS,"donaldtrump")
+                                .queryParam(HASHTAGS, "MakeAmericaGreatAgain")
+                                .queryParam(HASHTAGS, "#nevertrump")
+                                .queryParam(COUNT, 900)
+                                .queryParam(SINCE, PRIMARIES_START_DATE)
+                                .queryParam(UNTIL, PRIMARIES_END_DATE)
+                                .request(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .get();
+
+        //Then
+        assertThat(response.getStatus(), is(200));
+        JsonArray tweets = response.readEntity(JsonArray.class);
+        assertTrue(tweets.size()>0);
+    }
+    
+    @Test
+    public void testExtractAndStoreHistoricTrumpTweetsDuringPrimaries() {
+        //Given    
+        log.severe(historyTweetsByHashtagsUrl);        
+        WebTarget target = this.client.target(historyTweetsByHashtagsUrl);
+        
+        //When
+        Response response = target.queryParam(HASHTAGS,"donaldtrump")
+                                .queryParam(HASHTAGS, "MakeAmericaGreatAgain")
+                                .queryParam(HASHTAGS, "#nevertrump")
+                                .queryParam(COUNT, 900)
+                                .queryParam(SINCE, PRIMARIES_START_DATE)
+                                .queryParam(UNTIL, PRIMARIES_END_DATE)
+                                .request(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .get();
+
+        //Then
+        assertThat(response.getStatus(), is(200));
+        JsonArray tweets = response.readEntity(JsonArray.class);
+        assertTrue(tweets.size()>0);
+    }
+
 //    @Ignore
 //    @Test
 //    public void testExtractAndStoreHilaryTweetsDuringPrimaries() {
@@ -137,20 +155,13 @@ public class DataExtractionServiceTest {
 //        }
 //    }
 
-    private Map<String, String> hundredTweetsDuringPrimariesOptions() {
-        final Map<String, String> options = new HashMap<>();
-        options.put(COUNT, HUNDRED);
-        options.put(SINCE, PRIMARIES_START_DATE);
-        options.put(UNTIL, PRIMARIES_END_DATE);
-        return options;
-    }
-
-    private final String tweetByIdPathFormat = "http://localhost:8080/java-data-extraction-service/rest/extract-data/id/%d";
+    private final String tweetByIdPathFormat = "http://localhost:8080/java-data-extraction-service/rest/extract-data/byId/%d";
+    private final String historyTweetsByHashtagsUrl = "http://localhost:8080/java-data-extraction-service/rest/extract-data/historyByHashtags";
+    private final String tweetByIdAndStorePathFormat = "http://localhost:8080/java-data-extraction-service/rest/extract-data/byIdAndPersist/%d";
     private static final String PRIMARIES_START_DATE = "2016-03-15";
     private static final String PRIMARIES_END_DATE = "2016-03-30";
+    private static final String HASHTAGS = "hashtags";
     private static final String COUNT = "count";
     private static final String SINCE = "since";
     private static final String UNTIL = "until";
-    private static final String HUNDRED = "100";
-    private static final String FIVE = "5";
 }
