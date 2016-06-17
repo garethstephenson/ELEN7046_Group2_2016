@@ -10,7 +10,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.net.ssl.HttpsURLConnection;
@@ -53,12 +52,6 @@ public class TweetsDataExtractor {
         StringBuilder urlBuilder = toQueryString(queryStringBuilder.toString(), options);
         return fetchTweets(urlBuilder.toString());
     }
-
-    private void validateOptions(Map<String, String> options) throws IllegalArgumentException {
-        if (options.size() < 1) {
-            throw new IllegalArgumentException("The 'options' parameter value must not be empty");
-        }
-    }
     public List<Tweet> extractHashtagTweets(@NonNull String hashtag, int count) {
         validateCount(count);
 
@@ -93,6 +86,12 @@ public class TweetsDataExtractor {
         return retrieveTimeline(endPointUrl);
     }
 
+    private void validateOptions(Map<String, String> options) throws IllegalArgumentException {
+        if (options.size() < 1) {
+            throw new IllegalArgumentException("The 'options' parameter value must not be empty");
+        }
+    }
+
     private JSONObject retrieveTweetStatus(String twitterUrl) {
         try {
             String bearerToken = authenticator.requestBearerToken(TWITTER_API_OAUTH2_URL);
@@ -125,7 +124,7 @@ public class TweetsDataExtractor {
         if (isValidString(bearerToken)) {
             JSONArray resp = new JSONArray();
             String urlWithCursor = twitterUrl + "&cursor=0";
-            log.log(Level.SEVERE, "url: {0}", urlWithCursor);
+            log.log(Level.INFO, "url: {0}", urlWithCursor);
             HttpsURLConnection connection = createConnectionToTwitter(urlWithCursor, bearerToken);
             final JSONObject obj = (JSONObject) JSONValue.parse(httpHelper.readResponse(connection));
             FileHelper.write(obj);
@@ -148,7 +147,7 @@ public class TweetsDataExtractor {
                 for (int i = 0; i < hashArray.size(); i++) {
                     JSONObject tweetResp = (JSONObject) hashArray.get(i);
                     Tweet tweet = this.mapper.toTweet(tweetResp);
-                    log.log(Level.SEVERE, "**** Number of tweets before determining the location: {0}", hashArray.size());
+                    log.log(Level.INFO, "**** Number of tweets before determining the location: {0}", hashArray.size());
                     if (tweet.getGeoLocation() != null) {
                         hashtagTweets.add(tweet);
                     }
@@ -161,13 +160,12 @@ public class TweetsDataExtractor {
             }
 
         } catch (IOException ex) {
-            Logger.getLogger(TweetsDataExtractor.class.getName()).log(Level.SEVERE, null, ex);
+            log.log(Level.SEVERE, null, ex);
         }
 
         return null;
     }
-    
-    
+
     private List<Tweet> retrieveTimeline(String endPointUrl) {
         HttpsURLConnection connection = null;
         try {
@@ -247,11 +245,10 @@ public class TweetsDataExtractor {
     
     private static final String UNTIL = "until";
     private static final String SINCE = "since";
-    private static final String ENCODED_COLON = "%3A";
-    private static final String ENCODED_SPACE = "%20";
-
     private static final String EQUAL_SIGN = "=";
     private static final String AMPERSAND = "&";
+    private static final String ENCODED_COLON = "%3A";
+    private static final String ENCODED_SPACE = "%20";
     private static final String HASHTAG_URL_FORMAT = "https://api.twitter.com/1.1/search/tweets.json?q=%s";
     private static final String TWEET_BY_ID_URL = "https://api.twitter.com/1.1/statuses/show.json?id=%d";
     private static final String TWITTER_API_OAUTH2_URL = "https://api.twitter.com/oauth2/token";
