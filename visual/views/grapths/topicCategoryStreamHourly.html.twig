@@ -1,8 +1,7 @@
 <style>
-    .line {
-        fill: none;
-        stroke: #000;
-        stroke-width: 2px;
+    .sh_chart {
+        background-color: #EFEFEF;
+        border-radius: 8px;
     }
 </style>
 <div id="sh_dataPlaceholder" class="sh_chart"> Data loading, please wait ... </div>
@@ -43,6 +42,10 @@
       draw: function (data, categoryColors, chartDivSelector) {
         // Used the following chart as a base: http://bl.ocks.org/mbostock/1256572
         // http://bl.ocks.org/mbostock/4060954
+        
+        if (data == null || data.length <= 0)
+            return;
+        
         var days = d3.map(data, function (d) {
           return commonCharts.getDateValue(d.Date);
         }).keys();
@@ -95,6 +98,7 @@
           .range([height, 0]);
 
         var area = d3.svg.area()
+          .interpolate("monotone")
           .x(function (d) {
             return x(d.x);
           })
