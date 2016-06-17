@@ -1,12 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package za.ac.wits.cpd.service.twitconpro.impl;
 
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Remote;
@@ -34,6 +30,7 @@ public class DataExtractionServiceImpl implements DataExtractionService,RemoteDa
     @EJB
     private PersistenceManager persistManager;
     
+    
     @Override
     public Tweet exactTweetById(@NonNull Long id) {
         return this.extractor.extractTweetById(id);
@@ -51,33 +48,55 @@ public class DataExtractionServiceImpl implements DataExtractionService,RemoteDa
     }
 
     @Override
-    public List<Tweet> extractTweetsByHashtag(String hashtag) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<Tweet> extractRandomTweetsByHashtag(String hashtag) {
+        return this.extractor.extractHashtagTweets(hashtag);
     }
 
     @Override
-    public List<Tweet> extractTweetsByHashtagAndPersist(String hashtag) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<Tweet> extractAndPersistRandomTweetsByHashtag(String hashtag) {
+        List<Tweet> tweets = extractRandomTweetsByHashtag(hashtag);
+        return persistTweetsOrThrowIllegalStateException(tweets);
     }
 
     @Override
-    public List<Tweet> extractTweetsByHashtag(String hashtag, int count) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<Tweet> extractHistoryTweetsByHashtag(String hashtag, int count) {
+        return this.extractor.extractHashtagTweets(hashtag, count);
     }
 
     @Override
-    public List<Tweet> extractTweetsByHashtagAndPersist(String hashtag, int count) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<Tweet> extractHistoryTweetsByHashtagAndPersist(String hashtag, int count) {
+        List<Tweet> tweets = extractHistoryTweetsByHashtag(hashtag, count);
+        return persistTweetsOrThrowIllegalStateException(tweets);
     }
 
     @Override
-    public List<Tweet> extractTweetsByHashtags(List<String> hashtags, Map<String, String> options) {
+    public List<Tweet> extractHistoryTweetsByHashtags(List<String> hashtags, Map<String, String> options) {
         return this.extractor.extractHashtagsTweets(hashtags, options);
     }
 
     @Override
-    public List<Tweet> extractTweetsByHashtagsAndPersist(List<String> hashtags, Map<String, String> options) {
+    public List<Tweet> extractHistoryTweetsByHashtagsAndPersist(List<String> hashtags, Map<String, String> options) {
+        List<Tweet> tweets = extractHistoryTweetsByHashtags(hashtags, options);
+        return persistTweetsOrThrowIllegalStateException(tweets);
+    }
+
+    @Override
+    public List<Tweet> distributeAllTweets() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
+    private List<Tweet> persistTweetsOrThrowIllegalStateException(List<Tweet> tweets) throws IllegalStateException {
+        if(tweets!=null&&!tweets.isEmpty()){
+            tweets.stream().forEach((tweet) -> {
+                try {
+                    this.persistManager.persist(tweet);
+                } catch(IllegalArgumentException e){
+                    log.log(Level.SEVERE, e.getMessage(), tweet.toString());
+                }
+            });
+            return tweets;
+        }
+        
+        throw new IllegalStateException("No tweets returned for persistence!");
+    }
 }
