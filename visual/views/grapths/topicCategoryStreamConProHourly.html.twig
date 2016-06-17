@@ -41,80 +41,137 @@
         $(chartDivSelector).width($(chartDivSelector).parent().width() - 10);
       },
       draw: function (data, categoryColors, chartDivSelector) {
-        // Used the following chart as a base: http://bl.ocks.org/mbostock/1256572
-        // http://bl.ocks.org/mbostock/4060954
+        // Used the following chart as a base: 
+        //      http://bl.ocks.org/mbostock/1256572
+        //      http://bl.ocks.org/mbostock/4060954
         var hours = commonCharts.make2DigitNumberArray(0, 23);
-        var days = d3.map(data, function (d) {
-          return commonCharts.getDateValue(d.Date);
-        }).keys();
-        var margin = {top: 20, right: 20, bottom: 30, left: 20};
+
+        var categoryHeight = 150;
+        var midLine = (categoryHeight / 2);
+        var margin = {top: 20, right: 20, bottom: 30, left: 100};
+        var xAxisHeight = 20;
         var width = $(chartDivSelector).width() - margin.left - margin.right;
-        var divHeight = (150 * categoryColors.length) + margin.top + margin.bottom;
+        var divHeight = (categoryHeight * categoryColors.length) + margin.top + margin.bottom + xAxisHeight;
         $(chartDivSelector).height(divHeight);
         var height = $(chartDivSelector).height() - margin.top - margin.bottom;
 
-        var stack = d3.layout.stack().offset("wiggle");
-        var dataStack = stack(d3.range(categoryColors.length).map(function (colorIndex) {
-          var stackArray = [];
-          $.each(data, function (index, item) {
-            var categoryIndex = 0;
-            for (var i = 0; i < item.Data.length; i++) {
-              if (categoryColors[colorIndex].Category == item.Data[i].Category) {
-                categoryIndex = i;
-                break;
-              }
-            }
+        var gridSize = width / hours.length;
+        streamChart._drawxAxis(chartDivSelector, margin, hours, gridSize, width, xAxisHeight);
 
-            var element = {
-              x: commonCharts.getHourValue(item.Date),
-              y: item.Data[categoryIndex].ProCount,
-              //y0: item.Data[categoryIndex].ConCount,
-              categoryIndex: categoryIndex,
-              colorIndex: colorIndex,
-              item: item.Data[categoryIndex]
-            };
-            stackArray.push(element);
-          });
-          return stackArray;
-        }));
-        debugger;
         // Hours -> Width
         var x = d3.scale.linear()
           .domain([0, hours.length - 1])
           .range([0, width]);
 
-        // y scale max total cound
-        var y = d3.scale.linear()
-          .domain([0, d3.max(dataStack, function (stackItem) {
-              return d3.max(stackItem, function (item) {
-                return item.y + item.y0;
-              });
-            })])
-          .range([height, 0]);
+        var area = [];
+        var dataStack = [];
+        var svg = [];
+        for (var categoryIndex = 0; categoryIndex < categoryColors.length; categoryIndex++) {
+          var color = categoryColors[categoryIndex].Color;
 
-        var area = d3.svg.area()
+          var stackOffset = 'silhouette';
+          //stackOffset = 'wiggle';
+          //stackOffset = 'expand';
+          //stackOffset = 'zero';
+
+          var stack = d3.layout.stack().offset(stackOffset);
+          dataStack[categoryIndex] = stack(d3.range(2).map(function (stackIndex) {
+            var stackArray = [];
+            $.each(data, function (index, item) {
+
+              var yValue = stackIndex != 0 ?
+                item.Data[categoryIndex].ProCount :
+                item.Data[categoryIndex].ConCount;
+
+              var element = {
+                x: commonCharts.getHourValue(item.Date),
+                y: yValue,
+                stackIndex: stackIndex
+              };
+              stackArray.push(element);
+            });
+            return stackArray;
+          }));
+
+          // y scale max total count
+          var y = d3.scale.linear()
+            .domain([0, d3.max(dataStack[categoryIndex], function (stackItem) {
+                return d3.max(stackItem, function (item) {
+                  return (item.y + item.y0);
+                });
+              })])
+            .range([categoryHeight, 0]);
+
+          svg[categoryIndex] = d3.select(chartDivSelector).append("svg")
+            .attr("width", width)
+            .attr("height", categoryHeight);
+
+          //streamChart._drawLine(svg[categoryIndex], width, midLine);
+
+          area[categoryIndex] = d3.svg.area()
+            .x(function (d) {
+              return x(d.x);
+            })
+            .y0(function (d) {
+              return y(d.y0);
+            })
+            .y1(function (d) {
+              return y(d.y0 + d.y);
+            });
+
+          svg[categoryIndex].selectAll("path")
+            .data(dataStack[categoryIndex])
+            .enter().append("path")
+            .attr("d", area[categoryIndex])
+            .style("fill", function (d) {
+              if (d.length > 0) {
+                if (d[0].stackIndex != 0)
+                  return color;
+                else
+                  return commonCharts.invertColor(color);
+              }
+              return "#FFFFFF";
+            });
+        }
+      },
+      _drawLine: function (svg, width, midLine) {
+        var lineFunction = d3.svg.line()
           .x(function (d) {
-            return x(d.x);
+            return d.x;
           })
-          .y0(function (d) {
-            return y(d.y0);
+          .y(function (d) {
+            return d.y;
           })
-          .y1(function (d) {
-            return y(d.y0 + d.y);
-          });
+          .interpolate("linear");
 
+        var lineData = [{x: 0, y: midLine}, {x: width, y: midLine}]
+
+        svg.append("path").attr("d", lineFunction(lineData))
+          .attr("stroke", "black")
+          .attr("stroke-width", 1)
+          .attr("fill", "none");
+      },
+      _drawStream: function (svg, margin, hours, stackData) {
+
+      },
+      _drawxAxis: function (chartDivSelector, margin, hours, gridSize, width, xAxisHeight) {
         var svg = d3.select(chartDivSelector).append("svg")
           .attr("width", width)
-          .attr("height", height);
-
-
-        svg.selectAll("path")
-          .data(dataStack)
-          .enter().append("path")
-          .attr("d", area)
-          .style("fill", function (d) {
-            debugger;
-            return categoryColors[d[0].colorIndex].Color;
+          .attr("height", xAxisHeight);
+        // xAxis - Hours
+        svg.selectAll(".timeLabel")
+          .data(hours)
+          .enter().append("text")
+          .text(function (d) {
+            return d;
+          })
+          .attr("x", function (d, i) {
+            return i * gridSize;
+          })
+          .attr("y", margin.top)
+          .style("text-anchor", "middle")
+          .attr("class", function (d, i) {
+            return ((i >= 7 && i <= 16) ? "timeLabel mono axis axis-worktime" : "timeLabel mono axis");
           });
       }
     };

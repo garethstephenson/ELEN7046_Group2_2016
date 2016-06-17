@@ -23,10 +23,8 @@
 <script type="text/javascript">
     $(document).ready(function () {
         var dataUrl = "{{dataUrl}}";
-        console.log(dataUrl);
         queue()
         .defer(d3.json, dataUrl)
-        .defer(d3.json, "/data/ConProCount")
         .await(function (error, data) {
           if (error) {
             $('#cp_dataPlaceholder').html("error: " + error);
@@ -62,6 +60,9 @@
         },
         draw: function (data, chartSvgSelector) {
           //Adapted from: https://bl.ocks.org/mbostock/79a82f4b9bffb69d89ae
+
+          if (data == null || data.length <= 0)
+            return;
 
           var margin = {top: 20, right: 30, bottom: 40, left: 30},
               width = $(chartSvgSelector).width() - margin.left - margin.right,
