@@ -31,6 +31,9 @@ public class DataExtractionServiceImpl implements DataExtractionService,RemoteDa
     @EJB
     private TweetsDataExtractor extractor;
     
+    @EJB
+    private PersistenceManager persistManager;
+    
     @Override
     public Tweet exactTweetById(@NonNull Long id) {
         return this.extractor.extractTweetById(id);
@@ -38,7 +41,13 @@ public class DataExtractionServiceImpl implements DataExtractionService,RemoteDa
 
     @Override
     public Tweet exactTweetByIdAndPersist(Long id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Tweet tweet = exactTweetById(id);
+        if(tweet!=null){
+            this.persistManager.persist(tweet);
+            return tweet;
+        }
+        
+        return null;
     }
 
     @Override
@@ -63,7 +72,7 @@ public class DataExtractionServiceImpl implements DataExtractionService,RemoteDa
 
     @Override
     public List<Tweet> extractTweetsByHashtags(List<String> hashtags, Map<String, String> options) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return this.extractor.extractHashtagsTweets(hashtags, options);
     }
 
     @Override
