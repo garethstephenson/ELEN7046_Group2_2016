@@ -52,7 +52,7 @@ object CategoryCountPerHour {
 
         val tweets = sparkContext
             .textFile(inputPath, numPartitions)
-            .map(stripObjectInitializers(Array("ObjectId", "ISODate", "NumberLong"), _))
+            .map(stripConstructors(Array("ISODate", "NumberLong"), _))
             .map(_.parseJson.convertTo[Tweet])
 
         import ZonedDateTimeSort._
@@ -97,9 +97,9 @@ object CategoryCountPerHour {
         printWriter.close()
     }
 
-    def stripObjectInitializers(initializers: Array[String], content: String): String = {
+    def stripConstructors(initializers: Array[String], content: String): String = {
         val initializerArray = initializers.mkString("|")
-        val pattern = ("""((?:""" + initializerArray + """)\((\S*)\))""").r
+        val pattern = s"((?:$initializerArray)\\((\\S*)\\))".r
         pattern.replaceAllIn(content, foundMatch => foundMatch.subgroups(1))
     }
 
