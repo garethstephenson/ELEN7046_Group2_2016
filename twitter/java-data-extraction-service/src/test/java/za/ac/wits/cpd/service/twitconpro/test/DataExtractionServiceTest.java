@@ -36,7 +36,7 @@ public class DataExtractionServiceTest {
     @Test
     public void testPing(){
         //Given
-        WebTarget target = this.client.target("http://localhost:8080/java-data-extraction-service/rest/extract-data");
+        WebTarget target = this.client.target("http://localhost:8080/historic-data-extraction-service/rest/extract-data");
         
         //When
         Response response = target.request(MediaType.APPLICATION_JSON).accept(MediaType.TEXT_PLAIN).get();
@@ -156,8 +156,8 @@ public class DataExtractionServiceTest {
 //    }
 
     private final String tweetByIdPathFormat = "http://localhost:8080/java-data-extraction-service/rest/extract-data/byId/%d";
-    private final String historyTweetsByHashtagsUrl = "http://localhost:8080/java-data-extraction-service/rest/extract-data/historyByHashtags";
-    private final String tweetByIdAndStorePathFormat = "http://localhost:8080/java-data-extraction-service/rest/extract-data/byIdAndPersist/%d";
+    private final String historyTweetsByHashtagsUrl = "http://localhost:8080/historic-data-extraction-service/rest/extract-data/historyByHashtags";
+    private final String tweetByIdAndStorePathFormat = "http://localhost:8080/historic-data-extraction-service/rest/extract-data/byIdAndPersist/%d";
     private static final String PRIMARIES_START_DATE = "2016-03-15";
     private static final String PRIMARIES_END_DATE = "2016-03-30";
     private static final String HASHTAGS = "hashtags";
