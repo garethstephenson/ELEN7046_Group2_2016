@@ -5,14 +5,17 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.logging.Level;
+import javax.ejb.Stateless;
 import lombok.extern.java.Log;
 import org.json.simple.JSONObject;
 
 /**
- *
+ * Helper class for write Tweets on the file system.
+ * 
  * @author Matsobane Khwinana (Matsobane.Khwinana@momentum.co.za)
  */
 @Log
+@Stateless
 public class FileHelper {
     
     public static void write(JSONObject tweet){
