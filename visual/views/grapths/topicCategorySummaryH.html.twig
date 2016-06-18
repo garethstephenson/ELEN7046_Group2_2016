@@ -51,7 +51,7 @@
 
         var scaleFactor = d3.scale.linear()
           .domain([0, d3.max(data, function (item) {
-              return item.Total
+              return item.Count
             })])
           .range([0, width]);
 
@@ -60,13 +60,13 @@
           .data(data)
           .enter().append("div")
           .style("width", function (item) {
-            return scaleFactor(item.Total) + "px";
+            return scaleFactor(item.Count) + "px";
           })
           .style("height", function (item) {
             return height / data.length + "px";
           })
           .text(function (item) {
-            return item.Category + ' (' + item.Total + ')';
+            return item.Category + ' (' + item.Count + ')';
           });
       }
     };
