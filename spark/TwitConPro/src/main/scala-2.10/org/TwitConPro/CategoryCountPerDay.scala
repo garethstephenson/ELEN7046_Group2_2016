@@ -1,12 +1,11 @@
 package org.TwitConPro
 
 import java.io.{File, PrintWriter}
-import java.time.{LocalDate, ZonedDateTime}
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
-import java.time._
 
+import org.TwitConPro.JsonFormats._
 import org.TwitConPro.JsonProtocols.TweetJsonProtocol._
-import org.TwitConPro.JsonFormats.{CategoryCount, CategoryCountContainer, CategoryCountPerHourInput, CategoryCountPerHourOutput}
 import org.apache.spark.{SparkConf, SparkContext}
 import spray.json._
 
@@ -46,8 +45,9 @@ object CategoryCountPerDay {
 
         val categoryCountsPerHourPerDay = sparkContext
             .textFile(inputPath, numPartitions)
-            .map(_.parseJson.convertTo[CategoryCountPerHourInput])
+            .map(_.parseJson.convertTo[CategoryCountPerIntervalInput])
 
+        import ZonedDateTimeSort._
         val dates = categoryCountsPerHourPerDay
             .map(categoryCountPerHourInput => categoryCountPerHourInput.container)
             .map(container => container.map(categoryCountContainer => {
@@ -56,6 +56,7 @@ object CategoryCountPerDay {
             }))
             .flatMap(zonedDateTimes => zonedDateTimes)
             .distinct
+            .sortBy(date => date)
             .collect()
 
         val containers: ListBuffer[CategoryCountContainer] = new ListBuffer[CategoryCountContainer]
@@ -92,7 +93,7 @@ object CategoryCountPerDay {
 
         sparkContext.stop()
 
-        val output = CategoryCountPerHourOutput(containers.toList)
+        val output = new CategoryCountPerIntervalOutput(containers.toList)
         writeToFile(output.container.toJson.prettyPrint, s"$inputPath.categoryCountPerDay.json")
     }
 

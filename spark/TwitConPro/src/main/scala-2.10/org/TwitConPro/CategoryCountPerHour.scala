@@ -4,7 +4,7 @@ import java.io._
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
-import org.TwitConPro.JsonFormats.{CategoryCount, CategoryCountContainer, CategoryCountPerHourOutput, Tweet}
+import org.TwitConPro.JsonFormats._
 import org.TwitConPro.JsonProtocols.TweetJsonProtocol._
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs._
@@ -75,7 +75,11 @@ object CategoryCountPerHour {
             val results = categories
                 .map(category => tweets
                     .filter(tweet => tweet.tweetText.contains(category))
-                    .filter(tweet => getHour(tweet) == date.getHour) // For each hour
+                    .filter(tweet => {
+                        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:00:00'Z'") // Convert to same hour date
+                        val parsedDate = ZonedDateTime.parse(tweet.createdAt.format(formatter))
+                        date.equals(parsedDate)
+                    }) // For each hour
                     .map(tweet => (category, 1))
                     .reduceByKey(_ + _) // Returns tuple (Category, CountPerHour)
                     .map(categoryCountTuple => (date, categoryCountTuple._1, categoryCountTuple._2)) // Returns tuple (Date, Category, CountPerHour)
@@ -87,11 +91,11 @@ object CategoryCountPerHour {
                     .filter(datedCategoryCountTuple => datedCategoryCountTuple._1 == date)
                     .map(datedCategoryCountTuple => CategoryCount(datedCategoryCountTuple._2, datedCategoryCountTuple._3))))
 
-            containers += CategoryCountContainer(date, categoryCounts.toList)
+            containers += new CategoryCountContainer(date, categoryCounts.toList)
         })
         sparkContext.stop
 
-        val output = CategoryCountPerHourOutput(containers.toList)
+        val output = new CategoryCountPerIntervalOutput(containers.toList)
         writeToFile(output.container.toJson.toString, s"$inputPath.results.json")
     }
 
@@ -112,10 +116,6 @@ object CategoryCountPerHour {
         val initializerArray = initializers.mkString("|")
         val pattern = s"((?:$initializerArray)\\((\\S*)\\))".r
         pattern.replaceAllIn(content, foundMatch => foundMatch.subgroups(1))
-    }
-
-    def getHour(tweet: Tweet): Int = {
-        tweet.createdAt.getHour
     }
 
     private def printUsage(): Unit = {
