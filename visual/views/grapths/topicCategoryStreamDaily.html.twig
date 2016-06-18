@@ -87,7 +87,6 @@
         var x = d3.scale.linear()
           .domain([0, days.length - 1])
           .range([0, width]);
-
         // y scale max total count
         var y = d3.scale.linear()
           .domain([0, d3.max(dataStack, function (stackItem) {
@@ -124,9 +123,9 @@
             return "#FFFFFF";
           });
 
-        streamDailyChart._drawLegend(svg, categoryColors, height, margin.bottom, width / days.length);
+        streamDailyChart._drawLegend(svg, categoryColors, height, margin.bottom, width / days.length, days);
       },
-      _drawLegend: function (svg, categoryColors, height, marginBottom, gridSize) {
+      _drawLegend: function (svg, categoryColors, height, marginBottom, gridSize, days) {
         var legendElementWidth = gridSize * 2;
         var legendXOffset = 5;
         var legend = svg.selectAll(".legend")
@@ -158,6 +157,14 @@
             return legendXOffset + (legendElementWidth * i);
           })
           .attr("y", (height) + (gridSize / 2) + 10);
+        
+        var dateRangeString = "Date Range: " + days[0] + " - " + days[days.length - 1];
+        
+        legend.append("text")
+          .attr("class", "mono")
+          .text(dateRangeString)
+          .attr("x", legendXOffset + 2 + (legendElementWidth * (categoryColors.length)))
+          .attr("y", (height - 1) + (gridSize / 2));
 
         legend.exit().remove();
       }
