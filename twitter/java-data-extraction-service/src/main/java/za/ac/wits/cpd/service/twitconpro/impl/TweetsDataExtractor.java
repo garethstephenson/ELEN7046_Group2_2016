@@ -36,7 +36,7 @@ public class TweetsDataExtractor {
     @EJB
     private Authenticator authenticator;
 
-    public List<Tweet> extractHashtagTweets(@NonNull String hashtag) {
+    public List<Tweet> extractRandomHashtagTweets(@NonNull String hashtag) {
         return fetchTweets(String.format(HASHTAG_URL_FORMAT, validateHashtag(hashtag)));
     }
 
@@ -50,7 +50,8 @@ public class TweetsDataExtractor {
         }
         
         StringBuilder urlBuilder = toQueryString(queryStringBuilder.toString(), options);
-        return fetchTweets(urlBuilder.toString());
+        final String url = urlBuilder.toString();
+        return fetchTweets(url);
     }
     public List<Tweet> extractHashtagTweets(@NonNull String hashtag, int count) {
         validateCount(count);
