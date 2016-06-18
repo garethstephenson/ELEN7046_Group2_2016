@@ -22,7 +22,7 @@ object TweetJsonProtocol extends DefaultJsonProtocol {
     }
 
     implicit val hashTagFormat = jsonFormat(HashTag, "hashTag")
-    implicit val tweetFormat = jsonFormat(Tweet, "createdBy", "createdAt", "coords", "favouriteCount", "hashtags",
+    implicit val tweetFormat = jsonFormat(Tweet, "_id", "createdBy", "createdAt", "coords", "favouriteCount", "hashtags",
         "twitterID", "inReplyToName", "inReplyToStatusID", "inReplyToUserID", "isRetweet", "language", "place", "sensitive",
         "quotedStatusID", "retweeted", "retweetedCount", "tweetText", "tweetURL")
 

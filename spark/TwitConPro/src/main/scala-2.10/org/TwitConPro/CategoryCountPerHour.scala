@@ -26,6 +26,11 @@ object CategoryCountPerHour {
             return
         }
         val inputPath = args(0)
+        var lastIndexOfPathSeparator = inputPath.lastIndexOf("/")
+        if (lastIndexOfPathSeparator == -1)
+            lastIndexOfPathSeparator = 0
+        else
+            lastIndexOfPathSeparator += 1
 
         if (args.length < 2) {
             println("Categories must be supplied.")
@@ -35,7 +40,9 @@ object CategoryCountPerHour {
         val categories = args(1).split(",")
 
         val sparkConfig = new SparkConf()
-        sparkConfig.setAppName("Category Count Per Hour")
+
+        val fileName = inputPath.substring(lastIndexOfPathSeparator, inputPath.length)
+        sparkConfig.setAppName(s"Category Count Per Hour [$fileName]")
 
         val sparkContext = new SparkContext(sparkConfig)
         sparkContext.defaultMinPartitions
@@ -45,14 +52,11 @@ object CategoryCountPerHour {
             numPartitions = args(2).toInt
         }
 
-        println("Using settings:")
-        println(s"\tInput path:\t$inputPath")
-        println(s"\tCategories:\t${categories.mkString(", ")}")
-        println(s"\tPartitions:\t$numPartitions")
+        printSettings(inputPath, categories, numPartitions)
 
         val tweets = sparkContext
             .textFile(inputPath, numPartitions)
-            .map(stripConstructors(Array("ISODate", "NumberLong"), _))
+            .map(stripConstructors(Array("ObjectId", "ISODate", "NumberLong"), _))
             .map(_.parseJson.convertTo[Tweet])
 
         import ZonedDateTimeSort._
@@ -88,7 +92,14 @@ object CategoryCountPerHour {
         sparkContext.stop
 
         val output = CategoryCountPerHourOutput(containers.toList)
-        writeToFile(output.container.toJson.prettyPrint, s"$inputPath.results.json")
+        writeToFile(output.container.toJson.toString, s"$inputPath.results.json")
+    }
+
+    def printSettings(inputPath: String, categories: Array[String], numPartitions: Int): Unit = {
+        println("\nUsing settings:")
+        println(s"\tInput path:\t$inputPath")
+        println(s"\tCategories:\t${categories.mkString(", ")}")
+        println(s"\tPartitions:\t$numPartitions\n")
     }
 
     def writeToFile(contents: String, fileName: String): Unit = {
