@@ -105,10 +105,10 @@
       },
       draw: function (data, categoryColors, chartDivSelector) {
         // Code developed following this tutorial: http://bl.ocks.org/tjdecke/5558084
-        
+
         if (data == null || data.length <= 0)
-            return;
-        
+          return;
+
         var
           categoreis = heatMapChart._getCategories(data),
           dates = heatMapChart._getDates(data);
@@ -259,6 +259,16 @@
             return legendElementWidth * i;
           })
           .attr("y", (height - gridSize) + (gridSize / 2) + 10);
+
+        var dateRangeString = "Date Range: " + commonCharts.getDateValue(dates[0]) + " - " + commonCharts.getDateValue(dates[dates.length - 1]);
+
+        legend.append("text")
+          .attr("class", "mono")
+          .text(dateRangeString)
+          .attr("x", 2 + (legendElementWidth * (categoryColors.length)))
+          .attr("y", height - gridSize + (gridSize / 2));
+
+
 
         legend.exit().remove();
 
