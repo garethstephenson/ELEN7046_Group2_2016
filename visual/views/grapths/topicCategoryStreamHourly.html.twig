@@ -30,6 +30,7 @@
       initialise: function (data, categoryColors, chartDivSelector, daysSelector) {
         var parent = this;
         parent._setWidth(chartDivSelector);
+        
         var days = parent._getDays(data);
         var day = days[0];
         parent._populateDateSelect(daysSelector, days);
