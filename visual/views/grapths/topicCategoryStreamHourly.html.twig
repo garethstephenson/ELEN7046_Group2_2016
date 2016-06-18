@@ -110,7 +110,7 @@
 
             var element = {
               x: commonCharts.getHourValue(item.Date),
-              y: item.Data[categoryIndex].Count,
+              y: item.Data[categoryIndex] == null ? 0 : item.Data[categoryIndex].Count,
               categoryIndex: categoryIndex,
               colorIndex: colorIndex,
               item: item.Data[categoryIndex]

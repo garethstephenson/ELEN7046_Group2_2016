@@ -62,13 +62,6 @@
             "type": "grapths/topicCategorySummaryV.html.twig",
             "dataUrl": "data/topicCategorySummary",
             "specialClass": "panel-success"
-        },
-        {
-            "name": "Category Summary",
-            "size": "3",
-            "type": "grapths/topicCategorySummaryH.html.twig",
-            "dataUrl": "data/topicCategorySummary",
-            "specialClass": "panel-success"
         }
     ]
 }

@@ -156,13 +156,17 @@
         cards.transition().duration(1000)
           .style("fill", function (item) {
             var maxCategoryItem = commonCharts.getMaxCategoryItem(item);
+            if (maxCategoryItem == null)
+              return '#FFF';
             var color = commonCharts.getCategoryColor(maxCategoryItem, categoryColors);
             return color;
           })
           .style("fill-opacity", function (item) {
             var maxCategoryItem = commonCharts.getMaxCategoryItem(item);
+            if (maxCategoryItem == null)
+              return 0.1;
             var alpha = colorAlpha(maxCategoryItem.Count);
-            return alpha / 100;
+            return Math.max(alpha / 100, 0.1);
           });
 
         cards.select("title").text(function (item) {

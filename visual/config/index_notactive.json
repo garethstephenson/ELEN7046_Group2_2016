@@ -12,6 +12,13 @@
             "size": "3",
             "type": "grapths/global.html.twig",
             "dataUrl": "data/placesData"
+        },
+        {
+            "name": "Category Summary",
+            "size": "3",
+            "type": "grapths/topicCategorySummaryH.html.twig",
+            "dataUrl": "data/topicCategorySummary",
+            "specialClass": "panel-success"
         }
     ]
 }
