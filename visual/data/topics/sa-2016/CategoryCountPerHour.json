@@ -1,0 +1,111 @@
+[
+    {
+        "Date": "2016-06-10T15:00:00Z",
+        "Data": [
+            {
+                "Category": "EFF",
+                "Count": 3
+            }]
+    }, {
+        "Date": "2016-06-10T19:00:00Z",
+        "Data": []
+    }, {
+        "Date": "2016-06-17T11:00:00Z",
+        "Data": [{
+                "Category": "EFF",
+                "Count": 103
+            }, {
+                "Category": "ANC",
+                "Count": 53
+            }, {
+                "Category": "DA",
+                "Count": 44
+            }]
+    }, {
+        "Date": "2016-06-17T12:00:00Z",
+        "Data": [{
+                "Category": "EFF",
+                "Count": 168
+            }, {
+                "Category": "ANC",
+                "Count": 96
+            }, {
+                "Category": "DA",
+                "Count": 96
+            }]
+    }, {
+        "Date": "2016-06-17T13:00:00Z",
+        "Data": [{
+                "Category": "EFF",
+                "Count": 153
+            }, {
+                "Category": "ANC",
+                "Count": 73
+            }, {
+                "Category": "DA",
+                "Count": 33
+            }]
+    }, {
+        "Date": "2016-06-17T14:00:00Z",
+        "Data": [{
+                "Category": "EFF",
+                "Count": 8
+            }, {
+                "Category": "ANC",
+                "Count": 7
+            }]
+    }, {
+        "Date": "2016-06-17T15:00:00Z",
+        "Data": [{
+                "Category": "EFF",
+                "Count": 24
+            }, {
+                "Category": "ANC",
+                "Count": 45
+            }]
+    }, {
+        "Date": "2016-06-17T16:00:00Z",
+        "Data": [{
+                "Category": "EFF",
+                "Count": 85
+            }, {
+                "Category": "ANC",
+                "Count": 306
+            }, {
+                "Category": "DA",
+                "Count": 32
+            }]
+    }, {
+        "Date": "2016-06-17T17:00:00Z",
+        "Data": [{
+                "Category": "EFF",
+                "Count": 138
+            }, {
+                "Category": "ANC",
+                "Count": 290
+            }, {
+                "Category": "DA",
+                "Count": 332
+            }]
+    }, {
+        "Date": "2016-06-17T18:00:00Z",
+        "Data": [{
+                "Category": "EFF",
+                "Count": 184
+            }, {
+                "Category": "ANC",
+                "Count": 270
+            }, {
+                "Category": "DA",
+                "Count": 232
+            }]
+    }, {
+        "Date": "2016-06-17T19:00:00Z",
+        "Data": [{
+                "Category": "ANC",
+                "Count": 15
+            }, {
+                "Category": "DA",
+                "Count": 17
+            }]
+    }]
