@@ -48,10 +48,11 @@ object CategoryCountPerDay {
             .map(_.parseJson.convertTo[CategoryCountPerIntervalInput])
 
         import ZonedDateTimeSort._
+        val YearMonthDayFormat: String = "yyyy-MM-dd'T'00:00:00'Z'"
         val dates = categoryCountsPerHourPerDay
             .map(categoryCountPerHourInput => categoryCountPerHourInput.container)
             .map(container => container.map(categoryCountContainer => {
-                val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'00:00:00'Z'")
+                val formatter = DateTimeFormatter.ofPattern(YearMonthDayFormat)
                 ZonedDateTime.parse(categoryCountContainer.Date.format(formatter))
             }))
             .flatMap(zonedDateTimes => zonedDateTimes)
@@ -63,15 +64,15 @@ object CategoryCountPerDay {
         dates.foreach(date => {
             val data = categoryCountsPerHourPerDay
                 .map(categoryCountPerHourInput => categoryCountPerHourInput.container)
-                .map(container => container.filter(x => {
-                    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'00:00:00'Z'")
-                    val entryDate = ZonedDateTime.parse(x.Date.format(formatter))
+                .map(containers => containers.filter(container => {
+                    val formatter = DateTimeFormatter.ofPattern(YearMonthDayFormat)
+                    val entryDate = ZonedDateTime.parse(container.Date.format(formatter))
                     date.equals(entryDate)
                 }))
-                .map(container => container
-                    .map(x => x.Data)
-                    .flatMap(x => x))
-                .flatMap(x => x)
+                .map(containers => containers
+                    .map(container => container.Data)
+                    .flatMap(categoryCounts => categoryCounts))
+                .flatMap(categoryCounts => categoryCounts)
                 .collect()
 
             val categories = data
@@ -81,8 +82,8 @@ object CategoryCountPerDay {
             val categoryCount: ListBuffer[CategoryCount] = new ListBuffer[CategoryCount]
             categories.foreach(category => {
                 val count = data
-                    .filter(x => x.Category.equals(category))
-                    .map(x => x.Count)
+                    .filter(categoryCount => categoryCount.Category.equals(category))
+                    .map(categoryCount => categoryCount.Count)
                     .sum
 
                 categoryCount += new CategoryCount(category, count)

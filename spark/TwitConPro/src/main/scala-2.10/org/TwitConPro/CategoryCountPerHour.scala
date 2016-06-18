@@ -60,9 +60,10 @@ object CategoryCountPerHour {
             .map(_.parseJson.convertTo[Tweet])
 
         import ZonedDateTimeSort._
+        val YearMonthDayHourFormat: String = "yyyy-MM-dd'T'HH:00:00'Z'"
         val dates = tweets
             .map(tweet => {
-                val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:00:00'Z'") // Convert to same hour date
+                val formatter = DateTimeFormatter.ofPattern(YearMonthDayHourFormat) // Convert to same hour date
                 ZonedDateTime.parse(tweet.createdAt.format(formatter))
             })
             .distinct // Reduce to unique hourly times
@@ -76,7 +77,7 @@ object CategoryCountPerHour {
                 .map(category => tweets
                     .filter(tweet => tweet.tweetText.contains(category))
                     .filter(tweet => {
-                        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:00:00'Z'") // Convert to same hour date
+                        val formatter = DateTimeFormatter.ofPattern(YearMonthDayHourFormat) // Convert to same hour date
                         val parsedDate = ZonedDateTime.parse(tweet.createdAt.format(formatter))
                         date.equals(parsedDate)
                     }) // For each hour
