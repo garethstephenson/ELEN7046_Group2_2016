@@ -68,8 +68,7 @@
               'Category': categoryItem.Category,
               'Count': categoryItem.Count,
               'CategoryIndex': categoryIndex,
-              'DateIndex': heatMapChart._getIndexByValue(
-                heatMapChart._getDateValue(item.Date), dates)
+              'DateIndex': heatMapChart._getIndexByValue(item.Date, dates)
             });
           }
         }
@@ -83,17 +82,11 @@
         }
         return -1;
       },
-      _getDateValue: function (dateString) {
-        var dateFormat = d3.time.format("%Y-%m-%d");
-        var printFormat = d3.time.format("%m-%d");
-        var date = dateFormat.parse(dateString);
-        return printFormat(date);
-      },
       _getDates: function (data) {
         var dateArray = [];
         for (var index = 0; index < data.length; index++) {
           var item = data[index];
-          dateArray.push(heatMapChart._getDateValue(item.Date));
+          dateArray.push(item.Date);
         }
         return dateArray;
       },
@@ -158,7 +151,7 @@
           .data(dates)
           .enter().append("text")
           .text(function (d) {
-            return d;
+            return commonCharts.getDayValue(d);
           })
           .attr("x", function (d, i) {
             return i * gridSize;
