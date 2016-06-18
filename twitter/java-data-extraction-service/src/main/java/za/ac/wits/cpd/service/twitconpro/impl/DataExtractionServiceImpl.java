@@ -30,7 +30,6 @@ public class DataExtractionServiceImpl implements DataExtractionService,RemoteDa
     @EJB
     private PersistenceManager persistManager;
     
-    
     @Override
     public Tweet exactTweetById(@NonNull Long id) {
         return this.extractor.extractTweetById(id);
@@ -49,7 +48,7 @@ public class DataExtractionServiceImpl implements DataExtractionService,RemoteDa
 
     @Override
     public List<Tweet> extractRandomTweetsByHashtag(String hashtag) {
-        return this.extractor.extractHashtagTweets(hashtag);
+        return this.extractor.extractRandomHashtagTweets(hashtag);
     }
 
     @Override
@@ -79,11 +78,6 @@ public class DataExtractionServiceImpl implements DataExtractionService,RemoteDa
         List<Tweet> tweets = extractHistoryTweetsByHashtags(hashtags, options);
         return persistTweetsOrThrowIllegalStateException(tweets);
     }
-
-    @Override
-    public List<Tweet> distributeAllTweets() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
     
     private List<Tweet> persistTweetsOrThrowIllegalStateException(List<Tweet> tweets) throws IllegalStateException {
         if(tweets!=null&&!tweets.isEmpty()){
@@ -99,4 +93,5 @@ public class DataExtractionServiceImpl implements DataExtractionService,RemoteDa
         
         throw new IllegalStateException("No tweets returned for persistence!");
     }
+
 }
