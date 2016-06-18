@@ -6,6 +6,11 @@
     }, 
     {
         "id": 2,
+        "name": " ** MOCK ** South Africa Municipal Elections (2016)",
+        "folder": "sa-2016-Mock"
+    }, 
+    {
+        "id": 3,
         "name": "US Elections (2016)",
         "folder": "us-2016"
     }

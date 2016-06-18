@@ -1,0 +1,17 @@
+[
+    {
+        "Category": "EFF",
+        "Color": "#FF0000",
+        "ConColor": "#440000"
+    },
+    {
+        "Category": "ANC",
+        "Color": "#FFFF00",
+        "ConColor": "#444400"
+    },
+    {
+        "Category": "DA",
+        "Color": "#0000FF",
+        "ConColor": "#000044"
+    }
+]

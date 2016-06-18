@@ -1,0 +1,20 @@
+[
+    {
+        "Category": "ANC",
+        "Pro": 870,
+        "Con": 200,
+        "Count": 1070
+    },
+    {
+        "Category": "EFF",
+        "Pro": 2000,
+        "Con": 150,
+        "Count": 2150
+    },
+    {
+        "Category": "DA",
+        "Pro": 520,
+        "Con": 60,
+        "Count": 580
+    }
+]
