@@ -49,29 +49,64 @@ public class DataDistributionResource {
             throw new WebApplicationException(Response.Status.PRECONDITION_FAILED);
         }
 
-        
     }
 
     @GET
-    @Path("/byHashtag/{hashtag}")
-    public void extractAndPersistTweetById(@PathParam(value = "hashtag") String hashtag) {
+    @Path("/byHashtag")
+    public void distributeTweetsbyHashtag(@QueryParam(value = "uri") String uri,
+            @QueryParam(value = "fileName") String fileName,
+            @QueryParam(value = "hashtag") String hashtag) {
         try {
             if (hashtag == null) {
                 throw new WebApplicationException(Response.Status.PRECONDITION_FAILED);
             }
+
+            if (!isValidString(fileName)) {
+                this.distributionService.distributeTweetsByHashtag(toUrl(uri),hashtag);
+            } else {
+                this.distributionService.distributeTweetsByHashtag(toUrl(uri),fileName,hashtag);
+            }
             
-            URI uri = new URI("/home/mkhwinana/Dev/eduworkspace/data");
-            this.distributionService.distributeTweetsByHashtag(uri, hashtag);
         } catch (URISyntaxException ex) {
             log.log(Level.SEVERE, "Failed to build the URI", ex);
-            throw new WebApplicationException(ex.getMessage(),Response.Status.INTERNAL_SERVER_ERROR);
+            throw new WebApplicationException(ex.getMessage(), Response.Status.INTERNAL_SERVER_ERROR);
         }
-        
+
+    }
+    
+    @GET
+    @Path("/byHashtags")
+    public void distributeTweetsbyHashtags(@QueryParam(value = "uri") String uri,
+            @QueryParam(value = "fileName") String fileName,
+            @QueryParam(value = "hashtags") List<String> hashtags) {
+        try {
+            if (hashtags == null) {
+                throw new WebApplicationException(Response.Status.PRECONDITION_FAILED);
+            }
+
+            if (!isValidString(fileName)) {
+                this.distributionService.distributeTweetsByHashtags(toUrl(uri),hashtags);
+            } else {
+                this.distributionService.distributeTweetsByHashtags(toUrl(uri),fileName,hashtags);
+            }
+            
+        } catch (URISyntaxException ex) {
+            log.log(Level.SEVERE, "Failed to build the URI", ex);
+            throw new WebApplicationException(ex.getMessage(), Response.Status.INTERNAL_SERVER_ERROR);
+        }
+
     }
 
+    private URI toUrl(String uri) throws URISyntaxException {
+        return isValidString(uri)?new URI(uri):new URI(DEFAULT_DATA_DUMP_PATH);
+    }
+
+    private static boolean isValidString(String uri) {
+        return (uri!=null&&!uri.isEmpty());
+    }
+    
+    private static final String DEFAULT_DATA_DUMP_PATH = "/home/mkhwinana/Dev/eduworkspace/data";
+
     private static final String PONG = "pong";
-    private static final String SINCE = "since";
-    private static final String UNTIL = "until";
-    private static final String COUNT = "count";
     private static final String HASHTAGS = "hashtags";
 }
