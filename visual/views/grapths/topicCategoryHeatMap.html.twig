@@ -90,35 +90,20 @@
         }
         return dateArray;
       },
-      _getCategories: function (data) {
-        // TODO : See if D3 can't extract this better
-        var categoryArray = [];
-
-        if (data.length > 0) {
-          for (var index = 0; index < data[0].Data.length; index++) {
-            var item = data[0].Data[index];
-
-            categoryArray.push(item.Category);
-          }
-        }
-        return categoryArray;
-      },
       draw: function (data, categoryColors, chartDivSelector) {
         // Code developed following this tutorial: http://bl.ocks.org/tjdecke/5558084
 
         if (data == null || data.length <= 0)
           return;
 
-        var
-          categoreis = heatMapChart._getCategories(data),
-          dates = heatMapChart._getDates(data);
-
-        var margin = {top: 50, right: 0, bottom: 50, left: 70};
+        var dates = heatMapChart._getDates(data);
+        var margin = {top: 20, right: 10, bottom: 50, left: 70};
         var width = $(chartDivSelector).width() - margin.left - margin.right;
         var gridSize = Math.min(34, Math.floor(width / dates.length));
-        var divHeight = (categoreis.length * gridSize) + margin.top + margin.bottom + gridSize;
+        var height = (categoryColors.length * gridSize);
+        var divHeight = height + margin.top + margin.bottom + 10;
         $(chartDivSelector).height(divHeight);
-        var height = $(chartDivSelector).height() - margin.top - margin.bottom;
+
 
         var
           colors = ["#FBEFEF", "#F5A9A9", "#F78181", "#FA5858", "#FE2E2E", "#FF0000", "#DF0101", "#B40404", "#8A0808"],
@@ -131,10 +116,10 @@
           .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
         var dayLabels = svg.selectAll(".dayLabel")
-          .data(categoreis)
+          .data(categoryColors)
           .enter().append("text")
           .text(function (d) {
-            return d;
+            return d.Category;
           })
           .attr("x", 0)
           .attr("y", function (d, i) {
@@ -216,13 +201,6 @@
             return Math.max(alpha / 100, 0.1);
           });
 
-        /*
-         cards.transition().duration(1000)
-         .style("fill", function (d) {
-         return colorScale(d.Count);
-         });
-         */
-
         cards.select("title").text(function (d) {
           return d.Count;
         });
@@ -231,7 +209,8 @@
 
         var
           legendGridSize = 35,
-          legendElementWidth = legendGridSize * 2;
+          legendElementWidth = legendGridSize * 2,
+          legendYOffset = height + margin.top;
 
         var legend = svg.selectAll(".legend")
           .data(categoryColors, function (item) {
@@ -245,7 +224,7 @@
           .attr("x", function (d, i) {
             return legendElementWidth * i;
           })
-          .attr("y", height - gridSize + 2)
+          .attr("y", legendYOffset - (legendGridSize / 2) + 2)
           .attr("width", legendGridSize * 2)
           .attr("height", legendGridSize / 2)
           .attr("class", "bordered")
@@ -261,7 +240,7 @@
           .attr("x", function (d, i) {
             return legendElementWidth * i;
           })
-          .attr("y", (height - gridSize + 2) + (legendGridSize / 2) + 10);
+          .attr("y", legendYOffset + 12)
 
         var dateRangeString = "Date Range: " + commonCharts.getDateValue(dates[0]) + " - " + commonCharts.getDateValue(dates[dates.length - 1]);
 
@@ -269,7 +248,7 @@
           .attr("class", "mono")
           .text(dateRangeString)
           .attr("x", 2 + (legendElementWidth * (categoryColors.length)))
-          .attr("y", height - gridSize + (legendGridSize / 2));
+          .attr("y", legendYOffset + 2);
 
 
 
