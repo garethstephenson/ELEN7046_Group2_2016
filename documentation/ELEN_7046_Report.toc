@@ -1,4 +1,4 @@
-\contentsline {section}{\numberline {1}Introduction}{2}
+\contentsline {section}{\numberline {1}Abstract}{2}
 \contentsline {section}{\numberline {2}Literature Review}{2}
 \contentsline {section}{\numberline {3}Stakeholder Concerns - Big Data}{2}
 \contentsline {subsection}{\numberline {3.1}Collection}{2}
@@ -12,6 +12,10 @@
 \contentsline {section}{\numberline {7}Architecture of the Solution}{4}
 \contentsline {subsection}{\numberline {7.1}High Level Design: Component Architecture}{4}
 \contentsline {subsection}{\numberline {7.2}Detailed Design: Class Diagrams}{5}
+\contentsline {subsubsection}{\numberline {7.2.1}Data Acquisition (Batch)}{5}
+\contentsline {subsubsection}{\numberline {7.2.2}Data Acquisition (Streaming)}{5}
+\contentsline {subsubsection}{\numberline {7.2.3}Data Processing}{5}
+\contentsline {subsubsection}{\numberline {7.2.4}Data Visualization}{5}
 \contentsline {subsection}{\numberline {7.3}Operational Model: Infrastructure Design}{5}
 \contentsline {section}{\numberline {8}Conclusion}{6}
 \contentsline {subsection}{\numberline {8.1}Control Situation}{6}
