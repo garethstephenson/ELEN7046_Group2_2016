@@ -45,30 +45,7 @@
       initialise: function (data, categoryColors, chartSvgSelector) {
         var parent = this;
         parent._setWidth(chartSvgSelector);
-
-        var flattenData = [];
-        for (var dataIndex = 0; dataIndex < data.length; dataIndex++) {
-          for (var categoryIndex = 0; categoryIndex < data[dataIndex].Data.length; categoryIndex++) {
-            flattenData.push({
-              Date: data[dataIndex].Date,
-              Category: data[dataIndex].Data[categoryIndex].Category,
-              Count: data[dataIndex].Data[categoryIndex].Count,
-            });
-          }
-        }
-
-        var sumedData = d3.nest()
-          .key(function (data) {
-            return data.Category;
-          })
-          .rollup(function (data) {
-            return d3.sum(data, function (g) {
-              return g.Count;
-            });
-          })
-          .entries(flattenData);
-
-        parent.draw(sumedData, categoryColors, chartSvgSelector);
+        parent.draw(data, categoryColors, chartSvgSelector);
         $(window).resize(function () {
           parent._setWidth(chartSvgSelector);
 
@@ -76,7 +53,7 @@
             .selectAll("g")
             .remove();
           $(chartSvgSelector).empty();
-          parent.draw(sumedData, categoryColors, chartSvgSelector);
+          parent.draw(data, categoryColors, chartSvgSelector);
         });
       },
       _setWidth: function (chartSvgSelector) {
@@ -91,15 +68,13 @@
         var x = d3.scale.ordinal()
           .rangeRoundBands([0, width], .1)
           .domain(data.map(function (item) {
-            //return item.Category;
-            return item.key;
+            return item.Category;
           }));
 
         var y = d3.scale.linear()
           .range([height, 0])
           .domain([0, d3.max(data, function (item) {
-              //return item.Count;
-              return item.values;
+              return item.Count;
             })]);
 
         var xAxis = d3.svg.axis()
@@ -128,8 +103,7 @@
         var yColor = d3.scale.linear()
           .range([255, 0])
           .domain([0, d3.max(data, function (item) {
-              //return item.Count;
-              return item.values;
+              return item.Count;
             })]);
 
         var bars = chart.selectAll(".bar")
@@ -137,24 +111,48 @@
           .enter().append("rect")
           .attr("class", "bar")
           .attr("x", function (d) {
-            //return x(d.Category);
-            return x(d.key);
+            return x(d.Category);
           })
           .attr("y", function (d) {
-            //return y(d.Count);
-            return y(d.values);
+            return y(d.Count);
           })
           .attr("height", function (d) {
-            //return height - y(d.Count);
-            return height - y(d.values);
+            return height - y(d.Count);
           })
           .attr("width", x.rangeBand());
 
         bars.transition().duration(1000)
           .style("fill", function (item) {
 
-            return commonCharts.getCategoryColor({'Category': item.key}, categoryColors);
+            return commonCharts.getCategoryColor(item, categoryColors);
           });
+
+        /*
+         var bar = chart.selectAll("g")
+         .data(data)
+         .enter().append("g")
+         .attr("transform", function (d) {
+         return "translate(" + x(d.Category) + ",0)";
+         });
+         
+         bar.append("rect")
+         .attr("y", function (d) {
+         return y(d.Count);
+         })
+         .attr("height", function (d) {
+         return height - y(d.Count);
+         })
+         .attr("width", x.rangeBand());
+         
+         bar.append("text")
+         .attr("x", x.rangeBand() / 2)
+         .attr("y", function (d) {
+         return y(d.Count) + 3;
+         })
+         .attr("dy", ".75em")
+         .text(function (d) {
+         return d.Count;
+         });*/
       }
     };
 </script>

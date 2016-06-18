@@ -77,7 +77,7 @@
 
         var margin = {top: 20, right: 0, bottom: 20, left: 75};
         var width = $(chartDivSelector).width() - margin.left - margin.right;
-        var gridSize = Math.floor(width / hours.length); // TODO
+        var gridSize = Math.min(34, Math.floor(width / hours.length));
         var divHeight = (days.length * gridSize) + margin.top + margin.bottom + gridSize; // TODO : 
         $(chartDivSelector).height(divHeight);
         var height = $(chartDivSelector).height() - margin.top - margin.bottom;

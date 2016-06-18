@@ -101,8 +101,7 @@
 
         var margin = {top: 20, right: 0, bottom: 20, left: 40};
         var width = $(chartDivSelector).width() - margin.left - margin.right;
-        var gridSize = Math.floor(width / dates.length);
-
+        var gridSize = Math.min(34, Math.floor(width / dates.length));
         var divHeight = (months.keys().length * gridSize) + margin.top + margin.bottom + gridSize;
         $(chartDivSelector).height(divHeight);
         var height = $(chartDivSelector).height() - margin.top - margin.bottom;

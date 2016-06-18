@@ -115,7 +115,7 @@
 
         var margin = {top: 50, right: 0, bottom: 50, left: 70};
         var width = $(chartDivSelector).width() - margin.left - margin.right;
-        var gridSize = Math.floor(width / dates.length);
+        var gridSize = Math.min(34, Math.floor(width / dates.length));
         var divHeight = (categoreis.length * gridSize) + margin.top + margin.bottom + gridSize;
         $(chartDivSelector).height(divHeight);
         var height = $(chartDivSelector).height() - margin.top - margin.bottom;
@@ -213,7 +213,7 @@
           })
           .style("fill-opacity", function (item) {
             var alpha = colorAlpha(item.Count);
-            return alpha / 100;
+            return Math.max(alpha / 100, 0.1);
           });
 
         /*
