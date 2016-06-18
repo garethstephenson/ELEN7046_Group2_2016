@@ -6,14 +6,18 @@ import com.mongodb.Block;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.FindIterable;
+import static com.mongodb.client.model.Filters.all;
+import static com.mongodb.client.model.Filters.exists;
 import com.mongodb.util.JSON;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import static java.util.Arrays.asList;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import lombok.Getter;
 import lombok.NonNull;
@@ -26,7 +30,7 @@ import org.bson.json.JsonWriterSettings;
 
 /**
  * Used for persisting tweets in a persistent storage.
- * 
+ *
  * @author Matsobane Khwinana (Matsobane.Khwinana@momentum.co.za)
  */
 @Log
@@ -49,31 +53,27 @@ public class PersistenceManager {
         persistTweet(tweet);
     }
 
-    public void removeByTwitterId(Long twitterId){
+    public void removeByTwitterId(Long twitterId) {
         db.getCollection(TABLE_TWEETS).deleteMany(new Document(TWITTER_ID, twitterId));
     }
-    
+
     public void removeAll() {
         db.getCollection(TABLE_TWEETS).deleteMany(new Document());
     }
-    
+
     public Tweet findByTwitterId(Long tweetId) {
         final List<Tweet> tweets = new ArrayList<>();
+
         FindIterable<Document> iterable = db.getCollection(TABLE_TWEETS).
                 find(new Document(TWITTER_ID, tweetId));
-        
+
         if (iterable != null) {
             iterable.forEach(new Block<Document>() {
                 @Override
                 public void apply(Document doc) {
                     BsonDocument bsonDoc = BsonDocument.parse(doc.toJson());
                     JsonWriterSettings shellSettings = new JsonWriterSettings(JsonMode.SHELL);
-                    JsonWriterSettings strictSettings = new JsonWriterSettings(JsonMode.STRICT);
-                    System.out.println("#####  JsonMode.SHELL : " + bsonDoc.toJson(shellSettings));
-                    final String toJson = doc.toJson();
-                    System.out.println("#####  JsonMode.STRICT : " + toJson);
-                    String gson = JSON.serialize(doc);
-                    System.out.println("#####  Gson JSON : " + gson);
+
                     Tweet tweet = new Tweet();
                     tweet.setTwitterId(doc.getLong("twitterID"));
                     tweet.setText(doc.getString("tweetText"));
@@ -82,30 +82,23 @@ public class PersistenceManager {
             });
         }
 
-        if(!tweets.isEmpty())
+        if (!tweets.isEmpty()) {
             return tweets.get(0);
-        
+        }
+
         return null;
     }
 
     public List<Tweet> findAll() {
         final List<Tweet> tweets = new ArrayList<>();
-        final StringBuilder builder = new StringBuilder();
         FindIterable<Document> iterable = db.getCollection(TABLE_TWEETS).find();
         iterable.forEach(new Block<Document>() {
             @Override
             public void apply(Document doc) {
-                builder.append(doc.toJson()).append("\n");
                 tweets.add(toTweet(doc));
             }
 
             private Tweet toTweet(Document doc) {
-                BsonDocument bsonDoc = BsonDocument.parse(doc.toJson());
-                JsonWriterSettings shellSettings = new JsonWriterSettings(JsonMode.SHELL);
-//                System.out.println("#####  BSON : " + bsonDoc.toJson(shellSettings));
-                final String json = doc.toJson();
-//                System.out.println("#####  JSON : " + json);
-                
                 Tweet tweet = new Tweet();
                 tweet.setTwitterId(doc.getLong("twitterID"));
                 tweet.setText(doc.getString("tweetText"));
@@ -114,8 +107,39 @@ public class PersistenceManager {
             }
         });
 
-        FileHelper.write(builder.toString());
-        
+        return tweets;
+    }
+
+    public List<String> findAllJsonTweets() {
+        final List<String> tweets = new ArrayList<>();
+        FindIterable<Document> iterable = db.getCollection(TABLE_TWEETS).find();
+        iterable.forEach(new Block<Document>() {
+            @Override
+            public void apply(Document doc) {
+                BsonDocument bsonDoc = BsonDocument.parse(doc.toJson());
+                JsonWriterSettings shellSettings = new JsonWriterSettings(JsonMode.SHELL);
+                tweets.add(bsonDoc.toJson(shellSettings));
+            }
+
+        });
+
+        return tweets;
+    }
+
+    public List<String> findAllJsonTweetsByHashtag(String hashtag) {
+        final List<String> tweets = new ArrayList<>();
+        FindIterable<Document> iterable = db.getCollection(TABLE_TWEETS)
+                .find(all("hashtags", Arrays.asList(hashtag)));
+        iterable.forEach(new Block<Document>() {
+            @Override
+            public void apply(Document doc) {
+                BsonDocument bsonDoc = BsonDocument.parse(doc.toJson());
+                JsonWriterSettings shellSettings = new JsonWriterSettings(JsonMode.SHELL);
+                tweets.add(bsonDoc.toJson(shellSettings));
+            }
+
+        });
+
         return tweets;
     }
 
@@ -142,6 +166,7 @@ public class PersistenceManager {
                         .append("tweetText", toTweetText(tweet))
                         .append("tweetURL", tweet.getUrl() != null ? tweet.getUrl() : EMPTY)
                 );
+                log.log(Level.INFO, "Successfully persisted a tweet: {0}", tweet.toString());
             } catch (IllegalArgumentException e) {
                 log.log(Level.SEVERE, "Failed to persist the tweet", e);
             }
@@ -179,7 +204,7 @@ public class PersistenceManager {
     private static List<Double> toCoordinatesArray(Tweet tweet) {
         final GeoLocation geoLocation = tweet.getGeoLocation();
         if (geoLocation != null) {
-            if (geoLocation.getCoordinates()!=null) {
+            if (geoLocation.getCoordinates() != null) {
                 final Double longitude = geoLocation.getLongitude();
                 final Double latitude = geoLocation.getLatitude();
                 if (latitude != null && longitude != null) {
