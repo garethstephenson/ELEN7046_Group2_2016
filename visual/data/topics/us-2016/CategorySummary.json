@@ -3,12 +3,12 @@
         "Category": "Clinton",
         "Pro": 870,
         "Con": 200,
-        "Total": 1070
+        "Count": 1070
     },
     {
         "Category": "Trump",
         "Pro": 2000,
         "Con": 150,
-        "Total": 2150
+        "Count": 2150
     }
 ]

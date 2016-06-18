@@ -5,7 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Defines the data extraction service API
+ * Defines the data extraction service API.
+ * 
  * @author Matsobane Khwinana (Matsobane.Khwinana@momentum.co.za)
  */
 public interface DataExtractionService {
@@ -22,5 +23,4 @@ public interface DataExtractionService {
     public List<Tweet> extractHistoryTweetsByHashtags(List<String> hashtags, Map<String, String> options);
     public List<Tweet> extractHistoryTweetsByHashtagsAndPersist(List<String> hashtags, Map<String, String> options);
 
-    public List<Tweet> distributeAllTweets();
 }

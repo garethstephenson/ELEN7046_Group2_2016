@@ -30,7 +30,7 @@ public class DataExtractionServiceTest {
     @Test
     public void testPing(){
         //Given
-        WebTarget target = this.client.target("http://localhost:8080/historic-data-extraction-service/rest/extract-data");
+        WebTarget target = this.client.target(restPath);
         
         //When
         Response response = target.request(MediaType.APPLICATION_JSON).accept(MediaType.TEXT_PLAIN).get();
@@ -40,6 +40,7 @@ public class DataExtractionServiceTest {
         String payload = response.readEntity(String.class);
         log.severe(payload);
     }
+
     
     @Test
     public void testExtractById() {
@@ -169,29 +170,31 @@ public class DataExtractionServiceTest {
         assertTrue(tweets.size()>0);
     }
 
-//    @Ignore
-//    @Test
-//    public void testExtractAndStoreHilaryTweetsDuringPrimaries() {
-//        //https://twitter.com/search?q=%23hillaryclinton%20OR%20%23iamwither%20OR%20%23crookedhillary%20since%3A2016-02-01%20until%3A2016-06-07
-//        //Given
-//        final List<String> hashtags = new ArrayList<>();
-//        hashtags.add("#iamwither");
-//        hashtags.add("#hillaryclinton");
-//        hashtags.add("#crookedhillary");
-//
-//        final Map<String, String> options = hundredTweetsDuringPrimariesOptions();
-//
-//        //When
-//        List<Tweet> tweetData = this.dataExtractor.extractHashtagsTweets(hashtags, options);
-//        for (Tweet tweet : tweetData) {
-//            this.persistenceManager.persist(tweet);
-//            Tweet dbTweet = persistenceManager.findByTwitterId(tweet.getTwitterId());
-//
-//            //Then 
-//            //assertNotNull(dbTweet);
-//        }
-//    }
 
+    @Test
+    public void testExtractAndStoreHilaryTweetsDuringPrimaries() {
+        //Given
+        WebTarget target = this.client.target(extractAndPersitHistoryTweetsByHashtagUrl);
+        target = target.queryParam(HASHTAGS,"#iamwither")
+                                .queryParam(HASHTAGS, "#hillaryclinton")
+                                .queryParam(HASHTAGS, "#crookedhillary")
+                                .queryParam(COUNT, 900)
+                                .queryParam(SINCE, PRIMARIES_START_DATE)
+                                .queryParam(UNTIL, PRIMARIES_END_DATE);
+        log.severe(target.getUri().toString());
+
+        //When
+        Response response = target.request(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .get();
+
+        //Then 
+        assertThat(response.getStatus(), is(200));
+        JsonArray tweets = response.readEntity(JsonArray.class);
+        assertTrue(tweets.size()>0);
+    }
+
+    private final String restPath = "http://localhost:8080/historic-data-extraction-service/rest/extract-data";
     private final String extractTweetByIdPathFormat = "http://localhost:8080/historic-data-extraction-service/rest/extract-data/byId/%d";
     private final String extractHistoryTweetsByHashtagUrl = "http://localhost:8080/historic-data-extraction-service/rest/extract-data/historyByHashtag";
     private final String extractHistoryTweetsByHashtagsUrl = "http://localhost:8080/historic-data-extraction-service/rest/extract-data/historyByHashtags";
