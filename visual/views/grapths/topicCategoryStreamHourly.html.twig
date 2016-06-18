@@ -4,7 +4,10 @@
         border-radius: 8px;
     }
 </style>
-<select id="sh_daysInput" class="pull-right"></select>
+<div>
+    Date: 
+    <select id="sh_daysInput" class="123"></select>
+</div>
 <div id="sh_dataPlaceholder" class="sh_chart"> Data loading, please wait ... </div>
 <script type="text/javascript">
     $(document).ready(function () {
@@ -31,7 +34,7 @@
         var day = days[0];
         parent._populateDateSelect(daysSelector, days);
         $(daysSelector).change(function () {
-            day = $(daysSelector).val();
+          day = $(daysSelector).val();
           d3.select(chartDivSelector)
             .selectAll("div")
             .remove();
@@ -77,11 +80,13 @@
           return;
 
         var hours = commonCharts.make2DigitNumberArray(0, 23);
-        var margin = {top: 0, right: 0, bottom: 30, left: 0};
-        var width = $(chartDivSelector).width() - margin.left - margin.right;
+        var margin = {top: 30, right: 0, bottom: 30, left: 10};
+        var width = $(chartDivSelector).width();
         var divHeight = 250;
         $(chartDivSelector).height(divHeight);
         var height = $(chartDivSelector).height() - margin.top - margin.bottom;
+
+        var gridSize = width / hours.length;
 
         var stackOffset = 'silhouette';
         //stackOffset = 'wiggle';
@@ -133,15 +138,15 @@
             return x(d.x);
           })
           .y0(function (d) {
-            return y(d.y0);
+            return margin.top + y(d.y0);
           })
           .y1(function (d) {
-            return y(d.y0 + d.y);
+            return margin.top + y(d.y0 + d.y);
           });
 
         var svg = d3.select(chartDivSelector).append("svg")
           .attr("width", width)
-          .attr("height", height + margin.bottom);
+          .attr("height", height + margin.top + margin.bottom);
 
 
         svg.selectAll("path")
@@ -154,7 +159,22 @@
             return "#FFFFFF";
           });
 
-        streamHourlyChart._drawLegend(svg, categoryColors, height, margin.bottom, width / hours.length);
+        svg.selectAll(".timeLabel")
+          .data(hours)
+          .enter().append("text")
+          .text(function (d) {
+            return d;
+          })
+          .attr("x", function (d, i) {
+            return margin.left + i * gridSize;
+          })
+          .attr("y", margin.top - 15)
+          .style("text-anchor", "middle")
+          .attr("class", function (d, i) {
+            return ((i >= 7 && i <= 16) ? "timeLabel mono axis axis-worktime" : "timeLabel mono axis");
+          });
+
+        streamHourlyChart._drawLegend(svg, categoryColors, height + margin.top, margin.bottom, width / hours.length);
       },
       _drawLegend: function (svg, categoryColors, height, marginBottom, gridSize) {
         var legendElementWidth = gridSize * 2;

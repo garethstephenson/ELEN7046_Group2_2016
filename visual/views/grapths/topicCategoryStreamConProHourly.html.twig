@@ -36,10 +36,10 @@
 
           $('#cph_dataPlaceholder').html("");
           $('#cph_dataPlaceholder').height(250);
-          streamChart.initialise(data, categoryColors, '#cph_dataPlaceholder');
+          cpstreamChart.initialise(data, categoryColors, '#cph_dataPlaceholder');
         });
     });
-    var streamChart = {
+    var cpstreamChart = {
       initialise: function (data, categoryColors, chartDivSelector) {
         var parent = this;
         parent._setWidth(chartDivSelector);
@@ -72,7 +72,7 @@
         var height = $(chartDivSelector).height() - margin.top - margin.bottom;
 
         var gridSize = width / hours.length;
-        streamChart._drawxAxis(chartDivSelector, margin, hours, gridSize, width, xAxisHeight);
+        cpstreamChart._drawxAxis(chartDivSelector, margin, hours, gridSize, width, xAxisHeight);
 
         // Hours -> Width
         var x = d3.scale.linear()
@@ -150,7 +150,7 @@
               return "#FFFFFF";
             });
 
-          streamChart._drawLine(svg[categoryIndex], width, margin, midLine);
+          cpstreamChart._drawLine(svg[categoryIndex], width, margin, midLine);
 
           // TODO : legend
 
