@@ -1,5 +1,39 @@
 [
     {
+        "Date": "2016-05-01T00:00:00Z",
+        "Data": [
+            {
+                "Category": "EFF",
+                "Count": 10
+            },
+            {
+                "Category": "ANC",
+                "Count": 100
+            },
+            {
+                "Category": "DA",
+                "Count": 5
+            }
+        ]
+    },
+    {
+        "Date": "2016-05-01T01:00:00Z",
+        "Data": [
+            {
+                "Category": "EFF",
+                "Count": 4
+            },
+            {
+                "Category": "ANC",
+                "Count": 3
+            },
+            {
+                "Category": "DA",
+                "Count": 9
+            }
+        ]
+    },
+    {
         "Date": "2016-05-01T05:00:00Z",
         "Data": [
             {
@@ -612,7 +646,58 @@
         ]
     },
     {
-        "Date": "2016-05-04T24:00:00Z",
+        "Date": "2016-05-04T00:00:00Z",
+        "Data": [
+            {
+                "Category": "EFF",
+                "Count": 45
+            },
+            {
+                "Category": "ANC",
+                "Count": 45
+            },
+            {
+                "Category": "DA",
+                "Count": 23
+            }
+        ]
+    },
+    {
+        "Date": "2016-05-04T01:00:00Z",
+        "Data": [
+            {
+                "Category": "EFF",
+                "Count": 45
+            },
+            {
+                "Category": "ANC",
+                "Count": 23
+            },
+            {
+                "Category": "DA",
+                "Count": 23
+            }
+        ]
+    },
+    {
+        "Date": "2016-05-05T22:00:00Z",
+        "Data": [
+            {
+                "Category": "EFF",
+                "Count": 45
+            },
+            {
+                "Category": "ANC",
+                "Count": 23
+            },
+            {
+                "Category": "DA",
+                "Count": 23
+            }
+        ]
+    },
+    {
+        "Date": "2016-05-05T23:00:00Z",
         "Data": [
             {
                 "Category": "EFF",

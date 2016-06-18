@@ -1,14 +1,10 @@
 <style>
-    .sh_chart {
+    .sd_chart {
         background-color: #EFEFEF;
         border-radius: 8px;
     }
 </style>
-<div>
-    Date: 
-    <select id="sh_daysInput" class="123"></select>
-</div>
-<div id="sh_dataPlaceholder" class="sh_chart"> Data loading, please wait ... </div>
+<div id="sd_dataPlaceholder" class="sd_chart"> Data loading, please wait ... </div>
 <script type="text/javascript">
     $(document).ready(function () {
       var dataUrl = "{{dataUrl}}";
@@ -17,77 +13,47 @@
         .defer(d3.json, "/data/categoryColors")
         .await(function (error, data, categoryColors) {
           if (error) {
-            $('#sh_dataPlaceholder').html("error: " + error);
+            $('#sd_dataPlaceholder').html("error: " + error);
             return;
           }
 
-          $('#sh_dataPlaceholder').html("");
-          $('#sh_dataPlaceholder').height(250);
-          streamHourlyChart.initialise(data, categoryColors, '#sh_dataPlaceholder', '#sh_daysInput');
+          $('#sd_dataPlaceholder').html("");
+          $('#sd_dataPlaceholder').height(250);
+          streamDailyChart.initialise(data, categoryColors, '#sd_dataPlaceholder');
         });
     });
-    var streamHourlyChart = {
-      initialise: function (data, categoryColors, chartDivSelector, daysSelector) {
+    var streamDailyChart = {
+      initialise: function (data, categoryColors, chartDivSelector) {
         var parent = this;
         parent._setWidth(chartDivSelector);
-        
-        var days = parent._getDays(data);
-        var day = days[0];
-        parent._populateDateSelect(daysSelector, days);
-        $(daysSelector).change(function () {
-          day = $(daysSelector).val();
-          d3.select(chartDivSelector)
-            .selectAll("div")
-            .remove();
-          $(chartDivSelector).empty();
-          parent.draw(data, categoryColors, chartDivSelector, day);
-        });
-
-        parent.draw(data, categoryColors, chartDivSelector, day);
+        parent.draw(data, categoryColors, chartDivSelector);
         $(window).resize(function () {
           parent._setWidth(chartDivSelector);
           d3.select(chartDivSelector)
             .selectAll("div")
             .remove();
           $(chartDivSelector).empty();
-          parent.draw(data, categoryColors, chartDivSelector, day);
+          parent.draw(data, categoryColors, chartDivSelector);
         });
-      },
-      _populateDateSelect: function (daysSelector, days) {
-        $(daysSelector).empty();
-        for (var index = 0; index < days.length; index++) {
-          var option = $('<option>', {value: days[index]})
-            .html(days[index]);
-          if (index == 0) {
-            option.attr('selected', 'selected');
-          }
-          $(daysSelector).append(option);
-        }
       },
       _setWidth: function (chartDivSelector) {
         $(chartDivSelector).width($(chartDivSelector).parent().width() - 10);
       },
-      _getDays: function (data) {
+      draw: function (data, categoryColors, chartDivSelector) {
+        // Used the following chart as a base: http://bl.ocks.org/mbostock/1256572
+        // http://bl.ocks.org/mbostock/4060954
+        
+        if (data == null || data.length <= 0)
+            return;
+        
         var days = d3.map(data, function (d) {
           return commonCharts.getDateValue(d.Date);
         }).keys();
-        return days;
-      },
-      draw: function (data, categoryColors, chartDivSelector, day) {
-        // Used the following chart as a base: http://bl.ocks.org/mbostock/1256572
-        // http://bl.ocks.org/mbostock/4060954
-
-        if (data == null || data.length <= 0)
-          return;
-
-        var hours = commonCharts.make2DigitNumberArray(0, 23);
-        var margin = {top: 30, right: 0, bottom: 35, left: 10};
-        var width = $(chartDivSelector).width();
+        var margin = {top: 0, right: 0, bottom: 35, left: 0};
+        var width = $(chartDivSelector).width() - margin.left - margin.right;
         var divHeight = 250;
         $(chartDivSelector).height(divHeight);
         var height = $(chartDivSelector).height() - margin.top - margin.bottom;
-
-        var gridSize = width / hours.length;
 
         var stackOffset = 'silhouette';
         //stackOffset = 'wiggle';
@@ -97,9 +63,7 @@
         var stack = d3.layout.stack().offset(stackOffset);
         var dataStack = stack(d3.range(categoryColors.length).map(function (colorIndex) {
           var stackArray = [];
-          $.each(data.filter(function (d) {
-            return commonCharts.getDateValue(d.Date) == day
-          }), function (index, item) {
+          $.each(data, function (index, item) {
             var categoryIndex = 0;
             for (var i = 0; i < item.Data.length; i++) {
               if (categoryColors[colorIndex].Category == item.Data[i].Category) {
@@ -109,7 +73,7 @@
             }
 
             var element = {
-              x: commonCharts.getHourValue(item.Date),
+              x: index, //commonCharts.getDateValue(item.Date),
               y: item.Data[categoryIndex].Count,
               categoryIndex: categoryIndex,
               colorIndex: colorIndex,
@@ -119,11 +83,10 @@
           });
           return stackArray;
         }));
-        // hours -> Width
+        // days -> Width
         var x = d3.scale.linear()
-          .domain([0, hours.length - 1])
+          .domain([0, days.length - 1])
           .range([0, width]);
-
         // y scale max total count
         var y = d3.scale.linear()
           .domain([0, d3.max(dataStack, function (stackItem) {
@@ -139,15 +102,15 @@
             return x(d.x);
           })
           .y0(function (d) {
-            return margin.top + y(d.y0);
+            return y(d.y0);
           })
           .y1(function (d) {
-            return margin.top + y(d.y0 + d.y);
+            return y(d.y0 + d.y);
           });
 
         var svg = d3.select(chartDivSelector).append("svg")
           .attr("width", width)
-          .attr("height", height + margin.top + margin.bottom);
+          .attr("height", height + margin.bottom);
 
 
         svg.selectAll("path")
@@ -160,24 +123,9 @@
             return "#FFFFFF";
           });
 
-        svg.selectAll(".timeLabel")
-          .data(hours)
-          .enter().append("text")
-          .text(function (d) {
-            return d;
-          })
-          .attr("x", function (d, i) {
-            return margin.left + i * gridSize;
-          })
-          .attr("y", margin.top - 15)
-          .style("text-anchor", "middle")
-          .attr("class", function (d, i) {
-            return ((i >= 7 && i <= 16) ? "timeLabel mono axis axis-worktime" : "timeLabel mono axis");
-          });
-
-        streamHourlyChart._drawLegend(svg, categoryColors, height + margin.top, margin.bottom, 35);
+        streamDailyChart._drawLegend(svg, categoryColors, height, margin.bottom, 35, days);
       },
-      _drawLegend: function (svg, categoryColors, height, marginBottom, gridSize) {
+      _drawLegend: function (svg, categoryColors, height, marginBottom, gridSize, days) {
         var legendElementWidth = gridSize * 2;
         var legendXOffset = 5;
         var legend = svg.selectAll(".legend")
@@ -209,6 +157,14 @@
             return legendXOffset + (legendElementWidth * i);
           })
           .attr("y", (height) + (gridSize / 2) + 10);
+        
+        var dateRangeString = "Date Range: " + days[0] + " - " + days[days.length - 1];
+        
+        legend.append("text")
+          .attr("class", "mono")
+          .text(dateRangeString)
+          .attr("x", legendXOffset + 2 + (legendElementWidth * (categoryColors.length)))
+          .attr("y", (height - 1) + (gridSize / 2));
 
         legend.exit().remove();
       }

@@ -74,7 +74,7 @@
         var y = d3.scale.linear()
           .range([height, 0])
           .domain([0, d3.max(data, function (item) {
-              return item.Total;
+              return item.Count;
             })]);
 
         var xAxis = d3.svg.axis()
@@ -103,7 +103,7 @@
         var yColor = d3.scale.linear()
           .range([255, 0])
           .domain([0, d3.max(data, function (item) {
-              return item.Total;
+              return item.Count;
             })]);
 
         var bars = chart.selectAll(".bar")
@@ -114,10 +114,10 @@
             return x(d.Category);
           })
           .attr("y", function (d) {
-            return y(d.Total);
+            return y(d.Count);
           })
           .attr("height", function (d) {
-            return height - y(d.Total);
+            return height - y(d.Count);
           })
           .attr("width", x.rangeBand());
 
@@ -137,21 +137,21 @@
          
          bar.append("rect")
          .attr("y", function (d) {
-         return y(d.Total);
+         return y(d.Count);
          })
          .attr("height", function (d) {
-         return height - y(d.Total);
+         return height - y(d.Count);
          })
          .attr("width", x.rangeBand());
          
          bar.append("text")
          .attr("x", x.rangeBand() / 2)
          .attr("y", function (d) {
-         return y(d.Total) + 3;
+         return y(d.Count) + 3;
          })
          .attr("dy", ".75em")
          .text(function (d) {
-         return d.Total;
+         return d.Count;
          });*/
       }
     };

@@ -1,18 +1,17 @@
 \contentsline {section}{\numberline {1}Introduction}{2}
-\contentsline {subsection}{\numberline {1.1}Literature Review}{2}
-\contentsline {section}{\numberline {2}Stakeholder Concerns - Big Data}{2}
-\contentsline {subsection}{\numberline {2.1}Collection}{2}
-\contentsline {subsection}{\numberline {2.2}Processing}{2}
-\contentsline {subsection}{\numberline {2.3}Visualization}{2}
-\contentsline {section}{\numberline {3}Methodology}{2}
-\contentsline {section}{\numberline {4}Assumptions and Constraints}{2}
-\contentsline {subsection}{\numberline {4.1}Tweet Locations}{2}
-\contentsline {subsection}{\numberline {4.2}Pros and Cons determinations}{2}
-\contentsline {section}{\numberline {5}Success Criteria}{3}
-\contentsline {section}{\numberline {6}Architecture of the Solution}{3}
-\contentsline {subsection}{\numberline {6.1}High Level Design: Component Architecture}{3}
-\contentsline {subsection}{\numberline {6.2}Detailed Design: Class Diagrams}{3}
-\contentsline {subsection}{\numberline {6.3}Operational Model: Infrastructure Design}{3}
-\contentsline {section}{\numberline {7}Conclusion}{3}
-\contentsline {subsection}{\numberline {7.1}Control Situation}{3}
-
+\contentsline {section}{\numberline {2}Literature Review}{2}
+\contentsline {section}{\numberline {3}Stakeholder Concerns - Big Data}{2}
+\contentsline {subsection}{\numberline {3.1}Collection}{2}
+\contentsline {subsection}{\numberline {3.2}Processing}{2}
+\contentsline {subsection}{\numberline {3.3}Visualization}{2}
+\contentsline {section}{\numberline {4}Methodology}{2}
+\contentsline {section}{\numberline {5}Assumptions and Constraints}{3}
+\contentsline {subsection}{\numberline {5.1}Tweet Locations}{3}
+\contentsline {subsection}{\numberline {5.2}Pros and Cons determinations}{3}
+\contentsline {section}{\numberline {6}Success Criteria}{4}
+\contentsline {section}{\numberline {7}Architecture of the Solution}{4}
+\contentsline {subsection}{\numberline {7.1}High Level Design: Component Architecture}{4}
+\contentsline {subsection}{\numberline {7.2}Detailed Design: Class Diagrams}{5}
+\contentsline {subsection}{\numberline {7.3}Operational Model: Infrastructure Design}{5}
+\contentsline {section}{\numberline {8}Conclusion}{6}
+\contentsline {subsection}{\numberline {8.1}Control Situation}{6}

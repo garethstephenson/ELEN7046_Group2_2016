@@ -5,7 +5,7 @@ import java.time.ZonedDateTime
 /**
   * Created by Gareth on 2016/06/11.
   */
-case class Tweet(_id: String,
+case class Tweet(_id: Option[String],
                  createdBy: String,
                  createdAt: ZonedDateTime,
                  coords: Array[Either[String, Double]],

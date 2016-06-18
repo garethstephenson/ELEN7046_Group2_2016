@@ -68,8 +68,7 @@
               'Category': categoryItem.Category,
               'Count': categoryItem.Count,
               'CategoryIndex': categoryIndex,
-              'DateIndex': heatMapChart._getIndexByValue(
-                heatMapChart._getDateValue(item.Date), dates)
+              'DateIndex': heatMapChart._getIndexByValue(item.Date, dates)
             });
           }
         }
@@ -83,17 +82,11 @@
         }
         return -1;
       },
-      _getDateValue: function (dateString) {
-        var dateFormat = d3.time.format("%Y-%m-%d");
-        var printFormat = d3.time.format("%m-%d");
-        var date = dateFormat.parse(dateString);
-        return printFormat(date);
-      },
       _getDates: function (data) {
         var dateArray = [];
         for (var index = 0; index < data.length; index++) {
           var item = data[index];
-          dateArray.push(heatMapChart._getDateValue(item.Date));
+          dateArray.push(item.Date);
         }
         return dateArray;
       },
@@ -112,15 +105,15 @@
       },
       draw: function (data, categoryColors, chartDivSelector) {
         // Code developed following this tutorial: http://bl.ocks.org/tjdecke/5558084
-        
+
         if (data == null || data.length <= 0)
-            return;
-        
+          return;
+
         var
           categoreis = heatMapChart._getCategories(data),
           dates = heatMapChart._getDates(data);
 
-        var margin = {top: 50, right: 0, bottom: 50, left: 30};
+        var margin = {top: 50, right: 0, bottom: 50, left: 70};
         var width = $(chartDivSelector).width() - margin.left - margin.right;
         var gridSize = Math.floor(width / dates.length);
         var divHeight = (categoreis.length * gridSize) + margin.top + margin.bottom + gridSize;
@@ -128,7 +121,6 @@
         var height = $(chartDivSelector).height() - margin.top - margin.bottom;
 
         var
-          legendElementWidth = gridSize * 2,
           colors = ["#FBEFEF", "#F5A9A9", "#F78181", "#FA5858", "#FE2E2E", "#FF0000", "#DF0101", "#B40404", "#8A0808"],
           buckets = 9;
 
@@ -158,7 +150,7 @@
           .data(dates)
           .enter().append("text")
           .text(function (d) {
-            return d;
+            return commonCharts.getDayValue(d);
           })
           .attr("x", function (d, i) {
             return i * gridSize;
@@ -237,6 +229,10 @@
 
         cards.exit().remove();
 
+        var
+          legendGridSize = 35,
+          legendElementWidth = legendGridSize * 2;
+
         var legend = svg.selectAll(".legend")
           .data(categoryColors, function (item) {
             return item.Category + ':' + item.Color;
@@ -249,9 +245,9 @@
           .attr("x", function (d, i) {
             return legendElementWidth * i;
           })
-          .attr("y", height - gridSize)
-          .attr("width", legendElementWidth)
-          .attr("height", gridSize / 2)
+          .attr("y", height - gridSize + 2)
+          .attr("width", legendGridSize * 2)
+          .attr("height", legendGridSize / 2)
           .attr("class", "bordered")
           .style("fill", function (d) {
             return d.Color;
@@ -265,7 +261,17 @@
           .attr("x", function (d, i) {
             return legendElementWidth * i;
           })
-          .attr("y", (height - gridSize) + (gridSize / 2) + 10);
+          .attr("y", (height - gridSize + 2) + (legendGridSize / 2) + 10);
+
+        var dateRangeString = "Date Range: " + commonCharts.getDateValue(dates[0]) + " - " + commonCharts.getDateValue(dates[dates.length - 1]);
+
+        legend.append("text")
+          .attr("class", "mono")
+          .text(dateRangeString)
+          .attr("x", 2 + (legendElementWidth * (categoryColors.length)))
+          .attr("y", height - gridSize + (legendGridSize / 2));
+
+
 
         legend.exit().remove();
 

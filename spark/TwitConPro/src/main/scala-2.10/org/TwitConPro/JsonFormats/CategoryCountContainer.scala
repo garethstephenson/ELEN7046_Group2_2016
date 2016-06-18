@@ -8,7 +8,6 @@ import spray.json.{DeserializationException, JsString, JsValue, RootJsonFormat}
 /**
   * Created by Gareth on 2016/06/11.
   */
-//case class CategoryCountContainer(Date: ZonedDateTime, Data: List[CategoryCount])
 case class CategoryCountContainer(Date: ZonedDateTime, Data: List[CategoryCount])
 object CategoryCountContainer {
     implicit object DateJsonFormat extends RootJsonFormat[ZonedDateTime] {

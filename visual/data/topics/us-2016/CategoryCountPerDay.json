@@ -1,3 +1,73 @@
-[
-  
-]
+[{
+  "Date": "2016-06-10T00:00:00Z",
+  "Data": [{
+    "Category": "Trump",
+    "Count": 165018
+  }, {
+    "Category": "Clinton",
+    "Count": 108596
+  }]
+}, {
+  "Date": "2016-06-11T00:00:00Z",
+  "Data": [{
+    "Category": "Trump",
+    "Count": 113174
+  }, {
+    "Category": "Clinton",
+    "Count": 55724
+  }]
+}, {
+  "Date": "2016-06-12T00:00:00Z",
+  "Data": [{
+    "Category": "Trump",
+    "Count": 136257
+  }, {
+    "Category": "Clinton",
+    "Count": 51841
+  }]
+}, {
+  "Date": "2016-06-13T00:00:00Z",
+  "Data": [{
+    "Category": "Trump",
+    "Count": 112232
+  }, {
+    "Category": "Clinton",
+    "Count": 33979
+  }]
+}, {
+  "Date": "2016-06-14T00:00:00Z",
+  "Data": [{
+    "Category": "Trump",
+    "Count": 103576
+  }, {
+    "Category": "Clinton",
+    "Count": 31118
+  }]
+}, {
+  "Date": "2016-06-15T00:00:00Z",
+  "Data": [{
+    "Category": "Trump",
+    "Count": 82678
+  }, {
+    "Category": "Clinton",
+    "Count": 26569
+  }]
+}, {
+  "Date": "2016-06-16T00:00:00Z",
+  "Data": [{
+    "Category": "Trump",
+    "Count": 143722
+  }, {
+    "Category": "Clinton",
+    "Count": 43122
+  }]
+}, {
+  "Date": "2016-06-17T00:00:00Z",
+  "Data": [{
+    "Category": "Trump",
+    "Count": 107623
+  }, {
+    "Category": "Clinton",
+    "Count": 36873
+  }]
+}]

@@ -1,10 +1,30 @@
 <style>
-    .line {
+    .streamLine {
         fill: none;
-        stroke: #000;
-        stroke-width: 2px;
+        stroke: #444444;
+        stroke-width: 0.1px;
+    }
+
+    text.cph_mono {
+        font-size: 9pt;
+        font-family: Consolas, courier;
+        fill: #aaa;
+    }
+
+    text.cph_mono-header {
+        font-size: 10pt;
+        text-decoration: underline;
+    }
+
+    .cph_chart {
+        background-color: #EFEFEF;
+        border-radius: 8px;
     }
 </style>
+<div>
+    Date: 
+    <select id="cph_daysInput" class="123"></select>
+</div>
 <div id="cph_dataPlaceholder" class="cph_chart"> Data loading, please wait ... </div>
 <script type="text/javascript">
     $(document).ready(function () {
@@ -20,35 +40,65 @@
 
           $('#cph_dataPlaceholder').html("");
           $('#cph_dataPlaceholder').height(250);
-          streamChart.initialise(data, categoryColors, '#cph_dataPlaceholder');
+          cpstreamChart.initialise(data, categoryColors, '#cph_dataPlaceholder', '#cph_daysInput');
         });
     });
-    var streamChart = {
-      initialise: function (data, categoryColors, chartDivSelector) {
+    var cpstreamChart = {
+      initialise: function (data, categoryColors, chartDivSelector, daysSelector) {
         var parent = this;
         parent._setWidth(chartDivSelector);
-        parent.draw(data, categoryColors, chartDivSelector);
+
+        var days = parent._getDays(data);
+        var day = days[0];
+        parent._populateDateSelect(daysSelector, days);
+        $(daysSelector).change(function () {
+          day = $(daysSelector).val();
+          d3.select(chartDivSelector)
+            .selectAll("div")
+            .remove();
+          $(chartDivSelector).empty();
+          parent.draw(data, categoryColors, chartDivSelector, day);
+        });
+
+        parent.draw(data, categoryColors, chartDivSelector, day);
         $(window).resize(function () {
           parent._setWidth(chartDivSelector);
           d3.select(chartDivSelector)
             .selectAll("div")
             .remove();
           $(chartDivSelector).empty();
-          parent.draw(data, categoryColors, chartDivSelector);
+          parent.draw(data, categoryColors, chartDivSelector, day);
         });
       },
       _setWidth: function (chartDivSelector) {
         $(chartDivSelector).width($(chartDivSelector).parent().width() - 10);
       },
-      draw: function (data, categoryColors, chartDivSelector) {
+      _populateDateSelect: function (daysSelector, days) {
+        $(daysSelector).empty();
+        for (var index = 0; index < days.length; index++) {
+          var option = $('<option>', {value: days[index]})
+            .html(days[index]);
+          if (index == 0) {
+            option.attr('selected', 'selected');
+          }
+          $(daysSelector).append(option);
+        }
+      },
+      _getDays: function (data) {
+        var days = d3.map(data, function (d) {
+          return commonCharts.getDateValue(d.Date);
+        }).keys();
+        return days;
+      },
+      draw: function (data, categoryColors, chartDivSelector, day) {
         // Used the following chart as a base: 
         //      http://bl.ocks.org/mbostock/1256572
         //      http://bl.ocks.org/mbostock/4060954
         var hours = commonCharts.make2DigitNumberArray(0, 23);
 
-        var categoryHeight = 150;
+        var categoryHeight = 100;
         var midLine = (categoryHeight / 2);
-        var margin = {top: 20, right: 20, bottom: 30, left: 100};
+        var margin = {top: 20, right: 100, bottom: 35, left: 10};
         var xAxisHeight = 20;
         var width = $(chartDivSelector).width() - margin.left - margin.right;
         var divHeight = (categoryHeight * categoryColors.length) + margin.top + margin.bottom + xAxisHeight;
@@ -56,7 +106,7 @@
         var height = $(chartDivSelector).height() - margin.top - margin.bottom;
 
         var gridSize = width / hours.length;
-        streamChart._drawxAxis(chartDivSelector, margin, hours, gridSize, width, xAxisHeight);
+        cpstreamChart._drawxAxis(chartDivSelector, margin, hours, gridSize, width, xAxisHeight);
 
         // Hours -> Width
         var x = d3.scale.linear()
@@ -66,8 +116,10 @@
         var area = [];
         var dataStack = [];
         var svg = [];
+        var legend = [];
         for (var categoryIndex = 0; categoryIndex < categoryColors.length; categoryIndex++) {
           var color = categoryColors[categoryIndex].Color;
+          var conColor = categoryColors[categoryIndex].ConColor;
 
           var stackOffset = 'silhouette';
           //stackOffset = 'wiggle';
@@ -77,7 +129,9 @@
           var stack = d3.layout.stack().offset(stackOffset);
           dataStack[categoryIndex] = stack(d3.range(2).map(function (stackIndex) {
             var stackArray = [];
-            $.each(data, function (index, item) {
+            $.each(data.filter(function (d) {
+              return commonCharts.getDateValue(d.Date) == day
+            }), function (index, item) {
 
               var yValue = stackIndex != 0 ?
                 item.Data[categoryIndex].ProCount :
@@ -103,14 +157,13 @@
             .range([categoryHeight, 0]);
 
           svg[categoryIndex] = d3.select(chartDivSelector).append("svg")
-            .attr("width", width)
+            .attr("width", width + margin.right + margin.left)
             .attr("height", categoryHeight);
 
-          //streamChart._drawLine(svg[categoryIndex], width, midLine);
-
           area[categoryIndex] = d3.svg.area()
+            .interpolate("monotone")
             .x(function (d) {
-              return x(d.x);
+              return margin.left + x(d.x);
             })
             .y0(function (d) {
               return y(d.y0);
@@ -128,16 +181,81 @@
                 if (d[0].stackIndex != 0)
                   return color;
                 else
-                  return commonCharts.invertColor(color);
+                  return conColor; //commonCharts.invertColor(color);
               }
               return "#FFFFFF";
             });
+
+          cpstreamChart._drawLine(svg[categoryIndex], width, margin, midLine);
+
+          // TODO : legend
+
+          var legendItemHeight = 15;
+          var legendTextOffset = 8;
+
+          legend[categoryIndex] = svg[categoryIndex].selectAll(".legend")
+            .data(categoryColors, function (item) {
+              return item.Category + ':' + item.Color;
+            });
+
+          legend[categoryIndex].enter().append("g")
+            .attr("class", "legend");
+
+          legend[categoryIndex].append("rect")
+            .attr("x", function (d, i) {
+              return width + margin.left;
+            })
+            .attr("y", function (d) {
+              return midLine - legendItemHeight;
+            })
+            .attr("width", legendItemHeight)
+            .attr("height", legendItemHeight)
+            .attr("class", "bordered")
+            .style("fill", function (d) {
+              return categoryColors[categoryIndex].Color;
+            });
+
+          legend[categoryIndex].append("rect")
+            .attr("x", function (d, i) {
+              return width + margin.left;
+            })
+            .attr("y", function (d) {
+              return midLine;
+            })
+            .attr("width", legendItemHeight)
+            .attr("height", legendItemHeight)
+            .attr("class", "bordered")
+            .style("fill", function (d) {
+              return categoryColors[categoryIndex].ConColor;
+            });
+
+          svg[categoryIndex].append("text")
+            .attr("y", legendTextOffset + (midLine - legendItemHeight * 2))
+            .attr("x", width + margin.left + legendItemHeight + 2)
+            .attr("dy", ".31em")
+            .attr("class", "cph_mono cph_mono-header")
+            .text(categoryColors[categoryIndex].Category);
+
+          svg[categoryIndex].append("text")
+            .attr("y", legendTextOffset + (midLine - legendItemHeight))
+            .attr("x", width + margin.left + legendItemHeight + 2)
+            .attr("dy", ".31em")
+            .attr("class", "cph_mono")
+            .text("Pro");
+
+          svg[categoryIndex].append("text")
+            .attr("y", legendTextOffset + midLine)
+            .attr("x", width + margin.left + legendItemHeight + 2)
+            .attr("dy", ".31em")
+            .attr("class", "cph_mono")
+            .text("Con");
+
         }
       },
-      _drawLine: function (svg, width, midLine) {
+      _drawLine: function (svg, width, margin, midLine) {
         var lineFunction = d3.svg.line()
           .x(function (d) {
-            return d.x;
+            return margin.left + d.x;
           })
           .y(function (d) {
             return d.y;
@@ -147,16 +265,14 @@
         var lineData = [{x: 0, y: midLine}, {x: width, y: midLine}]
 
         svg.append("path").attr("d", lineFunction(lineData))
-          .attr("stroke", "black")
-          .attr("stroke-width", 1)
-          .attr("fill", "none");
+          .attr("class", "streamLine");
       },
       _drawStream: function (svg, margin, hours, stackData) {
 
       },
       _drawxAxis: function (chartDivSelector, margin, hours, gridSize, width, xAxisHeight) {
         var svg = d3.select(chartDivSelector).append("svg")
-          .attr("width", width)
+          .attr("width", width + margin.right + margin.left)
           .attr("height", xAxisHeight);
         // xAxis - Hours
         svg.selectAll(".timeLabel")
@@ -166,9 +282,9 @@
             return d;
           })
           .attr("x", function (d, i) {
-            return i * gridSize;
+            return margin.left + i * gridSize;
           })
-          .attr("y", margin.top)
+          .attr("y", margin.top - 5)
           .style("text-anchor", "middle")
           .attr("class", function (d, i) {
             return ((i >= 7 && i <= 16) ? "timeLabel mono axis axis-worktime" : "timeLabel mono axis");
