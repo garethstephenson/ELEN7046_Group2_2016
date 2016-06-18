@@ -81,7 +81,7 @@
           return;
 
         var hours = commonCharts.make2DigitNumberArray(0, 23);
-        var margin = {top: 30, right: 0, bottom: 30, left: 10};
+        var margin = {top: 30, right: 0, bottom: 35, left: 10};
         var width = $(chartDivSelector).width();
         var divHeight = 250;
         $(chartDivSelector).height(divHeight);
@@ -175,7 +175,7 @@
             return ((i >= 7 && i <= 16) ? "timeLabel mono axis axis-worktime" : "timeLabel mono axis");
           });
 
-        streamHourlyChart._drawLegend(svg, categoryColors, height + margin.top, margin.bottom, width / hours.length);
+        streamHourlyChart._drawLegend(svg, categoryColors, height + margin.top, margin.bottom, 35);
       },
       _drawLegend: function (svg, categoryColors, height, marginBottom, gridSize) {
         var legendElementWidth = gridSize * 2;
