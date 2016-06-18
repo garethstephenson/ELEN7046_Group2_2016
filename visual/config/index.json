@@ -69,19 +69,6 @@
             "type": "grapths/topicCategorySummaryH.html.twig",
             "dataUrl": "data/topicCategorySummary",
             "specialClass": "panel-success"
-        },
-        {
-            "name": "Map",
-            "size": "6",
-            "type": "grapths/map.html.twig",
-            "dataUrl": "data/CategoryCountPerHour",
-            "specialClass": "panel-success"
-        },
-        {
-            "name": "Global Relational View",
-            "size": "3",
-            "type": "grapths/global.html.twig",
-            "dataUrl": "data/placesData"
         }
     ]
 }
