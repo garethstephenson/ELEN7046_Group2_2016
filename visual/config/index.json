@@ -1,10 +1,17 @@
 {
     "panels": [
+         {
+            "name": "Word Cloud",
+            "size": "3",
+            "type": "grapths/wordcloud.html.twig",
+            "dataUrl": "data/wordcloud",
+            "specialClass": "panel-info"
+        },
         {
-            "name": "Pro vs Con 4 days prior to home state primaries",
-            "size": "6",
-            "type": "grapths/topicConProHomeState.html.twig",
-            "dataUrl": "data/ConProCount",
+            "name": "Category Summary",
+            "size": "3",
+            "type": "grapths/topicCategorySummaryV.html.twig",
+            "dataUrl": "data/topicCategorySummary",
             "specialClass": "panel-success"
         },
         {
@@ -13,34 +20,6 @@
             "type": "grapths/topicCategoryStreamDaily.html.twig",
             "dataUrl": "data/categoryCountPerDay",
             "specialClass": "panel-warning"
-        },
-        {
-            "name": "Category Over Time - Hourly",
-            "size": "6",
-            "type": "grapths/topicCategoryStreamHourly.html.twig",
-            "dataUrl": "data/categoryCountPerHour",
-            "specialClass": "panel-warning"
-        },
-        {
-            "name": "Pro vs Con Per Category Over Time - Hourly",
-            "size": "6",
-            "type": "grapths/topicCategoryStreamConProHourly.html.twig",
-            "dataUrl": "data/categoryConProCountPerHour",
-            "specialClass": "panel-warning"
-        },
-        {
-            "name": "Word Cloud",
-            "size": "6",
-            "type": "grapths/wordcloud.html.twig",
-            "dataUrl": "data/wordcloud",
-            "specialClass": "panel-info"
-        },
-        {
-            "name": "Category Over Time - Hourly",
-            "size": "6",
-            "type": "grapths/topicCategoryHeatMapHourly.html.twig",
-            "dataUrl": "data/categoryCountPerHour",
-            "specialClass": "panel-primary"
         },
         {
             "name": "Category Over Time - Daily",
@@ -57,10 +36,31 @@
             "specialClass": "panel-primary"
         },
         {
-            "name": "Category Summary",
-            "size": "3",
-            "type": "grapths/topicCategorySummaryV.html.twig",
-            "dataUrl": "data/topicCategorySummary",
+            "name": "Category Over Time - Hourly",
+            "size": "6",
+            "type": "grapths/topicCategoryStreamHourly.html.twig",
+            "dataUrl": "data/categoryCountPerHour",
+            "specialClass": "panel-warning"
+        },
+        {
+            "name": "Pro vs Con Per Category Over Time - Hourly",
+            "size": "6",
+            "type": "grapths/topicCategoryStreamConProHourly.html.twig",
+            "dataUrl": "data/categoryConProCountPerHour",
+            "specialClass": "panel-warning"
+        },
+        {
+            "name": "Category Over Time - Hourly",
+            "size": "6",
+            "type": "grapths/topicCategoryHeatMapHourly.html.twig",
+            "dataUrl": "data/categoryCountPerHour",
+            "specialClass": "panel-primary"
+        },
+        {
+            "name": "Pro vs Con 4 days prior to home state primaries",
+            "size": "6",
+            "type": "grapths/topicConProHomeState.html.twig",
+            "dataUrl": "data/ConProCount",
             "specialClass": "panel-success"
         }
     ]

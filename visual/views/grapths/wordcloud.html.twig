@@ -35,13 +35,13 @@
       _setWidth: function (chartDivSelector) {
         $(chartDivSelector).width($(chartDivSelector).parent().width() - 10);
       },
-      converDataToArrayList: function(data){
+      converDataToArrayList: function (data) {
         var list = [];
-        
-        for(var i = 0; i < data.length; i++){
-            list.push([data[i].word, data[i].count]);
+
+        for (var i = 0; i < data.length; i++) {
+          list.push([data[i].word, data[i].count]);
         }
-        
+
         return list;
       },
       draw: function (data, chartDivSelector) {
@@ -50,9 +50,14 @@
         var list = WordCloudChart.converDataToArrayList(data); //[['elections', 4], ['scary', 18], ['bob', 9], ['money', 44]];
 
         var width = $(chartDivSelector).width();
-        $(chartDivSelector).height(width / 2);
+        $(chartDivSelector).height(width);
+        var height = $(chartDivSelector).height();
 
-        WordCloud($(chartDivSelector).get(0), {list: list});
+        WordCloud($(chartDivSelector).get(0), {
+          list: list,
+          weightFactor: width / 670,
+          drawOutOfBound: false
+        });
       }
     };
 </script>
