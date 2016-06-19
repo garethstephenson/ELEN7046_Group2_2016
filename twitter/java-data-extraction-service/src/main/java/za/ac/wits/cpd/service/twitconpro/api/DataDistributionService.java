@@ -55,4 +55,6 @@ public interface DataDistributionService {
      * @param hashtags 
      */
     public void distributeTweetsByHashtags(URI uri, String fileName, List<String> hashtags);
+
+    public void distributeTweetsById(Long id);
 }
