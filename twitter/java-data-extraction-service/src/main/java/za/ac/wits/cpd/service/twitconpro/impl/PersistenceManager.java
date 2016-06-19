@@ -143,6 +143,30 @@ public class PersistenceManager {
         return tweets;
     }
 
+    public String findJsonTweetById(Long id) {
+        final StringBuilder builder = new  StringBuilder();
+                
+        FindIterable<Document> iterable = db.getCollection(TABLE_TWEETS).
+                find(new Document(TWITTER_ID, id));
+        if (iterable != null) {
+            iterable.forEach(new Block<Document>() {
+                @Override
+                public void apply(Document doc) {
+                    BsonDocument bsonDoc = BsonDocument.parse(doc.toJson());
+                    JsonWriterSettings shellSettings = new JsonWriterSettings(JsonMode.SHELL);
+                    builder.append(bsonDoc.toJson(shellSettings));
+                }
+            });
+        }
+
+        String jsonTweet = builder.toString();
+        if (!jsonTweet.isEmpty()) {
+            return jsonTweet;
+        }   
+        
+        return null;
+    }
+
     private void persistTweet(Tweet tweet) {
         if (this.db != null) {
             try {

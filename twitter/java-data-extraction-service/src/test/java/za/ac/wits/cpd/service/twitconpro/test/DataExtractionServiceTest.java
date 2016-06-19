@@ -85,10 +85,11 @@ public class DataExtractionServiceTest {
         //Given 
         String hashtag = "EFFmanifesto";
         WebTarget target = this.client.target(extractHistoryTweetsByHashtagUrl);
+        log.severe(target.getUri().toString());
         
         //When
         Response response = target.queryParam("hashtag",hashtag)
-                                .queryParam(COUNT, 900)
+                                .queryParam(COUNT, 10)
                                 .queryParam(SINCE, EFF_MANIFESTO_LAUNCH_DATE)
                                 .queryParam(UNTIL, THIRDY_DAYS_AFTER_EFF_MANIFESTO_LAUNCH)
                                 .request(MediaType.APPLICATION_JSON)
@@ -122,12 +123,13 @@ public class DataExtractionServiceTest {
         assertThat(response.getStatus(), is(200));
         JsonArray tweets = response.readEntity(JsonArray.class);
         assertTrue(tweets.size()>0);
-    }       
+    }
+    
     
     @Test
     public void testExtractHistoricTrumpTweetsDuringPrimaries() {
         //Given    
-        log.severe(extractHistoryTweetsByHashtagsUrl);        
+        log.severe(extractAndPersitHistoryTweetsByHashtagsUrl);        
         WebTarget target = this.client.target(extractAndPersitHistoryTweetsByHashtagsUrl);
         
         //When

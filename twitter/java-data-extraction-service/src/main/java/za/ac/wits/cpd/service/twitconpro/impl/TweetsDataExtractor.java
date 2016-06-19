@@ -100,6 +100,7 @@ public class TweetsDataExtractor {
                 HttpsURLConnection connection = createConnectionToTwitter(twitterUrl, bearerToken);
                 final JSONObject obj = (JSONObject) JSONValue.parse(httpHelper.readResponse(connection));
                 if (obj != null) {
+                    log.severe(obj.toJSONString());
                     return obj;
                 }
             }
@@ -146,6 +147,7 @@ public class TweetsDataExtractor {
                 List<Tweet> hashtagTweets = new ArrayList<>();
                 for (int i = 0; i < hashArray.size(); i++) {
                     JSONObject tweetResp = (JSONObject) hashArray.get(i);
+                    log.severe(tweetResp.toJSONString());
                     Tweet tweet = this.mapper.toTweet(tweetResp);
                     log.log(Level.INFO, "**** Number of tweets before determining the location: {0}", hashArray.size());
                     if (tweet.getGeoLocation() != null) {
@@ -226,13 +228,16 @@ public class TweetsDataExtractor {
         StringBuilder urlBuilder = new StringBuilder();
         
         urlBuilder.append(String.format(HASHTAG_URL_FORMAT, hashtagParams));
-        options.keySet().stream().forEach((key) -> {
-            if (key.equalsIgnoreCase(SINCE) || key.equalsIgnoreCase(UNTIL)) {
-                urlBuilder.append(ENCODED_SPACE).append(key).append(ENCODED_COLON).append(options.get(key));
-            } else {
-                urlBuilder.append(AMPERSAND).append(key).append(EQUAL_SIGN).append(options.get(key));
-            }
-        });
+        urlBuilder.append(AMPERSAND).append("count").append(EQUAL_SIGN).append(options.get("count"));
+        urlBuilder.append(ENCODED_SPACE).append("since").append(ENCODED_COLON).append(options.get("since"));
+        urlBuilder.append(ENCODED_SPACE).append("until").append(ENCODED_COLON).append(options.get("until"));
+//        options.keySet().stream().forEach((key) -> {
+//            if (key.equalsIgnoreCase(SINCE) || key.equalsIgnoreCase(UNTIL)) {
+//                urlBuilder.append(ENCODED_SPACE).append(key).append(ENCODED_COLON).append(options.get(key));
+//            } else {
+//                urlBuilder.append(AMPERSAND).append(key).append(EQUAL_SIGN).append(options.get(key));
+//            }
+//        });
 
         return urlBuilder;
     }

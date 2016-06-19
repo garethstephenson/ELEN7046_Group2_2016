@@ -20,7 +20,7 @@ public class DataExtractionScheduler {
     @EJB
     private DataExtractionService extractionService;
     
-    @Schedule(second="0", minute="0,5,10,15,20,25,30,35,40,45,50,55",hour="0,1", persistent=false)
+    @Schedule(second="0", minute="0,5,10,15,20,25,30,35,40,45,50,55",hour="16,17", persistent=false)
     public void extractAndPersistEFFData(){
         log.info("#### Starting the EFF job ####");
         Map<String, String> options = hundredEFFTweetsAfterManifestoLaunch();
@@ -28,7 +28,7 @@ public class DataExtractionScheduler {
         log.info("#### Ending the EFF job ####");
     }
     
-    @Schedule(second="0", minute="3,6,9,12,18,21,24,27,33,36,39,41,44,47,53,56,59",hour="0,1", persistent=false)
+    @Schedule(second="0", minute="3,6,9,12,18,21,24,27,33,36,39,41,44,47,53,56,59",hour="16,17", persistent=false)
     public void extractAndPersistANCData(){
         log.info("#### Starting the ANC job ####");
         Map<String, String> options = hundredANCTweetsAfterManifestoLaunch();
@@ -36,7 +36,7 @@ public class DataExtractionScheduler {
         log.info("#### Ending the ANC job ####");
     }
     
-    @Schedule(second="0", minute="2,4,8,14,16,22,26,28,32,34,38,42,46,48,52,54,58",hour="0,1", persistent=false)
+    @Schedule(second="0", minute="2,4,8,14,16,22,26,28,32,34,38,42,46,48,52,54,58",hour="16,17", persistent=false)
     public void extractAndPersistDAData(){
         log.info("#### Starting the DA job ####");
         Map<String, String> options = hundredDATweetsAfterManifestoLaunch();

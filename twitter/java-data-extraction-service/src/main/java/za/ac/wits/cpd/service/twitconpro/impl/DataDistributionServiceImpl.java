@@ -28,6 +28,12 @@ public class DataDistributionServiceImpl implements RemoteDataDistributionServic
     
     @EJB
     private FileHelper fileHelper;
+
+    @Override
+    public void distributeTweetsById(Long id) {
+        String jsonTweet = this.persistManager.findJsonTweetById(id);
+        writeToFile(jsonTweet);
+    }
     
     @Override
     public void distributeAllTweets(URI uri) {
@@ -87,6 +93,12 @@ public class DataDistributionServiceImpl implements RemoteDataDistributionServic
             builder.append(json).append(System.lineSeparator());
         });
         return builder;
+    }
+
+    private void writeToFile(String jsonTweet) {
+        if(jsonTweet!=null&&!jsonTweet.isEmpty()){
+            this.fileHelper.write(jsonTweet);
+        }
     }
 
     private void writeToFile(final StringBuilder builder) {

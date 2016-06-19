@@ -104,7 +104,9 @@ public class DataExtractionResource {
     @Path("/extractAndPersistHistoryByHashtag")
     public List<Tweet> extractAndPersistHistoryTweetsByHashtag(
                                 @QueryParam(value = "hashtag") String hashtag,
-                                @QueryParam(value = COUNT) int count) {
+                                @QueryParam(value = COUNT) int count,
+                                @QueryParam(value = SINCE) String since,
+                                @QueryParam(value = UNTIL) String until) {
 
         validateHashtagParam(hashtag);
         List<Tweet> tweets = this.extractionService.extractHistoryTweetsByHashtag(hashtag, count);
@@ -118,7 +120,7 @@ public class DataExtractionResource {
                                             @QueryParam(value = COUNT) int count,
                                             @QueryParam(value = SINCE) String since,
                                             @QueryParam(value = UNTIL) String until) {
-
+        log.severe("######## /historyByHashtags");
         validateHistoryParams(hashtags, since, until);
         List<Tweet> tweets = this.extractionService.extractHistoryTweetsByHashtags(hashtags, toHistoryOptions(count, since, until));
         
