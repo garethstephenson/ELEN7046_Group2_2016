@@ -59,7 +59,7 @@ object CategoryCountPerHour {
             .textFile(inputPath, numPartitions)
             .map(stripConstructors(Array("ObjectId", "ISODate", "NumberLong"), _))
             .map(_.parseJson.convertTo[Tweet])
-            .sortBy(tweets => tweets.createdAt)
+            //.sortBy(tweets => tweets.createdAt)
 
         val YearMonthDayHourFormat: String = "yyyy-MM-dd'T'HH:00:00'Z'"
         val dates = tweets
@@ -80,15 +80,13 @@ object CategoryCountPerHour {
                     val parsedDate = ZonedDateTime.parse(tweet.createdAt.format(formatter))
                     date.equals(parsedDate)
                 })
-                .collect
+                //.collect
 
             val results = categories
                 .map(category => tweetsByHour // For each hour
                     .filter(tweet => tweet.tweetText.contains(category))
                     .map(tweet => (category, 1))
-                    .reduce((tuple1, tuple2) => (tuple1._1, tuple1._2 + tuple2._2))
-                    )
-                //.flatMap(tuples => tuples)
+                    .reduce((tuple1, tuple2) => (tuple1._1, tuple1._2 + tuple2._2)))
 
             val categoryCounts: ListBuffer[CategoryCount] = new ListBuffer[CategoryCount]
             categoryCounts.appendAll(results.map(result => new CategoryCount(result._1, result._2)))
