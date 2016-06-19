@@ -54,12 +54,13 @@ object CategoryCountPerHour {
 
         printSettings(inputPath, categories, numPartitions)
 
+        import ZonedDateTimeSort._
         val tweets = sparkContext
             .textFile(inputPath, numPartitions)
             .map(stripConstructors(Array("ObjectId", "ISODate", "NumberLong"), _))
             .map(_.parseJson.convertTo[Tweet])
+            .sortBy(tweets => tweets.createdAt)
 
-        import ZonedDateTimeSort._
         val YearMonthDayHourFormat: String = "yyyy-MM-dd'T'HH:00:00'Z'"
         val dates = tweets
             .map(tweet => {
@@ -73,24 +74,24 @@ object CategoryCountPerHour {
         val containers: ListBuffer[CategoryCountContainer] = new ListBuffer[CategoryCountContainer]
         dates.foreach(date => {
 
+            val tweetsByHour = tweets
+                .filter(tweet => {
+                    val formatter = DateTimeFormatter.ofPattern(YearMonthDayHourFormat) // Convert to same hour date
+                    val parsedDate = ZonedDateTime.parse(tweet.createdAt.format(formatter))
+                    date.equals(parsedDate)
+                })
+                .collect
+
             val results = categories
-                .map(category => tweets
+                .map(category => tweetsByHour // For each hour
                     .filter(tweet => tweet.tweetText.contains(category))
-                    .filter(tweet => {
-                        val formatter = DateTimeFormatter.ofPattern(YearMonthDayHourFormat) // Convert to same hour date
-                        val parsedDate = ZonedDateTime.parse(tweet.createdAt.format(formatter))
-                        date.equals(parsedDate)
-                    }) // For each hour
                     .map(tweet => (category, 1))
-                    .reduceByKey(_ + _) // Returns tuple (Category, CountPerHour)
-                    .map(categoryCountTuple => (date, categoryCountTuple._1, categoryCountTuple._2)) // Returns tuple (Date, Category, CountPerHour)
-                    .collect)
+                    .reduce((tuple1, tuple2) => (tuple1._1, tuple1._2 + tuple2._2))
+                    )
+                //.flatMap(tuples => tuples)
 
             val categoryCounts: ListBuffer[CategoryCount] = new ListBuffer[CategoryCount]
-            results.foreach(result => categoryCounts
-                .appendAll(result
-                    .filter(datedCategoryCountTuple => datedCategoryCountTuple._1 == date)
-                    .map(datedCategoryCountTuple => CategoryCount(datedCategoryCountTuple._2, datedCategoryCountTuple._3))))
+            categoryCounts.appendAll(results.map(result => new CategoryCount(result._1, result._2)))
 
             containers += new CategoryCountContainer(date, categoryCounts.toList)
         })
