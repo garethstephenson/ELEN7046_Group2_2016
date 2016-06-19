@@ -86,7 +86,9 @@ object CategoryCountPerHour {
                 .map(category => tweetsByHour // For each hour
                     .filter(tweet => tweet.tweetText.contains(category))
                     .map(tweet => (category, 1))
-                    .reduce((tuple1, tuple2) => (tuple1._1, tuple1._2 + tuple2._2)))
+                    .reduceByKey(_ + _)
+                    .collect)
+                .flatMap(x => x)
 
             val categoryCounts: ListBuffer[CategoryCount] = new ListBuffer[CategoryCount]
             categoryCounts.appendAll(results.map(result => new CategoryCount(result._1, result._2)))
