@@ -51,7 +51,7 @@
 		\textsc{\large ELEN7046 - Software Technologies and Techniques}\\[0.5cm] % Minor heading such as course title
 		
 		\HRule \\[0.4cm]
-		{ \huge \bfseries Group Project: Big Data Visualization}\\[0.4cm] % Title of your document
+		{ \huge \bfseries Big Data Visualization using Commodity Hardware and Open Source Software}\\[0.4cm] % Title of your document
 		
 		\HRule \\[0.6cm]
 		
@@ -85,17 +85,9 @@
 		
 		% Abstract
 		\begin{flushleft}\large
-			\textsc{Summary}\\
+			\textsc{Abstract}\\
+			The project aims to provide a low cost solution to big data processing problems, enabling a commercially viable option to individuals, small businesses and academia using commodity hardware. This report explores the use of  Open Source technologies Apache Spark and Scala as well as the low cost and scalable Raspberry Pi's. After building a prototype system to source, process and visualize data from twitter, it was concluded that  commodity hardware is a viable small-scale solution to working with Big Data.
 			
-			This report presents the work done by Group 2 in response to the project brief for ELEN7046: Software Technologies and Techniques.
-			
-			The report will broadly focus on the following topics:
-			
-				\begin{itemize}
-					\item The Methodology followed to execute the project;
-					\item The Architecture of the solution developed for the project; and
-					\item The different technologies used to deliver the solution.
-				\end{itemize}
 		\end{flushleft}
 		{\large \today}\\[3cm] % Date, change the \today to a set date if you want to be precise
 		
@@ -104,6 +96,13 @@
 		\vfill % Fill the rest of the page with whitespace
 		
 	\end{titlepage}
+	
+		% Abstract
+		\begin{flushleft}\large
+			\textsc{Declaration of Originality}\\
+			
+			
+		\end{flushleft}
 	
 	%----------------------------------------------------------------------------------------
 	%	TABLE OF CONTENTS
@@ -117,9 +116,29 @@
 	%	INTRODUCTION
 	%----------------------------------------------------------------------------------------
 	
-	\section{Abstract} % Major section
+	\section{Introduction} % Major section
 	
-	TBC
+This report presents the work done by Group 2 in response to the project brief for ELEN7046: Software Technologies and Techniques.\\
+
+The report will broadly focus on the following topics:
+
+\begin{itemize}
+	\item The Methodology followed to execute the project;
+	\item The Architecture of the solution developed for the project; and
+	\item The different technologies used to deliver the solution.
+\end{itemize}
+
+\subsection{Problem Statement}
+
+There is an abundance of big data available to individuals and companies with very limited capacity to refine this data into meaningful information, particularly for small scale endeavours. Big Data processing is often locked behind high cost barriers to entry, and individuals, start ups and academics may find it difficult to be involved in Big Data processing.
+
+\subsection{Solution Summary}
+
+Commodity hardware is available to provide a means by which the barrier to entry for Big Data projects can be overcome. Simple, low cost components can be leveraged to address each of the parts of a big data processing solution, whether it be data sourcing, transormation, or visualization; and can be scaled according to needs or as required.
+
+\subsection{Approach}
+
+%\subsubsection{Methodology}
 	
 		%\subsection{Executive Summary} % --optional
 		
@@ -151,13 +170,15 @@
 	%	MAJOR SECTION 1
 	%----------------------------------------------------------------------------------------
 	
-	\section{Stakeholder Concerns - Big Data}
+	%\section{Problem Statement}
+	
+	
 	
 	%\subsection{Executive Summary} % --optional
 	
 	%------------------------------------------------
 	
-	\subsection{Collection}
+%	\subsection{Data Collection}
 	%--Where they come from
 	%--What they currently do
 	%--General experience
@@ -166,7 +187,7 @@
 	
 	%------------------------------------------------
 	
-	\subsection{Processing}
+%	\subsection{Data Processing}
 	
 
 
@@ -181,7 +202,7 @@
 	
 	%--Earn Value Management SP01
 	
-	\subsection{Visualization}
+%	\subsection{Data Visualization}
 	
 
 	%--Summary of the above
@@ -189,7 +210,7 @@
 	
 	%------------------------------------------------
 	
-	\section{Methodology}
+	\section{Lifecycle Methodology}
 	
 	%\subsection{Explanation Summary} %--optional
 	
@@ -225,17 +246,20 @@
 
 	
 	%\subsection{xxx}
-	
-	
-	%------------------------------------------------
-	
 	\section{Assumptions and Constraints}
 	
+		\subsection{Tweet Locations}
+		The group encountered tweet location issues. \\
+		\subsection{Pros and Cons determinations}
+		Rudimentary algorithm for determining Twitter statements (tweets) that are against or for a particular candidate was adopted... \\
+	
+	%------------------------------------------------
+	\section {Design Decisions}
+	
+	
+	
 	%\subsection{Explanation Summary} %--optional
-	\subsection{Tweet Locations}
-	The group encountered tweet location issues. \\
-	\subsection{Pros and Cons determinations}
-	Rudimentary algorithm for determining Twitter statements (tweets) that are against or for a particular candidate was adopted... \\
+
 	%------------------------------------------------
 	
 	%--Earn Value Management 
@@ -250,8 +274,14 @@
 	
 	\section{Success Criteria} % Major section
 	
+	\begin{itemize}
+		\item Build a system that uses commodity hardware to solve for big data problems;
+		\item Provide a solution that covers the data sourcing, transformation and presentation of social media data from Twitter relating to the United States and South African elections. The end result must be visualization that provides insight to the sentiment of election candidates on Twitter.
+	\end{itemize}
 	
-	\section{Architecture of the Solution}
+	
+	
+	\section{Solution Design}
 		
 	\subsection{High Level Design: Component Architecture}
 	
@@ -262,7 +292,7 @@
 			\label{fig:speciation}
 		\end{figure}
 	
-	\subsection{Detailed Design: Class Diagrams}
+	\subsection{Detailed Designs}
 	
 	\subsubsection{Data Acquisition (Batch)}
 	
@@ -280,6 +310,8 @@
 			\label{fig:speciation}
 		\end{figure}
 	
+	
+	\subsection{Possible Extensions}
 	%\subsection{Explanation Summary} %--optional
 	
 	% Risk - large project given to a small company that is running a core part of the company's systems.
@@ -308,9 +340,13 @@
 	
 	\section{Conclusion} % Major section
 	
-	\subsection {Control Situation}
+	All this hardware and software is available to anybody interested in Big Data processing.\\
 	
-	\textit{Before we come to a conclusion and define the proposed actions we must first define the archetypical control situation. } Based on.. \\ %reference.
+	The hardware is cheap and the software is free.\
+	
+	The learning curve in the beginning can be quite steep but is ultimately very rewarding in terms of what can be achieved with so little financial investment.
+	
+	
 	
 	
 	\newpage
@@ -330,6 +366,8 @@
 		\newblock The Mythical Man-Month
 		
 	\end{thebibliography}
+	
+	\section{Appendices}
 	
 	%----------------------------------------------------------------------------------------
 	
