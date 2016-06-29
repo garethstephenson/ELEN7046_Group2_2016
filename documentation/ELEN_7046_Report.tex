@@ -145,6 +145,30 @@ Commodity hardware is available to provide a means by which the barrier to entry
 		%------------------------------------------------
 		
 	\section{Literature Review}
+	
+	\subsection {Data Sourcing}
+	
+	This project was intended to deliver a system or solution for the visualization of Big Data. For this reason it is important that we start by defining what Big Data is.
+	\\
+	According to Maden[1], Big Data can be defined as "data that is too big, too fast, or too hard for existing tools to process."
+	\\
+	The above definition further supports our group's decision to focus on Twitter as the source of data for the project. Statistics have shown the following average figures with regards to the amount of data that one can get from Twitter[2]:
+	\\
+	
+		\begin{itemize}
+			\item 6000 per second; 
+			\item 350 000 per minute;
+			\item 500 million per day; and
+			\item 200 billion in a year.
+		\end{itemize}
+	
+	\subsection {Big Data Processing Algorithm}
+	
+	The team sought to have all the processing of the Big Data received from Twitter done on multiple nodes following the principles of MapReduce.
+	\\
+	\\
+	Apache Spark was used for this project together with MapReduce which in the main delivers the MapReduce functionality based on the algorithm that is broken down into the Mapper class and the Reducer class[3].
+
 		%--Where they come from
 		%--What they currently do
 		%--General experience
@@ -215,7 +239,7 @@ Commodity hardware is available to provide a means by which the barrier to entry
 	%\subsection{Explanation Summary} %--optional
 	
 	%------------------------------------------------
-	In order for group two to successfully deliver this project, a development methodology based on IBM Rational Unified Process (RUP) was followed albeit tailored to cater for the specific needs of this project.\\
+	In order for the team to successfully deliver this project, a development methodology based on IBM Rational Unified Process (RUP) was followed albeit tailored to cater for the specific needs of this project.\\
 	\\
 	The diagram below depicts the IBM RUP model:
 	
@@ -256,6 +280,22 @@ Commodity hardware is available to provide a means by which the barrier to entry
 	%------------------------------------------------
 	\section {Design Decisions}
 	
+	The table below details all the key design decision made in the delivery of the solution:
+	\\
+	
+\begin{itemize} 
+	\item \textbf{History Data:} History data/ batch interface to Twitter was designed to provide past data subscribed to based on date range.
+	
+	\item \textbf{Streaming Data:} 
+	This interface provides for all subscribed data in real-time starting from now and going into the future.
+	
+	\item \textbf{GoogleMaps:} 
+	Tweet location was derived from the co-ordinates found in a tweet where the person tweeting enabled location services on their device to provide current location information. Where privacy settings were not enabled for current location, an interface to GoogleMaps was developed to read the location information of the person tweeting from their Twitter profile and resolve this to actual co-ordinates.
+	
+	\item \textbf{Security Directive(s):} 
+	It was decided that where security is concerned, only the Twitter and GoogleMaps security requirements be adhered to where integration is concerned. All data acquired from Twitter is data that is already in the public domain, therefore no effort was required to secure the data while in transit, hence the use of only FTP instead of a lot more secure transport mechanism.
+\end{itemize}
+	
 	
 	
 	%\subsection{Explanation Summary} %--optional
@@ -287,7 +327,7 @@ Commodity hardware is available to provide a means by which the barrier to entry
 	
 	
 		\begin{figure}[H] % Example image
-			\center{\includegraphics[width=1.15\linewidth]{HLD}}
+			\center{\includegraphics[width=1.15\linewidth]{HLD1}}
 			\caption{High Level Component Model.}
 			\label{fig:speciation}
 		\end{figure}
@@ -296,16 +336,34 @@ Commodity hardware is available to provide a means by which the barrier to entry
 	
 	\subsubsection{Data Acquisition (Batch)}
 	
+		\begin{figure}[H] % Example image
+			\center{\includegraphics[width=1.15\linewidth]{Batch}}
+			\caption{Component Model: Streaming Module}
+			\label{fig:speciation}
+		\end{figure}
+	
 	\subsubsection{Data Acquisition (Streaming)}
 	
+		\begin{figure}[H] % Example image
+			\center{\includegraphics[width=1.15\linewidth]{Streaming}}
+			\caption{Component Model: Streaming Module}
+			\label{fig:speciation}
+		\end{figure}
+	
 	\subsubsection{Data Processing}
+	
+	\begin{figure}[H] % Example image
+		\center{\includegraphics[width=1.15\linewidth]{MapReduce}}
+		\caption{Context Diagram: Data Processing}
+		\label{fig:speciation}
+	\end{figure}
 	
 	\subsubsection{Data Visualization}
 	
 	\subsection{Operational Model: Infrastructure Design}
 	
 		\begin{figure}[H] % Example image
-			\center{\includegraphics[width=1.15\linewidth]{ELEN7046_OM}}
+			\center{\includegraphics[width=1.15\linewidth]{OM1}}
 			\caption{Operational Model: Phyical}
 			\label{fig:speciation}
 		\end{figure}
@@ -357,13 +415,12 @@ Commodity hardware is available to provide a means by which the barrier to entry
 	
 	\begin{thebibliography}{99} % Bibliography - this is intentionally simple in this template
 		
-		\bibitem[Van Vliet, 2008]{VV:2008dg}
-		Van Vliet (2008).
-		\newblock Software Engineering Principles and Practice
+		\bibitem 1. S. Madam. From Databases to Big Data. IEEE Computer Society, 2012.
+	
+		%\newblock 
 		
-		\bibitem[Frederick P. Brooks, 1975]{VV:1975dg}
-		Frederick P. Brooks (1975).
-		\newblock The Mythical Man-Month
+		\bibitem 2. V. Kumar, R. Yuvaraj, C. Anusha. Effective Distribution of Large Scale Datasets Clustering Based on MapReduce. 2016.
+
 		
 	\end{thebibliography}
 	
