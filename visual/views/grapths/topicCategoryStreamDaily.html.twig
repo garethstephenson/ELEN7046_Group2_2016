@@ -1,3 +1,8 @@
+<!--
+The following grap was developed using the following references as its base:
+http://bl.ocks.org/mbostock/1256572
+http://bl.ocks.org/mbostock/4060954
+-->
 <style>
     .sd_chart {
         background-color: #EFEFEF;
@@ -39,10 +44,7 @@
       _setWidth: function (chartDivSelector) {
         $(chartDivSelector).width($(chartDivSelector).parent().width() - 10);
       },
-      draw: function (data, categoryColors, chartDivSelector) {
-        // Used the following chart as a base: http://bl.ocks.org/mbostock/1256572
-        // http://bl.ocks.org/mbostock/4060954
-        
+      draw: function (data, categoryColors, chartDivSelector) {       
         if (data == null || data.length <= 0)
             return;
         

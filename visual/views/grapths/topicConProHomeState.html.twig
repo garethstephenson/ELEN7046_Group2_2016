@@ -1,3 +1,7 @@
+<!--
+The following grap was developed using the following references as its base:
+https://bl.ocks.org/mbostock/79a82f4b9bffb69d89ae
+-->
 <style>
 
     .bar--positive {
@@ -59,8 +63,6 @@
           $(chartSvgSelector).width($(chartSvgSelector).parent().width() - 10);
         },
         draw: function (data, chartSvgSelector) {
-          //Adapted from: https://bl.ocks.org/mbostock/79a82f4b9bffb69d89ae
-
           if (data == null || data.length <= 0)
             return;
 

@@ -1,3 +1,7 @@
+<!--
+The following grap was developed using the following references as its base:
+Code extended from: http://bl.ocks.org/dwtkns/4973620
+-->
 <style>
 
     .land {
@@ -81,8 +85,6 @@
         });
       },
       draw: function (data, chartDivSelector) {
-        // Code extended from: http://bl.ocks.org/dwtkns/4973620
-
         d3.select($(chartDivSelector).get(0))
           .on("mousemove", mousemove)
           .on("mouseup", mouseup);

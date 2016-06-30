@@ -1,3 +1,7 @@
+<!--
+The following grap was developed using the following references as its base:
+https://bost.ocks.org/mike/bar/
+-->
 <style>
 
     .v_chart rect {
@@ -82,8 +86,7 @@
       _setWidth: function (chartSvgSelector) {
         $(chartSvgSelector).width($(chartSvgSelector).parent().width() - 10);
       },
-      draw: function (data, categoryColors, chartSvgSelector) {
-        // Code developed following this tutorial: https://bost.ocks.org/mike/bar/3/
+      draw: function (data, categoryColors, chartSvgSelector) {        
         var margin = {top: 20, right: 30, bottom: 30, left: 40};
         var width = $(chartSvgSelector).width() - margin.left - margin.right;
         var height = $(chartSvgSelector).height() - margin.top - margin.bottom;

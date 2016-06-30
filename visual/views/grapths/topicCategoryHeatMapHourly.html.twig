@@ -1,3 +1,8 @@
+<!--
+The following grap was developed using the following references as its base:
+http://bl.ocks.org/tjdecke/5558084
+http://bl.ocks.org/mbostock/4063318
+-->
 <style>
     rect.bordered {
         stroke: #E6E6E6;
@@ -68,8 +73,6 @@
         $(chartDivSelector).width($(chartDivSelector).parent().width() - 10);
       },
       draw: function (data, categoryColors, chartDivSelector) {
-        // Code developed following this tutorial: http://bl.ocks.org/tjdecke/5558084
-
         var hours = commonCharts.make2DigitNumberArray(0, 23);
         var days = d3.map(data, function (d) {
           return commonCharts.getDateValue(d.Date);

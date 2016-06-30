@@ -1,3 +1,7 @@
+<!--
+The following grap was developed using the following references as its base:
+https://github.com/timdream/wordcloud2.js
+-->
 <div id="wc_dataPlaceholder"> Data loading, please wait ...</div>
 <script type="text/javascript">
     $(document).ready(function () {
@@ -45,8 +49,6 @@
         return list;
       },
       draw: function (data, chartDivSelector) {
-        // Using World cload component https://github.com/timdream/wordcloud2.js
-
         var list = WordCloudChart.converDataToArrayList(data); //[['elections', 4], ['scary', 18], ['bob', 9], ['money', 44]];
 
         var width = $(chartDivSelector).width();
