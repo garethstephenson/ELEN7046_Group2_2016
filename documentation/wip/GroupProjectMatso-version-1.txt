@@ -1,0 +1,38 @@
+
+4.1 [Assumptions and Constraints] - Data collection - Twitter Location
+=====================================================
+Early ideas in the project were based on the Twitter location data; for example, in the inception one of the project the first idea was to visualise the world's reaction to Oscar Pistorious' murder accussation over the world map. Given this idea, the location at which each Twitter postings (tweets) were made was paramount to the success of that idea. Unfortunately due the amount of Twitter data found on this subject, the team decided it was not big enough to qualify as Big Data. The project then decided to rather visualise the currently most topical of subjects, the upcoming United States general elections and also the upcoming South African municipal elections. The idea of using locations where tweets were posted stuck with the project. 
+
+However, during the data collection exercise it was discovered that most of the Twitter posts (tweets) had no location data attached to them. It turns out most Twitter users disable their GPS sensor for the Twitter application, presumably for security and privacy reasons. This meant the project would collect data that did not have locations and that would sabotage ideas of visualising data based on locations. After a further analysis on the Twitter data that can be collected, the team came to a realisation that Twitter users have profile location data specified as a free text. As a workaround the user profile location was collected alongside the tweets. Therefore each tweet that did not have a location, the user profile location data was associated with that tweeet.The assumption being made by the project was that location of each tweet is the same as that of the user's profile. The project acknowledges that if the user's GPS sensor is turned on, profile location may not necessarily be the same as the location at which the tweet would be posted.
+
+
+4.2 [Assumptions and Constraints] - Data collection -Twitter and Google data rates and Limits
+============================================================================
+Both Twitter and Google API has usage rate limits which provided a constraint to the project. Twitter search API allows returns 100 tweets per request and allowes only 450 requests per 15 minute window [1]. Only 2500 requests per day are allowed by the standard Google Maps Geocoding API [2].
+ 
+5 [Design decisions] Data collection – why 2 separate components?
+==================================================================
+The Big Data collection component was divided into 2 sub-components: streaming and historic. The project followed a divide and conquer strategy to decompose the data collection problem into simpler sub-components. The divide and conquer strategy in software design, helps in avoiding a single point of failure, and it enables parallelism [3]. Dividing the data collection component into separately deployable smaller services provide few advantages including scaling, separation of concerns, issue isolation and ability to use different technologies and techniques. 
+
+Scaling: Making the data collection sub-components independently deployable facilitates for simpler scaling. X-axis or horizontal scaling is usually achieved by running copies of the same application behind a load balancer. Even though the team didn't set out to apply microservices architecture from the on-set, separating the data collection component into smaller sub-component exhibits some of the principles of microservices – sub-dividing an application into smaller task focused services, and therefore enabling the project to achieve an Y-axis or vertical scaling [4]. 
+
+Issue isolation and faster debugging: loose coupled components in a software system is a desirable software design attribute. When issues arise in production, one service can be investigated separately without affecting the other, therefore isolating the issue and resulting in a faster troubleshooting and debugging. This also avoids a complete halt on the whole data collection processing when an issue in encountered. The Single Responsibility Principle (SRP) advocated by Robert Martin states that a component should have one reason to change [5], isolating the streaming from historic data collection allows the project to achieve this feat. 
+
+Different technologies and tools: The separation of the data collection component gave the development team the opportunity to use different technologies and tools therefore leverage off the different skills sets available in the team; this assisted in cutting the down learning curve. Because of the nature of the project, time was the key factor and therefore avoiding to learn new technologies and tools helped in fast tracking the development process. 
+
+Even though the streaming and historic data collection uses different technologies, tools and techniques and were also independently deployable, they produce a common format of the data therefore implementing the fork and join model used in parallel processing.
+
+7.4.1 [Solution Design] - Possible Extensions - data collection
+===============================================================
+The project used only Twitter as the Big Data source. According to Statista[6], in April 2016 Facebook ranked number one with 1 590 millions of active users, while Twitter recorded 320 millions of active users. Other social media networking sites that were ranked included Integram, WhatApp, WeChat and LinkedIn among others. Most the social networking service provides an API retrieve social media messages or posts. The project chose Twitter as the data source because Twitter's API seemed to be easier to work with. Due to lack of time only one data source was choosen. One of the possible extension in the project lies on the data collection component. The 2 sub-components can be enhanced to support other social media platforms as the data providers .
+
+
+===========
+References
+===========
+[1] Twitter, "Rate Limits: Chart", https://dev.twitter.com/rest/public/rate-limits, Twitter, San Francisco, Last accessed 29 June 2016
+[2] Google, "Google Maps Geocoding API Usage Limits", https://developers.google.com/maps/documentation/geocoding/usage-limits,Googe,San Francisco,Last accessed 29 June 2016
+[3] Hayim Makabee, "Divide-and-Conquer: Coping with Complexity", https://effectivesoftwaredesign.com/2011/06/06/divide-and-conquer-coping-with-complexity/, Last accessed 28 June 2016
+[4] Chris Richardson, "The Scale Cube", http://microservices.io/articles/scalecube.html, Last accessed 28 June 2016
+[5] Robert Martin, "The Single Responsibility Principle", 8th Light, https://blog.8thlight.com/uncle-bob/2014/05/08/SingleReponsibilityPrinciple.html, Last accessed 28 June 2016
+[6] Statista, "Leading social networks worldwide as of April 2016, ranked by number of active users (in millions)", http://www.statista.com/statistics/272014/global-social-networks-ranked-by-number-of-users/, Statista Inc, New York, Last accessed 29 June 2016
