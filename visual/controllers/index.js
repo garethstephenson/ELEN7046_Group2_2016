@@ -5,8 +5,8 @@ var fs = require("fs");
 var config = require("./../config/common");
 
 // routing config
-router.use('/config', require('./config'))
-router.use('/data', require('./data'))
+router.use('/config', require('./config'));
+router.use('/data', require('./data'));
 
 //default routes here
 //these could go in a separate file if you want
