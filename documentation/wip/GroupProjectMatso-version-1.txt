@@ -45,13 +45,22 @@ the project, time was the key factor and therefore avoiding to learn new technol
 Even though the streaming and historic data collection uses different technologies, tools and techniques and were also independently deployable, they produce a 
 common format of the data therefore implementing the fork and join model used in parallel processing.
 
+==============================
+7.1 Data Acquisation (History) 
+===============================
+The historic data collection component is made up of two major services, namely, the Data Extraction Service and Data Distribution Service. These supports the 2 major use cases for history data collection component,i.e, data acquistion and distribution. The services model using public interfaces, packaged together in the API module. The interfaces are separated from the implementations to avoid tight coupling and there making it easy to swap implementations without impactinng the API users. 
+
+The implementation components performs the actual extraction of the data by interacting with the Twitter REST API; in the process they perform authentication, retrieval of content, mapping the content from Twitter the application's Tweet entity and persisting  the data in Mongo. Similarly  for the distribution of data, the underlying classes handles the retrieval of data from MongoDB and distribute the data using SFTP.
+
+The extraction service can be triggered using both REST interface and the Scheduler, whilst the distribution component can be triggered via the REST interace only.
+
+================================================================
 7.4.1 [Solution Design] - Possible Extensions - data collection
-===============================================================
+================================================================
+
 The project used only Twitter as the Big Data source. According to Statista[6], in April 2016 Facebook ranked number one with 1 590 millions of active
 users, while Twitter recorded 320 millions of active users. Other social media networking sites that were ranked included Integram, WhatApp, WeChat and 
-LinkedIn among others. Most the social networking service provides an API retrieve social media messages or posts. The project chose Twitter as the data 
-source because Twitter's API seemed to be easier to work with. Due to lack of time only one data source was choosen. One of the possible extension in the 
-project lies on the data collection component. The 2 sub-components can be enhanced to support other social media platforms as the data providers.
+LinkedIn among others. Most the social networking service provides an API retrieve social media messages or posts. Twitter was chosen as the data source for the group project, as it was felt this better portrayed the sentiment of the people, not just online and traditional media outlets. Also, the Twitter API proved easy to integrate with. . Due to lack of time only one data source was choosen. One of the possible extension in the project lies on the data collection component. The 2 sub-components can be enhanced to support other social media platforms as the data providers.
 
 
 ===========
