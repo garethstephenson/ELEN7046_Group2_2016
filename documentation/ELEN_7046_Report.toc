@@ -8,25 +8,25 @@
 \contentsline {section}{\numberline {3}Success Criteria}{7}
 \contentsline {section}{\numberline {4}Lifecycle Methodology}{7}
 \contentsline {section}{\numberline {5}Key Risks}{8}
-\contentsline {section}{\numberline {6}Assumptions and Constraints}{8}
-\contentsline {subsection}{\numberline {6.1}Assumptions and Acknowledgements}{8}
+\contentsline {section}{\numberline {6}Assumptions and Constraints}{9}
+\contentsline {subsection}{\numberline {6.1}Assumptions and Acknowledgements}{9}
 \contentsline {subsection}{\numberline {6.2}Technical Constraints}{9}
-\contentsline {section}{\numberline {7}Design Decisions}{9}
-\contentsline {section}{\numberline {8}Solution Design}{10}
-\contentsline {subsection}{\numberline {8.1}High Level Design: Component Architecture}{10}
-\contentsline {subsection}{\numberline {8.2}Detailed Designs}{11}
-\contentsline {subsubsection}{\numberline {8.2.1}Data Acquisition (History)}{11}
-\contentsline {subsubsection}{\numberline {8.2.2}Data Acquisition (Streaming)}{13}
-\contentsline {subsubsection}{\numberline {8.2.3}Data Processing}{14}
-\contentsline {subsubsection}{\numberline {8.2.4}Data Visualization}{16}
-\contentsline {subsection}{\numberline {8.3}Operational Model: Infrastructure Design}{17}
-\contentsline {subsubsection}{\numberline {8.3.1}Raspberry Pi Configuration Sheet}{19}
-\contentsline {subsection}{\numberline {8.4}Testing Approach}{19}
-\contentsline {subsection}{\numberline {8.5}Possible Extensions}{19}
-\contentsline {section}{\numberline {9}Conclusion}{20}
-\contentsline {section}{\numberline {10}Appendices}{22}
-\contentsline {subsection}{\numberline {10.1}Appendix A: Time Sheets}{22}
-\contentsline {subsection}{\numberline {10.2}Appendix B: Trello Board}{23}
-\contentsline {subsection}{\numberline {10.3}Appendix C: Slack Dashboard}{24}
-\contentsline {subsection}{\numberline {10.4}Appendix D: Git Repository}{25}
-\contentsline {subsection}{\numberline {10.5}Appendix E: List of Technologies and Tools}{26}
+\contentsline {section}{\numberline {7}Design Decisions}{10}
+\contentsline {section}{\numberline {8}Solution Design}{11}
+\contentsline {subsection}{\numberline {8.1}High Level Design: Component Architecture}{11}
+\contentsline {subsection}{\numberline {8.2}Detailed Designs}{12}
+\contentsline {subsubsection}{\numberline {8.2.1}Data Acquisition (History)}{12}
+\contentsline {subsubsection}{\numberline {8.2.2}Data Acquisition (Streaming)}{14}
+\contentsline {subsubsection}{\numberline {8.2.3}Data Processing}{15}
+\contentsline {subsubsection}{\numberline {8.2.4}Data Visualization}{17}
+\contentsline {subsection}{\numberline {8.3}Operational Model: Infrastructure Design}{18}
+\contentsline {subsubsection}{\numberline {8.3.1}Raspberry Pi Configuration Sheet}{20}
+\contentsline {subsection}{\numberline {8.4}Testing Approach}{20}
+\contentsline {subsection}{\numberline {8.5}Possible Extensions}{20}
+\contentsline {section}{\numberline {9}Conclusion}{21}
+\contentsline {section}{\numberline {10}Appendices}{23}
+\contentsline {subsection}{\numberline {10.1}Appendix A: Time Sheets}{23}
+\contentsline {subsection}{\numberline {10.2}Appendix B: Trello Board}{24}
+\contentsline {subsection}{\numberline {10.3}Appendix C: Slack Dashboard}{25}
+\contentsline {subsection}{\numberline {10.4}Appendix D: Git Repository}{26}
+\contentsline {subsection}{\numberline {10.5}Appendix E: List of Technologies and Tools}{27}

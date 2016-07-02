@@ -284,6 +284,14 @@ The team made use of the following, online collaboration tools to meet their nee
 %	\subsubsection{Cost \& Schedule}
 	
 \section{Key Risks}
+
+Below is the list of the Key Risks that the project team identified at the start of the project:\\
+
+\begin{itemize}
+	\item Project Technical Risk.
+	\item The Raspberry Pi Infrastructure.
+	\item Team Collaboration.
+\end{itemize}
 	
 	%\subsection{xxx}
 	\section{Assumptions and Constraints}
@@ -315,7 +323,7 @@ The team made use of the following, online collaboration tools to meet their nee
 \subsection {Technical Constraints}
 
 \begin{itemize}
-	\item \textbf{Twitter API:} Twitter only provided100 tweets per request and only allowed 450 tweets within a 15 minutes window.
+	\item \textbf{Twitter API:} Twitter only provided100 tweets per request and only allowed 450 tweets within a 15 minutes window[4].
 	\item \textbf{GoogleAPI:} Google has a restriction that only allows 2500 requests   per day.
 	\item \textbf{Hardware:} Slow I/O processing due to cheaper storage (SD Card), limited physical space that could only accommodate just over 1,5 million tweets as well as limited RAM on the Raspberry Pi's.
 \end{itemize}
@@ -330,6 +338,10 @@ The team made use of the following, online collaboration tools to meet their nee
 	
 	\item \textbf{Streaming Data:} 
 	This interface provides for all subscribed data in real-time starting from now and going into the future.
+	
+	One of the motivating factors for splitting the two components mentioned above was that the project followed a divide and conquer strategy to decompose
+	the data collection problem into simpler sub-components. The divide and conquer strategy in software design, helps in avoiding a single point of failure, and it 
+	enables parallelism [6].
 	
 	\item \textbf{GoogleMaps:} 
 	 Where privacy settings were not enabled for current location, an interface to GoogleMaps was developed to read the location information of the person tweeting from their Twitter profile and resolve this to actual co-ordinates.
@@ -365,11 +377,11 @@ The team made use of the following, online collaboration tools to meet their nee
 	
 	\subsubsection{Data Acquisition (History)}
 	
-	The historic data collection component is made up of two major services, namely, the Data Extraction Service and Data Distribution Service. These supports the 2 major use cases for history data collection component,i.e, data acquistion and distribution. The services model using public interfaces, packaged together in the API module. The interfaces are separated from the implementations to avoid tight coupling and there making it easy to swap implementations without impactinng the API users.\\
+	The historic data collection component is made up of two major services, namely, the Data Extraction Service and Data Distribution Service. These supports the two major use cases for history data collection component,i.e, data acquistion and distribution. The services model using public interfaces, packaged together in the API module. The interfaces are separated from the implementations to avoid tight coupling and there making it easy to swap implementations without impactinng the API users.\\
 	\\
-	The implementation components performs the actual extraction of the data by interacting with the Twitter REST API; in the process they perform authentication, retrieval of content, mapping the content from Twitter the application's Tweet entity and persisting  the data in Mongo. Similarly  for the distribution of data, the underlying classes handles the retrieval of data from MongoDB and distribute the data using FTP.\\
+	The implementation components perform the actual extraction of the data by interacting with the Twitter REST API; in the process they perform authentication, retrieval of content, mapping the content from Twitter the application's Tweet entity and persisting  the data in Mongo. Similarly  for the distribution of data, the underlying classes handles the retrieval of data from MongoDB and distribute the data using FTP.\\
 	\\
-	The extraction service can be triggered using both REST interface and the Scheduler, whilst the distribution component can be triggered via the REST interface only.
+	The extraction service can be triggered using both the REST interface and the Scheduler, whilst the distribution component can be triggered via the REST interface only.
 	
 	
 		\begin{figure}[H] % Example image
@@ -400,10 +412,10 @@ The team made use of the following, online collaboration tools to meet their nee
 	\textbf{Raspberry Pi Cluster - Driver Program:}
 	
 	\begin{itemize}
-		\item The program you write that creates an instance of a SparkContext.
-		\item  SparkContext then connects to the Cluster Manager which allocates resources across nodes for the application.
+		\item The program you write creates an instance of a SparkContext.
+		\item  The SparkContext then connects to the Cluster Manager which allocates resources across nodes for the application.
 		\item The SparkContext then acquires Executors on Worker Nodes in the cluster, which will run computations and store data for the application hosting the SparkContext.
-		\item Your application is then sent to the Executors, and then the Tasks that the Executors need to execute are sent through.
+		\item The application is then sent to the Executors, and then the Tasks that the Executors need to execute are sent through.
 		\item 	Executors can communicate with each other using peer-to-peer networking (like bit torrent), in order to transmit shared data (broadcast variables).
 		\item Once the Executors have completed their tasks, they communicate back to the Driver Program.
 		
@@ -430,10 +442,10 @@ The team made use of the following, online collaboration tools to meet their nee
 	
 	\subsubsection{Data Visualization}
 	
-	The Visual component implements the MVC pattern to separate the View and controlling logic from the Data. This allows for the data components to be develop separately from the Views. Between the Views and Data Models where Controllers responsible to load the views based on the set configuration and provide the views with the required data model.\\
+	The Visual component implements the MVC pattern to separate the View and controlling logic from the Data. This allows for the data components to be developed separately from the Views. Between the Views and Data Models were Controllers responsible for  loading the views based on the set configuration and provide the views with the required data model.\\
 	\\
-	The Data Visualisation component was designed to be agnostic of the content and allows for comparison of categories in a topic agnostic of the topic or categories.
-	All charts were design to be scalable. All graphs will render as the view point change allowing for a pleasant user experience.
+	The Data Visualisation component was designed to be content agnostic and it allows for the comparison of categories in a topic regardless of the topic or categories.
+	All charts were designed to be scalable. All graphs will render as the view point changes allowing for a pleasant user experience.
 	
 	
 		\begin{figure}[H] % Example image
@@ -484,9 +496,17 @@ The team made use of the following, online collaboration tools to meet their nee
 
 	\subsection{Testing Approach}
 	
+	The major components of the solution were developed independently with very little external real-time integration except for the parts where the solution integrated to external providers - Twitter and GoogleMaps.
+	\\
+	\\
+	The team decided on a testing approach the involved writing software to facilitate a form of automated testing as far as possible. Details of these testing activities can be found in individual reports.
+	\\
+	\\
+	Non-Functional testing was only focused around the Raspberry Pi cluster in order to establish how quickly it can process large sets of twitter data with limited hardware resources for the individual nodes.
+	
 	\subsection{Possible Extensions}
 	
-	The project used only Twitter as the Big Data source. According to Statista[6], in April 2016 Facebook ranked number one with 1 590 millions of active users, while Twitter recorded 320 millions of active users. Other social media networking sites that were ranked included Integram, WhatApp, WeChat and LinkedIn among others. Most the social networking service provides an API retrieve social media messages or posts. The project chose Twitter as the data source because Twitter's API seemed to be easier to work with. Due to lack of time only one data source was choosen. One of the possible extension in the project lies on the data collection component. The 2 sub-components can be enhanced to support other social media platforms as the data providers.
+	The project used only Twitter as the Big Data source. According to Statista[7], in April 2016 Facebook ranked number one with 1 590 millions of active users, while Twitter recorded 320 millions of active users. Other social media networking sites that were ranked included Integram, WhatApp, WeChat and LinkedIn among others. Most the social networking service provides an API retrieve social media messages or posts. The project chose Twitter as the data source because Twitter's API seemed to be easier to work with. Due to lack of time only one data source was choosen. One of the possible extension in the project lies on the data collection component. The 2 sub-components can be enhanced to support other social media platforms as the data providers.
 	\\
 	\\
 	Other potential extensions to the solution include developing a smart-phone/ tablet App to make the same sort of analytics reports available to a category of user that is always on the move.
@@ -525,11 +545,30 @@ The team made use of the following, online collaboration tools to meet their nee
 	
 	\begin{thebibliography}{99} % Bibliography - this is intentionally simple in this template
 		
-		\bibitem 1. S. Madam. From Databases to Big Data. IEEE Computer Society, 2012.
+		\bibitem 1 S. Madam. From Databases to Big Data. IEEE Computer Society, 2012.
 	
 		%\newblock 
 		
-		\bibitem 2. V. Kumar, R. Yuvaraj, C. Anusha. Effective Distribution of Large Scale Datasets Clustering Based on MapReduce. 2016.
+		\bibitem 2 V. Kumar, R. Yuvaraj, C. Anusha. Effective Distribution of Large Scale Datasets Clustering Based on MapReduce. 2016.
+		\bibitem 3 http://www.internetlivestats.com/twitter-statistics/
+		
+		\bibitem 4 Twitter, "Rate Limits: Chart", https://dev.twitter.com/rest/public/rate-limits, Twitter, San Francisco, Last accessed 29 June 2016.
+		
+		\bibitem 5 Google, "Google Maps Geocoding API Usage Limits", https://developers.google.com/maps/documentation/geocoding/usage-limits,Googe,San Francisco,Last accessed 29 June 2016.
+		
+		\bibitem 6 H. Makabee, "Divide-and-Conquer: Coping with Complexity", https://effectivesoftwaredesign.com/2011/06/06/divide-and-conquer-coping-with-complexity/, Last accessed 28 June 2016.
+		
+		\bibitem 7 Statista, "Leading social networks worldwide as of April 2016, ranked by number of active users (in millions)", 
+		http://www.statista.com/statistics/272014/global-social-networks-ranked-by-number-of-users/, Statista Inc, New York, Last accessed 29 June 2016
+		
+		
+		
+		%Tweetinvi Twitter Wrapper: https://github.com/linvi/tweetinvi/wiki
+		%Google Maps Geocoding API Documentation: https://developers.google.com/maps/documentation/
+		%Mongo DB General Tutorials: https://docs.mongodb.com/manual/tutorial/
+		%Mongo DB C\# Driver: https://docs.mongodb.com/ecosystem/drivers/csharp/
+		%Scala Language Tutorials: http://www.tutorialspoint.com/scala/
+		
 
 		
 	\end{thebibliography}
@@ -571,6 +610,12 @@ The team made use of the following, online collaboration tools to meet their nee
 	
 	\subsection{Appendix D: Git Repository}
 	
+	A comprehensive list of all the artefacts can be found on GitHub by following the link below:
+	\\
+	\\
+	https://github.com/garethstephenson/ELEN7046\_Group2\_2016\\
+	
+	
 	\newpage
 	
 	\subsection{Appendix E: List of Technologies and Tools}
@@ -578,10 +623,6 @@ The team made use of the following, online collaboration tools to meet their nee
 	 \begin{center}
 	 	\begin{tabular}{ | p{3.5cm} | p{12cm} |}
 	 		\hline
-	 		%	\multicolumn{1}{ |l| }{Use Case ID:} & \multicolumn{3}{| l |}{UC01}\\
-	 		%	\hline
-	 		%	\multicolumn{1}{|l|}{Use Case Name:} & \multicolumn{3}{|p{13cm}|}{View Analytics Social Media Report overlaid on map background.}\\
-	 		%	\hline
 	 		\textbf{Tool/ Technique} & \textbf{Usage Description} \\
 	 		\hline
 	 		Trello & Mainly project task allocation to individual team members.\\
@@ -625,6 +666,18 @@ The team made use of the following, online collaboration tools to meet their nee
 		 	IntellijIDE 2016 & \\
 		 	\hline
 		 	Raspbian Linux & \\
+		 	\hline
+		 	Node.js & Platform that allows for standalone JavaScript application\\
+		 	\hline
+		 	Node.js Express Framework & Package enabling web features that support MVC implementation.\\
+		 	\hline
+		 	Node.js - File System & Package enabling File I/O.\\
+		 	\hline
+		 	Node.js Twig.js & HTML templating engine to allow binding of data to the views.\\
+		 	\hline
+		 	Bootstrap & UI framework used to aid responsive UI design.\\
+		 	\hline
+		 	D3 (Data Driven Documents) & A Powerful data visualization component used in the translation of domain data to scalable vector graphics.\\
 		 	\hline
 	 	\end{tabular}
 	 \end{center}
