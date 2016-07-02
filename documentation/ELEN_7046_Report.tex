@@ -122,23 +122,23 @@
 		\end{itemize}
 		
 		\begin{center}
-			\begin{tabular}{ | p{3cm} | p{3cm} | c | c | c |}
+			\begin{tabular}{ | p{3cm} | p{3cm} | p{2.5cm} | c | c |}
 				\hline
 				%	\multicolumn{1}{ |l| }{Use Case ID:} & \multicolumn{3}{| l |}{UC01}\\
 				%	\hline
 				%	\multicolumn{1}{|l|}{Use Case Name:} & \multicolumn{3}{|p{13cm}|}{View Analytics Social Media Report overlaid on map background.}\\
 				%	\hline
-				\textbf {Member Name} & \textbf {Primary Task} & \textbf {Time Spent} & \textbf {Discretionary} & \textbf {Member Signature}  \\
+				\textbf {Member Name} & \textbf {Primary Task} & \textbf {Time Spent (Hours)} & \textbf {Discretionary} & \textbf {Member Signature}  \\
 				\hline
-				Sidwell Mokhemisa & Architecture & & ..\% & \\
+				Sidwell Mokhemisa & Architecture & 111 & 5 \% & \\
 				\hline
-				Kyle Trehaeven & Development - Streaming &  & ..\% & \\
+				Kyle Trehaeven & Development - Streaming & 140 & 5 \% & \\
 				\hline
-				Matsobane Khwinana & Development - History & & ..\% & \\
+				Matsobane Khwinana & Development - History & 118 & 5 \% & \\
 				\hline
-				Gareth Stephenson & Development - MapReduce & & ..\% & \\
+				Gareth Stephenson & Development - MapReduce & 205 & 5 \% & \\
 				\hline
-				Dave Cloete & Development - Visualization & & ..\% &\\
+				Dave Cloete & Development - Visualization & 127 & 5 \% &\\
 				\hline
 			\end{tabular}
 		\end{center}
@@ -234,7 +234,12 @@ The team made use of the following, online collaboration tools to meet their nee
 	The team sought to have all the processing of the Big Data received from Twitter done on multiple nodes following the principles of MapReduce.
 	\\
 	\\
-	Apache Spark was used for this project together with MapReduce which in the main delivers the MapReduce functionality based on the algorithm that is broken down into the Mapper class and the Reducer class[3].
+	Apache Spark was used for this project together with MapReduce which in the main delivers the MapReduce functionality based on the algorithm that is broken down into the Mapper class and the Reducer class[3].\\
+	
+	The Apache Spark cluster computing framework runs the MapReduce algorithm across all the nodes within the Raspberry Pi network, allowing for fast and efficient querying and transformation of raw data into meaningful information.\\
+	\\
+	
+	
 
 		%--Where they come from
 		%--What they currently do
@@ -301,6 +306,14 @@ The team made use of the following, online collaboration tools to meet their nee
 	
 	%------------------------------------------------
 	
+		\section{Success Criteria} % Major section
+		
+		\begin{itemize}
+			\item Build a system that uses commodity hardware to solve for big data problems;
+			\item Provide a solution that covers the data sourcing, transformation and presentation of social media data from Twitter relating to the United States and South African elections. The end result must be visualization that provides insight to the sentiment of election candidates on Twitter.
+		\end{itemize}
+		
+	
 	\section{Lifecycle Methodology}
 	
 	%\subsection{Explanation Summary} %--optional
@@ -339,29 +352,40 @@ The team made use of the following, online collaboration tools to meet their nee
 	%\subsection{xxx}
 	\section{Assumptions and Constraints}
 	
-	Early ideas in the project were based on the Twitter location data; for example, in the inception one of the project the first idea was to visualise the world's reaction to Oscar Pistorious' murder accussation over the world map. Given this idea, the location at which each Twitter postings (tweets) were made was paramount to the success of that idea. Unfortunately due the amount of Twitter data found on this subject, the team decided it was not big enough to qualify as Big Data. The project then decided to rather visualise the currently most topical of subjects, the upcoming United States general elections and also the upcoming South African municipal elections. The idea of using locations where tweets were posted stuck with the project. 
-	\\
-	\\
-	However, during the data collection exercise it was discovered that most of the Twitter posts (tweets) had no location data attached to them. It turns out most Twitter users disable their GPS sensor for the Twitter application, presumably for security and privacy reasons. This meant the project would collect data that did not have locations and that would sabotage ideas of visualising data based on locations. After a further analysis on the Twitter data that can be collected, the team came to a realisation that Twitter users have profile location data specified as a free text. As a workaround the user profile location was collected alongside the tweets. Therefore each tweet that did not have a location, the user profile location data was associated with that tweeet.The assumption being made by the project was that location of each tweet is the same as that of the user's profile. The project acknowledges that if the user's GPS sensor is turned on, profile location may not necessarily be the same as the location at which the tweet would be posted.
-	\\
-	\\
-	Both Twitter and Google API have usage limits which presented a constraint to the project. Twitter search API allows returns 100 tweets per request and allows only 450 requests per 15 minute window [1]. Only 2500 requests per day are allowed by the standard Google Maps Geocoding API [2].\\
-	\\
-	%Assumptions - Kyle
-		We assume a rudimentary algorithm for sentiment assessment is "Good Enough", forgoing complex natural language inference.\\
-		We assume that any incidental tweets sourced (such as EFF = Electronic Freedom Foundation) are minimal and acceptable.\\
-		We assume that Twitter is providing us with either the full extent of our search criteria, or if this is not the case, then the sample we receive is a representational slice.\\
-		We assume information that users provide on twitter (name of their location in particular) is correct and relevant, and that those who do not are in the minority.\\
-		Failing the above, we assume that of those who do provide location based information, their distribution is representative of the norm.\\
-		We acknowledge that our demographics are skewed (younger people more likely to use twitter, poorer South Africans less likely to use twitter).\\
-		We acknowledge that application software is not flawlessly optimised.
-		
+\subsection{Assumptions and Acknowledgements}
+
+\begin{itemize}
 	
-		%\subsection{Tweet Locations}
-	%	The group encountered tweet location issues. \\
-		\subsection{Pros and Cons determinations}
-		Rudimentary algorithm for determining Twitter statements (tweets) that are against or for a particular candidate was adopted... 
-	%------------------------------------------------
+	
+	\item It is assumed that a rudimentary algorithm for sentiment assessment is "Good Enough", forgoing complex natural language inference. 
+	
+	\item It is assumed that any incidental tweets sourced (such as EFF referencing the Electronic Freedom Foundation) are minimal and acceptable.
+	
+	\item It is assumed that Twitter is providing us with either the full extent of our search criteria, or if this is not the case, then the sample that is received is a representational slice of all data and is proportionally equivalent.
+	
+	\item It is assumed that information that users provide on twitter (name of their location in particular) is correct and relevant, and that those who do not are in the minority.
+	
+	\item Failing the above, it is assumed that of those who do provide location based information; their distribution is representative of the norm.
+	
+	\item It is assumed that the graphical solution provided can be rendered by any clients that access them.
+	
+	\item It is assumed that the datasets provided for the visualisation components will be small enough to be effectively transferred over the internet to browsers without error.
+	
+	\item It is acknowledged that demographics of the provided data are skewed (younger people more likely to use twitter, poorer South Africans less likely to use twitter).
+	
+	\item It is acknowledged that application software is not optimised extensively.
+\end{itemize}
+	\
+	\\
+	\
+\subsection {Technical Constraints}
+
+\begin{itemize}
+	\item \textbf{Twitter API:} Twitter only provided100 tweets per request and only allowed 450 tweets within a 15 minutes window.
+	\item GoogleAPI: Only 2500 requests were allowed in a day.
+\end{itemize}
+
+	
 	\section {Design Decisions}
 	
 	The table below details all the key design decisions made in the delivery of the solution:
@@ -395,13 +419,7 @@ The team made use of the following, online collaboration tools to meet their nee
 	
 	%-----------------------------------------------
 	
-	\section{Success Criteria} % Major section
-	
-	\begin{itemize}
-		\item Build a system that uses commodity hardware to solve for big data problems;
-		\item Provide a solution that covers the data sourcing, transformation and presentation of social media data from Twitter relating to the United States and South African elections. The end result must be visualization that provides insight to the sentiment of election candidates on Twitter.
-	\end{itemize}
-	
+
 	
 	
 	\section{Solution Design}
@@ -414,7 +432,7 @@ The team made use of the following, online collaboration tools to meet their nee
 	
 		\begin{itemize}
 			\item Acquiring data from Twitter based on topics subscription - Political Party sentiment in USA and RSA for 2016. This was achieved by using JEE for history and C\# for online data acquisition while persisting all data in MongoDB.
-			\item Data processing was achieved using Apache Spark with MapReduce algorithms developed in Scala. Data in MongoDB was extracted and FTP'd to our clustered infrastructure where all the necessary transformation happened.
+			\item Data processing was achieved using Apache Spark with MapReduce algorithms developed in Scala. Data in MongoDB was extracted and transfered via FTP to the clustered infrastructure where all the necessary transformation happened.
 			\item Extracts from the transformation process were sent to the presentation tier application in JSON format where node.js was used in conjunction with D3 chartz to render the visualized big data content on a web browser.
 		\end{itemize}
 	
@@ -429,13 +447,28 @@ The team made use of the following, online collaboration tools to meet their nee
 	
 	\subsubsection{Data Acquisition (Batch)}
 	
+	The historic data collection component is made up of two major services, namely, the Data Extraction Service and Data Distribution Service. These supports the 2 major use cases for history data collection component,i.e, data acquistion and distribution. The services model using public interfaces, packaged together in the API module. The interfaces are separated from the implementations to avoid tight coupling and there making it easy to swap implementations without impactinng the API users.\\
+	\\
+	The implementation components performs the actual extraction of the data by interacting with the Twitter REST API; in the process they perform authentication, retrieval of content, mapping the content from Twitter the application's Tweet entity and persisting  the data in Mongo. Similarly  for the distribution of data, the underlying classes handles the retrieval of data from MongoDB and distribute the data using FTP.\\
+	\\
+	The extraction service can be triggered using both REST interface and the Scheduler, whilst the distribution component can be triggered via the REST interface only.
+	
+	
 		\begin{figure}[H] % Example image
-			\center{\includegraphics[width=1.15\linewidth]{Batch}}
+			\center{\includegraphics[width=1.2\linewidth]{Batch}}
 			\caption{Component Model: Streaming Module}
 			\label{fig:speciation}
 		\end{figure}
 	
 	\subsubsection{Data Acquisition (Streaming)}
+	
+	Housed in the Application is a Stream Connection Manager, which manages connections to Twitter leveraging off of the 3rd Party Twitter API wrapper called TweetInvi.\\
+	\
+	\\
+	This Connection manager will generate a Twitter Message Handler which will respond to incoming tweets, validate location data with a location verifier component which will consolidate it (if necessary) with the Google Maps API. \\
+	\
+	\\
+	The Twitter Message Handler will then submit a Tweet object to the Database manager to persist it. An Extraction manager can subsequently be used to retrieve the tweets as necessary.
 	
 		\begin{figure}[H] % Example image
 			\center{\includegraphics[width=1.15\linewidth]{Streaming}}
@@ -445,11 +478,37 @@ The team made use of the following, online collaboration tools to meet their nee
 	
 	\subsubsection{Data Processing}
 	
+	
+	\textbf{Raspberry Pi Cluster - Driver Program:}
+	
+	\begin{itemize}
+		\item The program you write that creates an instance of a SparkContext.
+		\item  SparkContext then connects to the Cluster Manager which allocates resources across nodes for the application.
+		\item The SparkContext then acquires Executors on Worker Nodes in the cluster, which will run computations and store data for the application hosting the SparkContext.
+		\item Your application is then sent to the Executors, and then the Tasks that the Executors need to execute are sent through.
+		\item 	Executors can communicate with each other using peer-to-peer networking (like bit torrent), in order to transmit shared data (broadcast variables).
+		\item Once the Executors have completed their tasks, they communicate back to the Driver Program.
+		
+	\end{itemize}	
+	
 	\begin{figure}[H] % Example image
 		\center{\includegraphics[width=1.15\linewidth]{MapReduce}}
 		\caption{Context Diagram: Data Processing}
 		\label{fig:speciation}
 	\end{figure}
+	
+
+	\textbf{Application Flow (DAG):}
+	\\
+	\
+	\\
+	The twitter data is loaded from flat text files, mapped through various functions to strip irrelevant data and transform the text data into Tweet objects. The Tweet objects are then sorted by date. From there, filters are applied to the Tweet objects to only find Tweets for a particular category and hour of day. These results are then summed and reduced to a category count.
+	
+		\begin{figure}[H] % Example image
+			\center{\includegraphics[width=1.0\linewidth]{DAG}}
+			\caption{Application Flow}
+			\label{fig:speciation}
+		\end{figure}
 	
 	\subsubsection{Data Visualization}
 	
@@ -474,11 +533,37 @@ The team made use of the following, online collaboration tools to meet their nee
 	Linux’s Network File System (NFS) service was installed and enabled on the Raspberry Pi master node so the slaves in the Spark configuration could operate on a single source of data, with the least amount of memory overhead. When using HDFS, the RAM used by the slave nodes increased from 99MB to 125MB, and from 181MB to 206MB on the master node. In addition to extra RAM use, the time to upload the source data (1GB of plain text files) to HDFS took around 8 minutes, as the data was partitioned across all the data nodes within the cluster.
 	
 	
+	
+	
 		\begin{figure}[H] % Example image
 			\center{\includegraphics[width=1.15\linewidth]{OM1}}
 			\caption{Operational Model: Phyical}
 			\label{fig:speciation}
 		\end{figure}
+		
+	
+	\subsubsection {Raspberry Pi Configuration Sheet}
+
+	\begin{center}
+		\begin{tabular}{ | p{3cm} | p{3cm} | c | c | c |}
+			\hline
+			\textbf {Node Name} & \textbf {IP Address} & \textbf {Role} & \textbf {OS} & \textbf {Software}  \\
+			\hline
+			node01 & 192.168.1.200 & Master & Raspbian & Spark\\
+			\hline
+			node02 & 192.168.1.201 & Slave & Raspbian & Spark\\
+			\hline
+			node03 & 192.168.1.202 & Slave & Raspbian & Spark\\
+			\hline
+			node04 & 192.168.1.203 & Slave & Raspbian & Spark\\
+			\hline
+			node05 & 192.168.1.204 & Slave & Raspbian & Spark\\
+			\hline
+			dc-pi  & 192.168.1.101 & Web Server & Raspbian & Spark\\
+			\hline
+		\end{tabular}
+	\end{center}
+
 	
 	
 	\subsection{Possible Extensions}
@@ -537,8 +622,62 @@ The team made use of the following, online collaboration tools to meet their nee
 
 		
 	\end{thebibliography}
+	\newpage
 	
 	\section{Appendices}
+	
+	\subsubsection{Appendix A: Time Sheets}
+	
+	\begin{figure}[H] % Example image
+		\center{\includegraphics[width=1.15\linewidth]{Appendix-timesheets}}
+		\caption{Group Time Sheet}
+		\label{fig:speciation}
+	\end{figure}
+	
+	\newpage
+	
+	\subsection{Appendix B: Trello Boards}
+	
+	
+	\begin{figure}[H] % Example image
+		\center{\includegraphics[width=1.15\linewidth]{Appendix-trello}}
+		\caption{Trello Board: Project Management}
+		\label{fig:speciation}
+	\end{figure}
+	
+	\newpage
+	
+	\subsubsection{Appendix C: Slack Dashboard}
+	
+		
+	\begin{figure}[H] % Example image
+		\center{\includegraphics[width=1.15\linewidth]{Appendix-slack}}
+		\caption{Slack Board: Team Collaboration}
+		\label{fig:speciation}
+	\end{figure}
+		
+		\newpage
+	
+	\subsubsection{Appendix D: Git Repository Dashboard}
+	
+	\newpage
+	
+	\subsubsection{Appendix E: List of Technologies and Tools}
+	
+	 \begin{center}
+	 	\begin{tabular}{ | l | p{12cm} |}
+	 		\hline
+	 		%	\multicolumn{1}{ |l| }{Use Case ID:} & \multicolumn{3}{| l |}{UC01}\\
+	 		%	\hline
+	 		%	\multicolumn{1}{|l|}{Use Case Name:} & \multicolumn{3}{|p{13cm}|}{View Analytics Social Media Report overlaid on map background.}\\
+	 		%	\hline
+	 		Tool/ Technique & Usage Description \\
+	 		\hline
+	 		Trello & Mainly project task allocation to individual team members.\\
+	 		\hline
+	 	\end{tabular}
+	 \end{center}
+	 
 	
 	%----------------------------------------------------------------------------------------
 	
