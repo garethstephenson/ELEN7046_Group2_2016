@@ -1,0 +1,9 @@
+	ELEN7046 Group 2 team members hereby declare the following:
+		
+		\begin{itemize}
+			\item We are aware that plagiarism (the use of someone else’s work without their permission and/or without acknowledging the original source) is wrong.
+			\item We confirm that ALL the work submitted for assessment for the above course is our own unaided work except where we have explicitly indicated otherwise.
+			\item We have followed the required conventions in referencing the thoughts and ideas of others.
+			\item We understand that the University of the Witwatersrand may take disciplinary action against each one of us if there is a belief that this is not our own unaided work or that we have failed to acknowledge the source of the ideas or words in our writing.
+		\end{itemize}
+		
