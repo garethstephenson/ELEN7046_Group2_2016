@@ -1,18 +1,23 @@
-\contentsline {section}{\numberline {1}Introduction}{2}
-\contentsline {subsection}{\numberline {1.1}Problem Statement}{2}
-\contentsline {subsection}{\numberline {1.2}Solution Summary}{2}
-\contentsline {subsection}{\numberline {1.3}Approach}{2}
-\contentsline {section}{\numberline {2}Background}{2}
-\contentsline {subsection}{\numberline {2.1}Data Sourcing}{2}
-\contentsline {section}{\numberline {3}Lifecycle Methodology}{2}
-\contentsline {section}{\numberline {4}Requirements - Use Case Models}{3}
-\contentsline {subsection}{\numberline {4.1}View Elections Analytic Data}{3}
-\contentsline {subsection}{\numberline {4.2}Acquire Twitter Data}{5}
-\contentsline {section}{\numberline {5}Assumptions and Constraints}{8}
-\contentsline {section}{\numberline {6}Design Decisions}{8}
-\contentsline {section}{\numberline {7}Solution Design}{8}
-\contentsline {subsection}{\numberline {7.1}High Level Design: Component Architecture}{8}
-\contentsline {subsection}{\numberline {7.2}Solution Sequence Diagrams}{10}
-\contentsline {subsection}{\numberline {7.3}Operational Model: Infrastructure Design}{10}
-\contentsline {section}{\numberline {8}Conclusion}{11}
-\contentsline {section}{\numberline {9}Appendices}{12}
+\contentsline {section}{\numberline {1}Introduction}{4}
+\contentsline {subsection}{\numberline {1.1}Approach}{4}
+\contentsline {subsection}{\numberline {1.2}Background}{4}
+\contentsline {section}{\numberline {2}Lifecycle Methodology}{4}
+\contentsline {section}{\numberline {3}Assumptions and Constraints}{6}
+\contentsline {section}{\numberline {4}Design Decisions}{7}
+\contentsline {section}{\numberline {5}Requirements - Use Case Models}{7}
+\contentsline {subsection}{\numberline {5.1}View Elections Analytic Data}{7}
+\contentsline {subsection}{\numberline {5.2}Acquire Twitter Data}{9}
+\contentsline {section}{\numberline {6}Solution Design}{12}
+\contentsline {subsection}{\numberline {6.1}High Level Design: Component Architecture}{12}
+\contentsline {subsection}{\numberline {6.2}Operational Model: Infrastructure Design}{14}
+\contentsline {section}{\numberline {7}Conclusion}{15}
+\contentsline {section}{\numberline {8}Appendices}{17}
+\contentsline {subsection}{\numberline {8.1}Appendix A: Individual Time-Sheet}{17}
+\contentsline {subsection}{\numberline {8.2}Appendix B: Lifecycle Methodology}{17}
+\contentsline {subsubsection}{\numberline {8.2.1}Inception Phase}{17}
+\contentsline {subsubsection}{\numberline {8.2.2}Elaboration}{17}
+\contentsline {subsubsection}{\numberline {8.2.3}Construction}{17}
+\contentsline {subsubsection}{\numberline {8.2.4}Transition}{17}
+\contentsline {subsection}{\numberline {8.3}Appendix C: Non-Functional Requirements}{17}
+\contentsline {subsection}{\numberline {8.4}Appendix D: Solution Sequence Diagrams}{17}
+\contentsline {subsection}{\numberline {8.5}Appendix E: List of Tools and Techniques}{17}
