@@ -196,7 +196,7 @@ There is an abundance of big data available to individuals and companies with ve
 
 Commodity hardware is available to provide a means by which the barrier to entry for Big Data projects can be overcome. Simple, low cost components can be leveraged to address each of the parts of a big data processing solution, whether it be data sourcing, transormation, or visualization; and can be scaled according to needs or as required.
 
-\subsection{Approach}
+\subsection{Project Delivery Approach}
 
 As the team was not co-located, challenges around communication and general collaboration was raised before the first team meeting. 
 The team made use of the following, online collaboration tools to meet their needs as well as drive the project delivery:
@@ -240,75 +240,7 @@ The team made use of the following, online collaboration tools to meet their nee
 	\\
 	Apache Spark was used for this project together with MapReduce which in the main delivers the MapReduce functionality based on the algorithm that is broken down into the Mapper class and the Reducer class[3].\\
 	
-	The Apache Spark cluster computing framework runs the MapReduce algorithm across all the nodes within the Raspberry Pi network, allowing for fast and efficient querying and transformation of raw data into meaningful information.\\
-	\\
-	
-	
-
-		%--Where they come from
-		%--What they currently do
-		%--General experience
-	
-	%Example citation \cite{Figueredo:2009dg}.
-	
-	%------------------------------------------------
-	
-	%\subsection{Description of Acronyms} % Sub-section
-	
-	%IS - Information Systems \\
-	
-	%------------------------------------------------
-	%Sample image for future reference (image to be taken out)
-	%\begin{figure}[H] % Example image
-	%\center{\includegraphics[width=0.5\linewidth]{placeholder}}
-	%\caption{Example image.}
-	%\label{fig:speciation}
-	%\end{figure}
-	
-	%------------------------------------------------
-	%-------------
-	%	MAJOR SECTION 1
-	%----------------------------------------------------------------------------------------
-	
-	%\section{Problem Statement}
-	
-	
-	
-	%\subsection{Executive Summary} % --optional
-	
-	%------------------------------------------------
-	
-%	\subsection{Data Collection}
-	%--Where they come from
-	%--What they currently do
-	%--General experience
-	
-	
-	
-	%------------------------------------------------
-	
-%	\subsection{Data Processing}
-	
-
-
-	%--Risk categories SP03
-	
-%	\subsubsection{Cost and Schedule}
-	
-	
-	
-	%--Earn Value Management SP01
-	
-	
-	%--Earn Value Management SP01
-	
-%	\subsection{Data Visualization}
-	
-
-	%--Summary of the above
-	%--Kill project/replace project manager/continue project???
-	
-	%------------------------------------------------
+	The Apache Spark cluster computing framework runs the MapReduce algorithm across all the nodes within the Raspberry Pi network, allowing for fast and efficient querying and transformation of raw data into meaningful information.
 	
 		\section{Success Criteria} % Major section
 		
@@ -351,7 +283,7 @@ The team made use of the following, online collaboration tools to meet their nee
 
 %	\subsubsection{Cost \& Schedule}
 	
-
+\section{Key Risks}
 	
 	%\subsection{xxx}
 	\section{Assumptions and Constraints}
@@ -379,14 +311,13 @@ The team made use of the following, online collaboration tools to meet their nee
 	
 	\item It is acknowledged that application software is not optimised extensively.
 \end{itemize}
-	\
-	\\
-	\
+
 \subsection {Technical Constraints}
 
 \begin{itemize}
 	\item \textbf{Twitter API:} Twitter only provided100 tweets per request and only allowed 450 tweets within a 15 minutes window.
-	\item GoogleAPI: Only 2500 requests were allowed in a day.
+	\item \textbf{GoogleAPI:} Google has a restriction that only allows 2500 requests   per day.
+	\item \textbf{Hardware:} Slow I/O processing due to cheaper storage (SD Card), limited physical space that could only accommodate just over 1,5 million tweets as well as limited RAM on the Raspberry Pi's.
 \end{itemize}
 
 	
@@ -401,29 +332,12 @@ The team made use of the following, online collaboration tools to meet their nee
 	This interface provides for all subscribed data in real-time starting from now and going into the future.
 	
 	\item \textbf{GoogleMaps:} 
-	Tweet location was derived from the co-ordinates found in a tweet where the person tweeting enabled location services on their device to provide current location information. Where privacy settings were not enabled for current location, an interface to GoogleMaps was developed to read the location information of the person tweeting from their Twitter profile and resolve this to actual co-ordinates.
+	 Where privacy settings were not enabled for current location, an interface to GoogleMaps was developed to read the location information of the person tweeting from their Twitter profile and resolve this to actual co-ordinates.
 	
 	\item \textbf{Security Directive(s):} 
 	It was decided that where security is concerned, only the Twitter and GoogleMaps security requirements be adhered to where integration is concerned. All data acquired from Twitter is data that is already in the public domain, therefore no effort was required to secure the data while in transit, hence the use of only FTP instead of a lot more secure transport mechanism.
 \end{itemize}
 	
-	
-	
-	%\subsection{Explanation Summary} %--optional
-
-	%------------------------------------------------
-	
-	%--Earn Value Management 
-	
-	
-	%--Summary of the above
-	%--Kill project/replace project manager/continue project???
-
-	
-	
-	%-----------------------------------------------
-	
-
 	
 	
 	\section{Solution Design}
@@ -449,7 +363,7 @@ The team made use of the following, online collaboration tools to meet their nee
 	
 	\subsection{Detailed Designs}
 	
-	\subsubsection{Data Acquisition (Batch)}
+	\subsubsection{Data Acquisition (History)}
 	
 	The historic data collection component is made up of two major services, namely, the Data Extraction Service and Data Distribution Service. These supports the 2 major use cases for history data collection component,i.e, data acquistion and distribution. The services model using public interfaces, packaged together in the API module. The interfaces are separated from the implementations to avoid tight coupling and there making it easy to swap implementations without impactinng the API users.\\
 	\\
@@ -460,7 +374,7 @@ The team made use of the following, online collaboration tools to meet their nee
 	
 		\begin{figure}[H] % Example image
 			\center{\includegraphics[width=1.2\linewidth]{Batch}}
-			\caption{Component Model: Streaming Module}
+			\caption{Component Model: History}
 			\label{fig:speciation}
 		\end{figure}
 	
@@ -476,7 +390,7 @@ The team made use of the following, online collaboration tools to meet their nee
 	
 		\begin{figure}[H] % Example image
 			\center{\includegraphics[width=1.15\linewidth]{Streaming}}
-			\caption{Component Model: Streaming Module}
+			\caption{Component Model: Streaming}
 			\label{fig:speciation}
 		\end{figure}
 	
@@ -563,12 +477,12 @@ The team made use of the following, online collaboration tools to meet their nee
 			\hline
 			node05 & 192.168.1.204 & Slave & Raspbian & Spark\\
 			\hline
-			dc-pi  & 192.168.1.101 & Web Server & Raspbian & Spark\\
+			dc-pi  & 192.168.1.101 & Web Server & Raspbian & Node.JS\\
 			\hline
 		\end{tabular}
 	\end{center}
 
-	
+	\subsection{Testing Approach}
 	
 	\subsection{Possible Extensions}
 	
@@ -601,14 +515,7 @@ The team made use of the following, online collaboration tools to meet their nee
 	
 	\section{Conclusion} % Major section
 	
-	All this hardware and software is available to anybody interested in Big Data processing.\\
-	
-	The hardware is cheap and the software is free.\
-	
-	The learning curve in the beginning can be quite steep but is ultimately very rewarding in terms of what can be achieved with so little financial investment.
-	
-	
-	
+	To conclude, Big Data is a resource that no longer needs to be confined to large enterprise processing or expensive computing facilities. There are means by which big data harvesting, transformation and visualisation can be performed using smaller scale endeavours, using open source software and low cost commodity hardware. This conclusion was reached by demonstrating the implementation of low cost hardware and open source software to build a system capable of sourcing tweet data from twitter, transforming the data and providing visualisations that help discern meaningful information about American and South African election trends.
 	
 	\newpage
 	
@@ -630,7 +537,7 @@ The team made use of the following, online collaboration tools to meet their nee
 	
 	\section{Appendices}
 	
-	\subsubsection{Appendix A: Time Sheets}
+	\subsection{Appendix A: Time Sheets}
 	
 	\begin{figure}[H] % Example image
 		\center{\includegraphics[width=1.15\linewidth]{Appendix-timesheets}}
@@ -640,7 +547,7 @@ The team made use of the following, online collaboration tools to meet their nee
 	
 	\newpage
 	
-	\subsection{Appendix B: Trello Boards}
+	\subsection{Appendix B: Trello Board}
 	
 	
 	\begin{figure}[H] % Example image
@@ -651,34 +558,74 @@ The team made use of the following, online collaboration tools to meet their nee
 	
 	\newpage
 	
-	\subsubsection{Appendix C: Slack Dashboard}
+	\subsection{Appendix C: Slack Dashboard}
 	
 		
 	\begin{figure}[H] % Example image
 		\center{\includegraphics[width=1.15\linewidth]{Appendix-slack}}
-		\caption{Slack Board: Team Collaboration}
+		\caption{Slack: Team Collaboration}
 		\label{fig:speciation}
 	\end{figure}
 		
 		\newpage
 	
-	\subsubsection{Appendix D: Git Repository Dashboard}
+	\subsection{Appendix D: Git Repository}
 	
 	\newpage
 	
-	\subsubsection{Appendix E: List of Technologies and Tools}
+	\subsection{Appendix E: List of Technologies and Tools}
 	
 	 \begin{center}
-	 	\begin{tabular}{ | l | p{12cm} |}
+	 	\begin{tabular}{ | p{3.5cm} | p{12cm} |}
 	 		\hline
 	 		%	\multicolumn{1}{ |l| }{Use Case ID:} & \multicolumn{3}{| l |}{UC01}\\
 	 		%	\hline
 	 		%	\multicolumn{1}{|l|}{Use Case Name:} & \multicolumn{3}{|p{13cm}|}{View Analytics Social Media Report overlaid on map background.}\\
 	 		%	\hline
-	 		Tool/ Technique & Usage Description \\
+	 		\textbf{Tool/ Technique} & \textbf{Usage Description} \\
 	 		\hline
 	 		Trello & Mainly project task allocation to individual team members.\\
 	 		\hline
+	 		Github & Source control and documentation repository. Also used for online document editing and collaboration.\\
+	 		\hline
+	 		Slack & Used for online collaboration and communication.\\
+	 		\hline
+	 		WhatsApp & Used for daily communication with project team members.\\
+	 		\hline
+	 		Hangouts & Used for online meetings and video conferencing.\\
+	 		\hline
+	 		Rational Software Architect & Used for architecture deliverables such as Use Cases, Component Models and Sequence Diagrams.\\
+	 		\hline
+	 		MS Visio & Used for modeling infrastructure deliverables and visualization component model.\\
+	 		\hline
+	 		MS PowerPoint & Project presentation.\\
+	 		\hline
+		 	MS Word & Documentation of Individual Reports.\\
+		 	\hline
+		 	TeXstudio & Group Report construction and online collaboration.\\
+		 	\hline
+		 	.net C\# Framework version 4.5.2 & Object Oriented Language developed by Microsoft.\\
+		 	\hline
+		 	Visual Studio Community 2015 & IDE for .net built by Microsoft.\\
+		 	\hline
+		 	TweetInvi version 0.9.14 & Third Party Wrapper for Twitter.\\
+		 	\hline
+		 	Mongo DB & Database solution for Persistence.\\
+		 	\hline
+		 	Mongo DB Driver version 2.2.4 & .net Driver for Mongo DB.\\
+		 	\hline
+		 	Apache Spark 1.6.1 & \\
+		 	\hline
+		 	Scala 2.10 & \\
+		 	\hline
+		 	SBT package manager & \\
+		 	\hline
+		 	JAVA 8 SDK & \\
+		 	\hline
+		 	IntellijIDE 2016 & \\
+		 	\hline
+		 	Raspbian Linux & \\
+		 	\hline
 	 	\end{tabular}
 	 \end{center}
 	 
