@@ -272,16 +272,32 @@ Commodity hardware is available to provide a means by which the barrier to entry
 	%\subsection{xxx}
 	\section{Assumptions and Constraints}
 	
-		\subsection{Tweet Locations}
-		The group encountered tweet location issues. \\
-		\subsection{Pros and Cons determinations}
-		Rudimentary algorithm for determining Twitter statements (tweets) that are against or for a particular candidate was adopted... \\
+	Early ideas in the project were based on the Twitter location data; for example, in the inception one of the project the first idea was to visualise the world's reaction to Oscar Pistorious' murder accussation over the world map. Given this idea, the location at which each Twitter postings (tweets) were made was paramount to the success of that idea. Unfortunately due the amount of Twitter data found on this subject, the team decided it was not big enough to qualify as Big Data. The project then decided to rather visualise the currently most topical of subjects, the upcoming United States general elections and also the upcoming South African municipal elections. The idea of using locations where tweets were posted stuck with the project. 
+	\\
+	\\
+	However, during the data collection exercise it was discovered that most of the Twitter posts (tweets) had no location data attached to them. It turns out most Twitter users disable their GPS sensor for the Twitter application, presumably for security and privacy reasons. This meant the project would collect data that did not have locations and that would sabotage ideas of visualising data based on locations. After a further analysis on the Twitter data that can be collected, the team came to a realisation that Twitter users have profile location data specified as a free text. As a workaround the user profile location was collected alongside the tweets. Therefore each tweet that did not have a location, the user profile location data was associated with that tweeet.The assumption being made by the project was that location of each tweet is the same as that of the user's profile. The project acknowledges that if the user's GPS sensor is turned on, profile location may not necessarily be the same as the location at which the tweet would be posted.
+	\\
+	\\
+	Both Twitter and Google API have usage limits which presented a constraint to the project. Twitter search API allows returns 100 tweets per request and allows only 450 requests per 15 minute window [1]. Only 2500 requests per day are allowed by the standard Google Maps Geocoding API [2].\\
+	\\
+	%Assumptions - Kyle
+		We assume a rudimentary algorithm for sentiment assessment is "Good Enough", forgoing complex natural language inference.\\
+		We assume that any incidental tweets sourced (such as EFF = Electronic Freedom Foundation) are minimal and acceptable.\\
+		We assume that Twitter is providing us with either the full extent of our search criteria, or if this is not the case, then the sample we receive is a representational slice.\\
+		We assume information that users provide on twitter (name of their location in particular) is correct and relevant, and that those who do not are in the minority.\\
+		Failing the above, we assume that of those who do provide location based information, their distribution is representative of the norm.\\
+		We acknowledge that our demographics are skewed (younger people more likely to use twitter, poorer South Africans less likely to use twitter).\\
+		We acknowledge that application software is not flawlessly optimised.
+		
 	
+		%\subsection{Tweet Locations}
+	%	The group encountered tweet location issues. \\
+		\subsection{Pros and Cons determinations}
+		Rudimentary algorithm for determining Twitter statements (tweets) that are against or for a particular candidate was adopted... 
 	%------------------------------------------------
 	\section {Design Decisions}
 	
-	The table below details all the key design decision made in the delivery of the solution:
-	\\
+	The table below details all the key design decisions made in the delivery of the solution:
 	
 \begin{itemize} 
 	\item \textbf{History Data:} History data/ batch interface to Twitter was designed to provide past data subscribed to based on date range.
@@ -324,6 +340,16 @@ Commodity hardware is available to provide a means by which the barrier to entry
 	\section{Solution Design}
 		
 	\subsection{High Level Design: Component Architecture}
+	The high level component model below depicts the key features of the solution delivered for the project.
+	\\
+	\\
+	This design can be categorised into the following three features from a functionality point of view:
+	
+		\begin{itemize}
+			\item Acquiring data from Twitter based on topics subscription - Political Party sentiment in USA and RSA for 2016. This was achieved by using JEE for history and C\# for online data acquisition while persisting all data in MongoDB.
+			\item Data processing was achieved using Apache Spark with MapReduce algorithms developed in Scala. Data in MongoDB was extracted and FTP'd to our clustered infrastructure where all the necessary transformation happened.
+			\item Extracts from the transformation process were sent to the presentation tier application in JSON format where node.js was used in conjunction with D3 chartz to render the visualized big data content on a web browser.
+		\end{itemize}
 	
 	
 		\begin{figure}[H] % Example image
@@ -360,7 +386,26 @@ Commodity hardware is available to provide a means by which the barrier to entry
 	
 	\subsubsection{Data Visualization}
 	
+	The Visual component implements the MVC pattern to separate the View and controlling logic from the Data. This allows for the data components to be develop separately from the Views. Between the Views and Data Models where Controllers responsible to load the views based on the set configuration and provide the views with the required data model.\\
+	\\
+	The Data Visualisation component was designed to be agnostic of the content and allows for comparison of categories in a topic agnostic of the topic or categories.
+	All charts were design to be scalable. All graphs will render as the view point change allowing for a pleasant user experience.
+	
+	
+		\begin{figure}[H] % Example image
+			\center{\includegraphics[width=1.15\linewidth]{Visual}}
+			\caption{Visualization: MVC Framework}
+			\label{fig:speciation}
+		\end{figure}
+	
 	\subsection{Operational Model: Infrastructure Design}
+	
+	The Raspberry Pi environment is limited in system resources, specifically RAM. It only has 1GB of RAM which is partitioned for use between the system (accessible by the user) and the GPU.\\
+	\\
+	The Raspberry Pi’s were configured with the least amount of RAM for the GPU (16MB), leaving the remaining space available for user applications. They were not going to run any sort of GUI or windowing system (like the X Window System), so any larger allocation of RAM for GPU use was unnecessary.
+	The Raspbian Linux operating system (OS) was installed on the Raspberry Pi’s, as it has been tailored to best utilise the hardware’s resources and features. Further configuration was done on the OS to disable the daemons responsible for controlling the on-board Bluetooth and Wi-Fi modules, thus freeing up even more available RAM.
+	Linux’s Network File System (NFS) service was installed and enabled on the Raspberry Pi master node so the slaves in the Spark configuration could operate on a single source of data, with the least amount of memory overhead. When using HDFS, the RAM used by the slave nodes increased from 99MB to 125MB, and from 181MB to 206MB on the master node. In addition to extra RAM use, the time to upload the source data (1GB of plain text files) to HDFS took around 8 minutes, as the data was partitioned across all the data nodes within the cluster.
+	
 	
 		\begin{figure}[H] % Example image
 			\center{\includegraphics[width=1.15\linewidth]{OM1}}
@@ -370,6 +415,15 @@ Commodity hardware is available to provide a means by which the barrier to entry
 	
 	
 	\subsection{Possible Extensions}
+	
+	The project used only Twitter as the Big Data source. According to Statista[6], in April 2016 Facebook ranked number one with 1 590 millions of active users, while Twitter recorded 320 millions of active users. Other social media networking sites that were ranked included Integram, WhatApp, WeChat and LinkedIn among others. Most the social networking service provides an API retrieve social media messages or posts. The project chose Twitter as the data source because Twitter's API seemed to be easier to work with. Due to lack of time only one data source was choosen. One of the possible extension in the project lies on the data collection component. The 2 sub-components can be enhanced to support other social media platforms as the data providers.
+	\\
+	\\
+	Other potential extensions to the solution include developing a smart-phone/ tablet App to make the same sort of analytics reports available to a category of user that is always on the move.
+	\\
+	\\
+	The system itself can in future be hooked into LDAP in order to better control user access and security from a central point as well as ease of provision for new users.
+	
 	%\subsection{Explanation Summary} %--optional
 	
 	% Risk - large project given to a small company that is running a core part of the company's systems.
@@ -385,13 +439,6 @@ Commodity hardware is available to provide a means by which the barrier to entry
 	%	\label{fig:speciation}
 	%\end{figure}
 	
-	
-	
-	\begin{itemize} 
-		\item \textbf{Personnel Shortfall:} Inexperience in the management team is a potential risk, due to the possible oversight and inaccuracies . Leach does not have sufficient IS Management experience\textit{(pg 502 paragraph 4)}, the project may suffer if leach continues
-		at his current position 
-		
-	\end{itemize}
 	%----------------------------------------------------------------------------------------
 	%	CONCLUSION
 	%----------------------------------------------------------------------------------------
