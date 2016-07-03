@@ -5,6 +5,7 @@
 \contentsline {section}{\numberline {2}Literature Review}{6}
 \contentsline {subsection}{\numberline {2.1}Data Sourcing}{6}
 \contentsline {subsection}{\numberline {2.2}Big Data Processing Algorithm}{6}
+\contentsline {subsection}{\numberline {2.3}Data Visualization}{7}
 \contentsline {section}{\numberline {3}Success Criteria}{7}
 \contentsline {section}{\numberline {4}Lifecycle Methodology}{7}
 \contentsline {section}{\numberline {5}Key Risks}{8}
