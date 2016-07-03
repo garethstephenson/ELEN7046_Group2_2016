@@ -154,7 +154,7 @@
 		% Abstract
 		\begin{flushleft}\large
 			\textsc{Abstract}\\
-			The project aims to provide a low cost solution to big data processing problems, enabling a commercially viable option to individuals, small businesses and academia using commodity hardware. This report explores the use of  Open Source technologies Apache Spark and Scala as well as the low cost and scalable Raspberry Pi's. After building a prototype system to source, process and visualize data from twitter, it was concluded that  commodity hardware is a viable small-scale solution to working with Big Data.
+			The project aims to provide a low cost solution to big data processing problems, enabling a commercially viable option to individuals, small businesses and academia using commodity hardware. This report explores the use of  Open Source technologies Apache Spark and Scala as well as the low cost and scalable Raspberry Pi's. After building a prototype system to source, process and visualize data from Twitter, it was concluded that  commodity hardware is a viable small-scale solution to working with Big Data.
 			
 		\end{flushleft}
 	
@@ -383,9 +383,11 @@ Below is the list of the Key Risks that the project team identified at the start
 	
 	\subsubsection{Data Acquisition (History)}
 	
-	The historic data collection component is made up of two major services, namely, the Data Extraction Service and Data Distribution Service. These supports the two major use cases for history data collection component,i.e, data acquistion and distribution. The services model using public interfaces, packaged together in the API module. The interfaces are separated from the implementations to avoid tight coupling and there making it easy to swap implementations without impactinng the API users.\\
+	The historic data collection component is made up of two major services, namely, Data Extraction Service and Data Distribution Service. These supports the two major use cases for history data collection component, i.e. data acquisition and distribution. The services were modelled using public interfaces, packaged together in the API module. The interfaces are separated from the implementations to avoid tight coupling and thereby making it easy to swap implementations without impacting the API users.
 	\\
-	The implementation components perform the actual extraction of the data by interacting with the Twitter REST API; in the process they perform authentication, retrieval of content, mapping the content from Twitter the application's Tweet entity and persisting  the data in Mongo. Similarly  for the distribution of data, the underlying classes handles the retrieval of data from MongoDB and distribute the data using FTP.\\
+	\\
+	The implementation components perform the actual extraction of the data by interacting with the Twitter REST API; in the process they perform authentication, retrieval of content, mapping the content from Twitter to the application’s Tweet entity and persisting the data in MongoDB. Similarly for the distribution of data, the underlying classes handle the retrieval of data from MongoDB and distribute the data using FTP.
+	\\
 	\\
 	The extraction service can be triggered using both the REST interface and the Scheduler, whilst the distribution component can be triggered via the REST interface only.
 	
@@ -512,7 +514,7 @@ Below is the list of the Key Risks that the project team identified at the start
 	
 	\subsection{Possible Extensions}
 	
-	The project used only Twitter as the Big Data source. According to Statista[7], in April 2016 Facebook ranked number one with 1 590 millions of active users, while Twitter recorded 320 millions of active users. Other social media networking sites that were ranked included Integram, WhatApp, WeChat and LinkedIn among others. Most the social networking service provides an API retrieve social media messages or posts. The project chose Twitter as the data source because Twitter's API seemed to be easier to work with. Due to lack of time only one data source was choosen. One of the possible extension in the project lies on the data collection component. The 2 sub-components can be enhanced to support other social media platforms as the data providers.
+	The project used only Twitter as the Big Data source. According to Statista [7], in April 2016 Facebook ranked number one with 1 590 millions of active users, while Twitter recorded 320 millions of active users. Other social media networking platform ranked included Intagram, WhatsApp, WeChat and LinkedIn among others. Most the social networking service provides an API to retrieve social media messages or posts. The project chose Twitter as the data source because Twitter’s API seemed to be easier to work with. Due to lack of time only one data source was chosen. One of the possible extension in the project lies on the data collection component. The two sub-components can be enhanced to support other social media platforms as the data providers.
 	\\
 	\\
 	Other potential extensions to the solution include developing a smart-phone/ tablet App to make the same sort of analytics reports available to a category of user that is always on the move.
@@ -585,7 +587,7 @@ Below is the list of the Key Risks that the project team identified at the start
 	\subsection{Appendix A: Time Sheets}
 	
 	\begin{figure}[H] % Example image
-		\center{\includegraphics[width=1.15\linewidth]{Appendix-timesheets}}
+		\center{\includegraphics[width=1.7\linewidth]{Appendix-timesheets}}
 		\caption{Group Time Sheet}
 		\label{fig:speciation}
 	\end{figure}
