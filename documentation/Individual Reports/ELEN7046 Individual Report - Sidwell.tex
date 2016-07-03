@@ -141,6 +141,9 @@
 	% Abstract
 	\begin{flushleft}\large
 		\textsc{Abstract}\\
+		
+		The project shall be delivered by firstly trying to understand the requirements and modeling them into a set of Use-Cases which can then be used to direct the project from analysis to design, development, validation and verification, and benefits tracking once the system is taken into production and starts adding value to its end-users.
+		
 	%	XXXX.
 		
 	\end{flushleft}
@@ -178,9 +181,8 @@ Deliverables covered in this topic are in the main architectural in nature with 
 
 % XXX
 
-\subsection{Approach}
+%\subsection{Approach}
 
-The project shall be delivered by firstly trying to understand the requirements and modeling them into a set of Use-Cases which can then be used to direct the project from analysis to design, development, validation and verification, and benefits tracking once the system is taken into production and starts adding value to its end-users.
 
 %\subsubsection{Methodology}
 	
@@ -455,41 +457,146 @@ The project shall be delivered by firstly trying to understand the requirements 
 	
 	\begin{thebibliography}{99} % Bibliography - this is intentionally simple in this template
 		
-		\bibitem 1. S. Madam. From Databases to Big Data. IEEE Computer Society, 2012.
-	
-		%\newblock 
-		
-		\bibitem 2. V. Kumar, R. Yuvaraj, C. Anusha. Effective Distribution of Large Scale Datasets Clustering Based on MapReduce. 2016.
+		\bibitem 1 IBM Rational Unified Process, Best Practices for Software Development Teams.
 
-		
 	\end{thebibliography}
+	
+	\newpage
 	
 	\section{Appendices}
 	
 	\subsection{Appendix A: Individual Time-Sheet}
+	
+	\newpage
 		
 	\subsection{Appendix B: Lifecycle Methodology}
 	
 	\subsubsection{Inception Phase}
 	
+			\begin{figure}[H] % Example image
+				\center{\includegraphics[width=1.17\linewidth]{Inception}}
+				\caption{RUP Tailoring - Inception Phase}
+				\label{fig:speciation}
+			\end{figure}
+			
+	\newpage
+	
 	\subsubsection{Elaboration}
+	
+	\begin{figure}[H] % Example image
+		\center{\includegraphics[width=1.17\linewidth]{Elaboration}}
+		\caption{RUP Tailoring - Elaboration Phase}
+		\label{fig:speciation}
+	\end{figure}
+	
+	\newpage
 	
 	\subsubsection{Construction}
 	
-	\subsubsection{Transition}
-	
-	\subsection{Appendix C: Non-Functional Requirements}
-	
-	\subsection{Appendix D: Solution Sequence Diagrams}
-		
 		\begin{figure}[H] % Example image
-			\center{\includegraphics[width=1.15\linewidth]{SD_JEE}}
-			\caption{Sequence Diagram: Data Integration - History}
+			\center{\includegraphics[width=1.17\linewidth]{Construction}}
+			\caption{RUP Tailoring - Construction Phase}
 			\label{fig:speciation}
 		\end{figure}
 		
+		\newpage
+	
+	\subsubsection{Transition}
+	
+			\begin{figure}[H] % Example image
+				\center{\includegraphics[width=1.17\linewidth]{Transition}}
+				\caption{RUP Tailoring - Transition Phase}
+				\label{fig:speciation}
+			\end{figure}
+			
+			\newpage
+	
+	\subsection{Appendix C: Non-Functional Requirements}
+	
+	\textbf{Disaster Recovery (Recovery Time Objective):}
+	
+	\begin{itemize}
+		\item This solution has no requirement for shorter time to recover, therefore 24 hrs is acceptable in order to recover the system following a failure.
+	\end{itemize}
+	
+	\textbf{Disaster Recovery (Recovery Point Objective):}
+	
+	\begin{itemize}
+		\item This solution has a much higher tolerance to risk of loosing data as the Twitter History interface can always be used to recover all lost data within a certain date range, provided the Twitter user(s) did not remove it.
+	\end{itemize}
+	
+	\textbf{Initial number of users:}
+	
+	\begin{itemize}
+		\item This solution is designed with not more than 10 users in mind, of which less than 5 will log in concurrently to use the system.
+	\end{itemize}
+	
+		\textbf{Transaction Response Times - Analytics:}
+		
+		\begin{itemize}
+			\item During big data processing for reports and dashboards, the system user shall not wait for a period exceeding 38 minutes for his/ her report to be completed by the cluster.
+		\end{itemize}
+	
+		\textbf{Archiving:}
+		
+		\begin{itemize}
+			\item No requirement exists for data archiving as most of the data can be recovered from Twitter directly.
+		\end{itemize}
+		
+		\textbf{Volumes:}
+			
+		\begin{itemize}
+			\item The system is expected to be able to handle between 1.5m and 1.6m tweets due to limited storage availability on Raspberry Pi cluster.
+		\end{itemize}
+	
+		\textbf{Batch and Maintenance Slot:}
+		
+		\begin{itemize}
+			\item It is envisaged that maintenance work on the system will only be allowed between 1am and 4am on weekends, while extracts will run between 12:30am and 1:45am daily.
+		\end{itemize}
+	
+	\newpage
+	
+	\subsection{Appendix D: Key Solution Sequence Diagram}
+		
+		\begin{figure}[H] % Example image
+			\center{\includegraphics[width=1.15\linewidth]{TwitterInt}}
+			\caption{Sequence Diagram: Integration Flow}
+			\label{fig:speciation}
+		\end{figure}
+		
+	\newpage
+		
 	\subsection{Appendix E: List of Tools and Techniques}
+
+\begin{center}
+	\begin{tabular}{ | p{3.5cm} | p{12cm} |}
+		\hline
+		\textbf{Tool/ Technique} & \textbf{Usage Description} \\
+		\hline
+		Trello & Mainly project task allocation to individual team members.\\
+		\hline
+		Github & Source control and documentation repository. Also used for online document editing and collaboration.\\
+		\hline
+		Slack & Used for online collaboration and communication.\\
+		\hline
+		WhatsApp & Used for daily communication with project team members.\\
+		\hline
+		Hangouts & Used for online meetings and video conferencing.\\
+		\hline
+		Rational Software Architect & Used for architecture deliverables such as Use Cases, Component Models and Sequence Diagrams.\\
+		\hline
+		MS Visio & Used for modeling infrastructure deliverables and visualization component model.\\
+		\hline
+		MS PowerPoint & Project presentation.\\
+		\hline
+		MS Word & Documentation of Individual Reports.\\
+		\hline
+		TeXstudio & Group Report construction and online collaboration.\\
+		\hline
+
+	\end{tabular}
+\end{center}
 	
-	%----------------------------------------------------------------------------------------
-	
+
 \end{document}
