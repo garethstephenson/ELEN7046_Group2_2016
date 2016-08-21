@@ -1,13 +1,13 @@
 package org.TwitConPro.JsonFormats
 
-import java.time.ZonedDateTime
+import java.time.{Instant, ZonedDateTime}
 
 /**
   * Created by Gareth on 2016/06/11.
   */
 case class Tweet(_id: Option[String],
                  createdBy: String,
-                 createdAt: ZonedDateTime,
+                 createdAt: Instant,
                  coords: Array[Either[String, Double]],
                  favouriteCount: Int,
                  hashtags: Array[Either[HashTag, String]],

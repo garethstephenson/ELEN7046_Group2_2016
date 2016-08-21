@@ -1,8 +1,6 @@
 package org.TwitConPro
 
 import java.io._
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
 
 import org.TwitConPro.JsonFormats._
 import org.TwitConPro.JsonProtocols.TweetJsonProtocol._
@@ -45,7 +43,6 @@ object CategoryCountPerHour {
         sparkConfig.setAppName(s"Category Count Per Hour [$fileName]")
 
         val sparkContext = new SparkContext(sparkConfig)
-        sparkContext.defaultMinPartitions
 
         var numPartitions: Int = sparkContext.defaultMinPartitions
         if (args.length > 2) {
@@ -54,50 +51,41 @@ object CategoryCountPerHour {
 
         printSettings(inputPath, categories, numPartitions)
 
-        import ZonedDateTimeSort._
+        import InstantDateTimeSort._
+
         val tweets = sparkContext
             .textFile(inputPath, numPartitions)
             .map(stripConstructors(Array("ObjectId", "ISODate", "NumberLong"), _))
             .map(_.parseJson.convertTo[Tweet])
-            //.sortBy(tweets => tweets.createdAt)
-
-        val YearMonthDayHourFormat: String = "yyyy-MM-dd'T'HH:00:00'Z'"
-        val dates = tweets
-            .map(tweet => {
-                val formatter = DateTimeFormatter.ofPattern(YearMonthDayHourFormat) // Convert to same hour date
-                ZonedDateTime.parse(tweet.createdAt.format(formatter))
+            .map(tweet => (tweet.createdAt, tweet.tweetText))
+            .flatMap(tuple => {
+                categories.map(category => {
+                    if (tuple._2.contains(category))
+                        ((tuple._1, category), 1)
+                    else
+                        ((tuple._1, category), 0)
+                })
             })
-            .distinct // Reduce to unique hourly times
-            .sortBy(date => date)
+            .collect()
+
+        val rddTweets = sparkContext
+            .parallelize(tweets, numPartitions)
+            .reduceByKey(_ + _)
+            .map(x => (x._1._1, new CategoryCount(x._1._2, x._2)))
+
+        val result = rddTweets
+            .groupBy(x => x._1)
+            .map(x => {
+                val categoryCounts = new ListBuffer[CategoryCount]
+                categoryCounts.appendAll(x._2.map(y => y._2))
+                new CategoryCountContainer(x._1, categoryCounts.toList)
+            })
+            .sortBy(x => x.Date)
             .collect
 
-        val containers: ListBuffer[CategoryCountContainer] = new ListBuffer[CategoryCountContainer]
-        dates.foreach(date => {
-
-            val tweetsByHour = tweets
-                .filter(tweet => {
-                    val formatter = DateTimeFormatter.ofPattern(YearMonthDayHourFormat) // Convert to same hour date
-                    val parsedDate = ZonedDateTime.parse(tweet.createdAt.format(formatter))
-                    date.equals(parsedDate)
-                })
-                //.collect
-
-            val results = categories
-                .map(category => tweetsByHour // For each hour
-                    .filter(tweet => tweet.tweetText.contains(category))
-                    .map(tweet => (category, 1))
-                    .reduceByKey(_ + _)
-                    .collect)
-                .flatMap(x => x)
-
-            val categoryCounts: ListBuffer[CategoryCount] = new ListBuffer[CategoryCount]
-            categoryCounts.appendAll(results.map(result => new CategoryCount(result._1, result._2)))
-
-            containers += new CategoryCountContainer(date, categoryCounts.toList)
-        })
         sparkContext.stop
 
-        val output = new CategoryCountPerIntervalOutput(containers.toList)
+        val output = new CategoryCountPerIntervalOutput(result.toList)
         writeToFile(output.container.toJson.toString, s"$inputPath.results.json")
     }
 

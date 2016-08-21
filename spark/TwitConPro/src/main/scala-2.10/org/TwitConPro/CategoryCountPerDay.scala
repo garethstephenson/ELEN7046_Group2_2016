@@ -1,7 +1,7 @@
 package org.TwitConPro
 
 import java.io.{File, PrintWriter}
-import java.time.ZonedDateTime
+import java.time.{Instant, ZonedDateTime}
 import java.time.format.DateTimeFormatter
 
 import org.TwitConPro.JsonFormats._
@@ -47,13 +47,13 @@ object CategoryCountPerDay {
             .textFile(inputPath, numPartitions)
             .map(_.parseJson.convertTo[CategoryCountPerIntervalInput])
 
-        import ZonedDateTimeSort._
+        import InstantDateTimeSort._
         val YearMonthDayFormat: String = "yyyy-MM-dd'T'00:00:00'Z'"
         val dates = categoryCountsPerHourPerDay
             .map(categoryCountPerHourInput => categoryCountPerHourInput.container)
             .map(container => container.map(categoryCountContainer => {
                 val formatter = DateTimeFormatter.ofPattern(YearMonthDayFormat)
-                ZonedDateTime.parse(categoryCountContainer.Date.format(formatter))
+                Instant.parse(categoryCountContainer.Date.formatted(formatter.toString))
             }))
             .flatMap(zonedDateTimes => zonedDateTimes)
             .distinct
@@ -66,7 +66,7 @@ object CategoryCountPerDay {
                 .map(categoryCountPerHourInput => categoryCountPerHourInput.container)
                 .map(containers => containers.filter(container => {
                     val formatter = DateTimeFormatter.ofPattern(YearMonthDayFormat)
-                    val entryDate = ZonedDateTime.parse(container.Date.format(formatter))
+                    val entryDate = ZonedDateTime.parse(container.Date.formatted(formatter.toString))
                     date.equals(entryDate)
                 }))
                 .map(containers => containers
