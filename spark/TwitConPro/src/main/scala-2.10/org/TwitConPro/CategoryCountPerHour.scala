@@ -66,6 +66,7 @@ object CategoryCountPerHour {
                         ((tuple._1, category), 0)
                 })
             })
+            .filter(x => x._2 != 0)
             .collect()
 
         val rddTweets = sparkContext
