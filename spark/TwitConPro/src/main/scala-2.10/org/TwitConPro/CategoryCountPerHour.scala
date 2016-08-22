@@ -64,7 +64,7 @@ object CategoryCountPerHour {
             .reduceByKey(_ + _)
             .map(datedCategoryWithCount => (datedCategoryWithCount._1._1, new CategoryCount(datedCategoryWithCount._1._2, datedCategoryWithCount._2)))
             .groupBy(datedCategoryCount => datedCategoryCount._1)
-            .map(datedCategoryCount => new CategoryCountContainer(datedCategoryCount._1, datedCategoryCount._2.map(tuple => tuple._2).toList))
+            .map(groupedDatedCategoryCount => new CategoryCountContainer(groupedDatedCategoryCount._1, groupedDatedCategoryCount._2.map(categoryCounts => categoryCounts._2).toList))
             .sortBy(categoryCountContainer => categoryCountContainer.Date)
             .collect
 
