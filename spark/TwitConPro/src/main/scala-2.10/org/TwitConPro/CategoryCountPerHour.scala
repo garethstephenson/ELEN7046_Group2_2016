@@ -53,35 +53,29 @@ object CategoryCountPerHour {
 
         import InstantDateTimeSort._
 
-        val tweets = sparkContext
+        val result = sparkContext
             .textFile(inputPath, numPartitions)
             .map(stripConstructors(Array("ObjectId", "ISODate", "NumberLong"), _))
             .map(_.parseJson.convertTo[Tweet])
             .map(tweet => (tweet.createdAt, tweet.tweetText))
-            .flatMap(tuple => {
+            .flatMap(datedTweetText => {
                 categories.map(category => {
-                    if (tuple._2.contains(category))
-                        ((tuple._1, category), 1)
+                    if (datedTweetText._2.contains(category))
+                        ((datedTweetText._1, category), 1)
                     else
-                        ((tuple._1, category), 0)
+                        ((datedTweetText._1, category), 0)
                 })
             })
-            .filter(x => x._2 != 0)
-            .collect()
-
-        val rddTweets = sparkContext
-            .parallelize(tweets, numPartitions)
+            .filter(datedCategoryWithValue => datedCategoryWithValue._2 != 0)
             .reduceByKey(_ + _)
-            .map(x => (x._1._1, new CategoryCount(x._1._2, x._2)))
-
-        val result = rddTweets
-            .groupBy(x => x._1)
-            .map(x => {
+            .map(datedCategoryWithCount => (datedCategoryWithCount._1._1, new CategoryCount(datedCategoryWithCount._1._2, datedCategoryWithCount._2)))
+            .groupBy(datedCategoryCount => datedCategoryCount._1)
+            .map(datedCategoryCount => {
                 val categoryCounts = new ListBuffer[CategoryCount]
-                categoryCounts.appendAll(x._2.map(y => y._2))
-                new CategoryCountContainer(x._1, categoryCounts.toList)
+                categoryCounts.appendAll(datedCategoryCount._2.map(datedCategoryCountTuple => datedCategoryCountTuple._2))
+                new CategoryCountContainer(datedCategoryCount._1, categoryCounts.toList)
             })
-            .sortBy(x => x.Date)
+            .sortBy(categoryCountContainer => categoryCountContainer.Date)
             .collect
 
         sparkContext.stop
