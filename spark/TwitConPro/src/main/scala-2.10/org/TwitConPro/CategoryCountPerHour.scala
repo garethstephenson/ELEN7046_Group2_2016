@@ -58,23 +58,13 @@ object CategoryCountPerHour {
             .map(stripConstructors(Array("ObjectId", "ISODate", "NumberLong"), _))
             .map(_.parseJson.convertTo[Tweet])
             .map(tweet => (tweet.createdAt, tweet.tweetText))
-            .flatMap(datedTweetText => {
-                categories.map(category => {
-                    if (datedTweetText._2.contains(category))
-                        ((datedTweetText._1, category), 1)
-                    else
-                        ((datedTweetText._1, category), 0)
-                })
-            })
-            .filter(datedCategoryWithValue => datedCategoryWithValue._2 != 0)
+            .flatMap(datedTweetText => categories
+                .filter(category => datedTweetText._2.contains(category))
+                .map(category => ((datedTweetText._1, category), 1)))
             .reduceByKey(_ + _)
             .map(datedCategoryWithCount => (datedCategoryWithCount._1._1, new CategoryCount(datedCategoryWithCount._1._2, datedCategoryWithCount._2)))
             .groupBy(datedCategoryCount => datedCategoryCount._1)
-            .map(datedCategoryCount => {
-                val categoryCounts = new ListBuffer[CategoryCount]
-                categoryCounts.appendAll(datedCategoryCount._2.map(datedCategoryCountTuple => datedCategoryCountTuple._2))
-                new CategoryCountContainer(datedCategoryCount._1, categoryCounts.toList)
-            })
+            .map(datedCategoryCount => new CategoryCountContainer(datedCategoryCount._1, datedCategoryCount._2.map(tuple => tuple._2).toList))
             .sortBy(categoryCountContainer => categoryCountContainer.Date)
             .collect
 
