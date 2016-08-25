@@ -24,11 +24,6 @@ object CategoryCountPerHour {
             return
         }
         val inputPath = args(0)
-        var lastIndexOfPathSeparator = inputPath.lastIndexOf("/")
-        if (lastIndexOfPathSeparator == -1)
-            lastIndexOfPathSeparator = 0
-        else
-            lastIndexOfPathSeparator += 1
 
         if (args.length < 2) {
             println("Categories must be supplied.")
@@ -39,8 +34,7 @@ object CategoryCountPerHour {
 
         val sparkConfig = new SparkConf()
 
-        val fileName = inputPath.substring(lastIndexOfPathSeparator, inputPath.length)
-        sparkConfig.setAppName(s"Category Count Per Hour [$fileName]")
+        sparkConfig.setAppName(s"Category Count Per Hour [$inputPath]")
 
         val sparkContext = new SparkContext(sparkConfig)
 
@@ -57,21 +51,31 @@ object CategoryCountPerHour {
             .textFile(inputPath, numPartitions)
             .map(stripConstructors(Array("ObjectId", "ISODate", "NumberLong"), _))
             .map(_.parseJson.convertTo[Tweet])
-            .map(tweet => (tweet.createdAt, tweet.tweetText))
-            .flatMap(datedTweetText => categories
-                .filter(category => datedTweetText._2.contains(category))
-                .map(category => ((datedTweetText._1, category), 1)))
+            .flatMap(tweet => categories
+                .filter(category => tweet.tweetText.contains(category))
+                .map(category => ((tweet.createdAt, category), 1)))
             .reduceByKey(_ + _)
-            .map(datedCategoryWithCount => (datedCategoryWithCount._1._1, new CategoryCount(datedCategoryWithCount._1._2, datedCategoryWithCount._2)))
+            .map(datedCategoryWithCount =>
+                (datedCategoryWithCount._1._1,
+                    new CategoryCount(datedCategoryWithCount._1._2, datedCategoryWithCount._2)))
             .groupBy(datedCategoryCount => datedCategoryCount._1)
-            .map(groupedDatedCategoryCount => new CategoryCountContainer(groupedDatedCategoryCount._1, groupedDatedCategoryCount._2.map(categoryCounts => categoryCounts._2).toList))
+            .map(groupedDatedCategoryCount =>
+                new CategoryCountContainer(groupedDatedCategoryCount._1,
+                    groupedDatedCategoryCount._2.map(categoryCounts => categoryCounts._2).toList))
             .sortBy(categoryCountContainer => categoryCountContainer.Date)
             .collect
 
         sparkContext.stop
 
         val output = new CategoryCountPerIntervalOutput(result.toList)
-        writeToFile(output.container.toJson.toString, s"$inputPath.results.json")
+        writeToFile(output.container.toJson.toString, getPathToSaveTo(inputPath))
+    }
+
+    def getPathToSaveTo(inputPath: String): String = {
+        if (inputPath.lastIndexOf("/") + 1 == inputPath.length()) {
+            return s"${inputPath}categorycountperhour.json"
+        }
+        s"${inputPath.substring(0, inputPath.lastIndexOf("/"))}/categorycountperhour.json"
     }
 
     def printSettings(inputPath: String, categories: Array[String], numPartitions: Int): Unit = {
