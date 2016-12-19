@@ -19,6 +19,6 @@ object TweetJsonProtocol extends DefaultJsonProtocol {
         }
     }
 
-    implicit val hashTagFormat = jsonFormat(HashTag, "hashTag")
-    implicit val tweetFormat = jsonFormat(Tweet, "createdAt", "tweetText")
+    implicit val hashTagFormat: RootJsonFormat[HashTag] = jsonFormat(HashTag, "hashTag")
+    implicit val tweetFormat: RootJsonFormat[Tweet] = jsonFormat(Tweet, "createdAt", "tweetText")
 }

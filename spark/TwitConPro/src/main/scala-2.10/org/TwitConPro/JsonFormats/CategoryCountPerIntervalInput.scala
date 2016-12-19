@@ -11,6 +11,6 @@ case class CategoryCountPerIntervalInput(container: List[CategoryCountContainer]
 object CategoryCountPerIntervalInput {
     implicit object ContainerFormat extends RootJsonFormat[CategoryCountPerIntervalInput] {
         def read(value: JsValue) = CategoryCountPerIntervalInput(value.convertTo[List[CategoryCountContainer]])
-        def write(obj: CategoryCountPerIntervalInput) = obj.container.toJson
+        def write(obj: CategoryCountPerIntervalInput): JsValue = obj.container.toJson
     }
 }

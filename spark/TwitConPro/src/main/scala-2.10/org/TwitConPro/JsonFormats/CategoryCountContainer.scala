@@ -19,5 +19,5 @@ object CategoryCountContainer {
             case _ => throw DeserializationException("Invalid Instant provided")
         }
     }
-    implicit val containerFormat = jsonFormat2(CategoryCountContainer.apply)
+    implicit val containerFormat: RootJsonFormat[CategoryCountContainer] = jsonFormat2(CategoryCountContainer.apply)
 }
